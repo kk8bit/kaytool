@@ -5,6 +5,9 @@
 
 KayTool is a custom node utility package developed for ComfyUI. I plan to add more features in the future.
 
+## Custom Save Images Node:
+![preview_custom_save_image_node](https://github.com/user-attachments/assets/4934de86-e723-450d-b0bb-817f23b20cff)
+
 ## Current Features:
 - Choose the image format to save (PNG or JPG)
 - Option to save metadata (workflow information)

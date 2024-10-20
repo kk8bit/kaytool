@@ -2,6 +2,9 @@
 
 这是一个为 ComfyUI 开发的自定义节点实用工具包，在未来我会陆续为它增加功能
 
+## 自定义保存图片节点:
+![preview_custom_save_image_node](https://github.com/user-attachments/assets/4934de86-e723-450d-b0bb-817f23b20cff)
+
 ## 当前功能：
 
 - 选择保存图片的格式（PNG 或 JPG）
