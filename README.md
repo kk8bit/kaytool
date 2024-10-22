@@ -1,6 +1,6 @@
 # KayTool
 
-[中文说明](./README.zh.md) [Changelog](./CHANGELOG.md)
+[中文说明](./README.zh.md) | [Changelog](./CHANGELOG.md)
 
 
 KayTool is a custom node utility package developed for ComfyUI. I plan to add more features in the future.
