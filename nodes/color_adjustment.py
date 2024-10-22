@@ -36,10 +36,11 @@ class ColorAdjustment:
                 "image": ("IMAGE",),
                 "exposure": ("INT", {"default": 0, "min": -100, "max": 100}),
                 "contrast": ("INT", {"default": 0, "min": -100, "max": 100}),
-                "temperature": ("INT", {"default": 0, "min": -100, "max": 100}),  # 色温
+                "temperature": ("INT", {"default": 0, "min": -100, "max": 100}),
                 "tint": ("INT", {"default": 0, "min": -100, "max": 100}),
                 "saturation": ("INT", {"default": 0, "min": -100, "max": 100}),
                 "style": (get_pilgram_filters(),),
+                "strength": ("INT", {"default": 100, "min": 0, "max": 100})  # 简化后的滤镜强度选项
             },
             "optional": {
                 "All": ("BOOLEAN", {"default": False}),
@@ -50,7 +51,7 @@ class ColorAdjustment:
     FUNCTION = "apply_filter"
     CATEGORY = "KayTool"
 
-    def apply_filter(self, image, exposure=0, contrast=0, temperature=0, tint=0, saturation=0, style="None", All=False):
+    def apply_filter(self, image, exposure=0, contrast=0, temperature=0, tint=0, saturation=0, style="None", strength=100, All=False):
         if All:
             tensors = []
             for img in image:
@@ -62,8 +63,8 @@ class ColorAdjustment:
                         continue
                     filter_name_clean = filter_name.split('_', 1)[1]
                     filter_func = getattr(pilgram, filter_name_clean)
-                    filtered_image = pil2tensor(filter_func(pil_img))
-                    tensors.append(filtered_image)
+                    filtered_image = self.apply_strength(filter_func(pil_img), pil_img, strength)
+                    tensors.append(pil2tensor(filtered_image))
 
             tensors = torch.cat(tensors, dim=0)
             return (tensors,)
@@ -76,12 +77,22 @@ class ColorAdjustment:
                 if style != "None":
                     filter_name_clean = style.split('_', 1)[1]
                     filter_func = getattr(pilgram, filter_name_clean)
-                    pil_img = filter_func(pil_img)
+                    filtered_img = filter_func(pil_img)
+                    pil_img = self.apply_strength(filtered_img, pil_img, strength)
 
                 tensors.append(pil2tensor(pil_img))
 
             tensors = torch.cat(tensors, dim=0)
             return (tensors,)
+
+    # 根据强度应用滤镜
+    def apply_strength(self, filtered_img, original_img, strength):
+        if strength == 100:
+            return filtered_img
+        elif strength == 0:
+            return original_img
+        else:
+            return Image.blend(original_img, filtered_img, strength / 100.0)
 
     # 调整曝光、对比度、色温、色调和饱和度的方法
     def adjust_exposure_contrast_color(self, img, exposure, contrast, temperature, tint, saturation):
