@@ -1,7 +1,7 @@
 [project]
 name = "kaytool"
 description = "KayTool is a growing toolkit for ComfyUI. It includes the 'Custom Save Image' node, allowing image saving in PNG or JPG format, with support for ICC profiles like sRGB and Adobe RGB, metadata control, JPG quality adjustment."
-version = "1.0.0"
+version = "0.0.1"
 license = {file = "LICENSE"}
 
 [project.urls]
@@ -9,6 +9,6 @@ Repository = "https://github.com/kk8bit/KayTool"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "kk8bit"
 DisplayName = "KayTool"
 Icon = ""
