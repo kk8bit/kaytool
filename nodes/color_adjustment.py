@@ -34,13 +34,49 @@ class ColorAdjustment:
         return {
             "required": {
                 "image": ("IMAGE",),
-                "exposure": ("INT", {"default": 0, "min": -100, "max": 100}),
-                "contrast": ("INT", {"default": 0, "min": -100, "max": 100}),
-                "temperature": ("INT", {"default": 0, "min": -100, "max": 100}),
-                "tint": ("INT", {"default": 0, "min": -100, "max": 100}),
-                "saturation": ("INT", {"default": 0, "min": -100, "max": 100}),
+                "exposure": ("FLOAT", {
+                    "default": 0,
+                    "min": -100,
+                    "max": 100,
+                    "step": 1,
+                    "display": "slider"
+                }),
+                "contrast": ("FLOAT", {
+                    "default": 0,
+                    "min": -100,
+                    "max": 100,
+                    "step": 1,
+                    "display": "slider"
+                }),
+                "temperature": ("FLOAT", {
+                    "default": 0,
+                    "min": -100,
+                    "max": 100,
+                    "step": 1,
+                    "display": "slider"
+                }),
+                "tint": ("FLOAT", {
+                    "default": 0,
+                    "min": -100,
+                    "max": 100,
+                    "step": 1,
+                    "display": "slider"
+                }),
+                "saturation": ("FLOAT", {
+                    "default": 0,
+                    "min": -100,
+                    "max": 100,
+                    "step": 1,
+                    "display": "slider"
+                }),
                 "style": (get_pilgram_filters(),),
-                "strength": ("INT", {"default": 100, "min": 0, "max": 100})  # 简化后的滤镜强度选项
+                "strength": ("FLOAT", {
+                    "default": 100,
+                    "min": 0,
+                    "max": 100,
+                    "step": 1,
+                    "display": "slider"
+                })
             },
             "optional": {
                 "All": ("BOOLEAN", {"default": False}),
