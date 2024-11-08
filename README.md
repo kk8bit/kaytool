@@ -6,17 +6,40 @@
 KayTool is a custom node utility package developed for ComfyUI. I plan to add more features in the future.
 
 # Custom Save Images Node:
-![preview_custom_save_image_node](https://github.com/user-attachments/assets/4934de86-e723-450d-b0bb-817f23b20cff)
+![preview_custom_save_image_node](https://github.com/user-attachments/assets/6b48bb68-3897-44d3-94c7-1ed01d538017)
 
 ## Current Features:
-- Choose the image format to save (PNG or JPG)
-- Option to save metadata (workflow information)
-- Support for two color profiles (sRGB IEC61966-2.1 and Adobe RGB (1998))
-- Automatically convert images to Adobe RGB when selected, ensuring color accuracy
-- Customize JPG image vquality (0-100)
-- Ability to embed author and copyright information
-- Automatically generate unique filenames
-- Automatically create a `custom_save_images` folder in the default `output` directory to save all images
+### ColorAdjustment Node Feature Description
+
+- Supports adjustments for image exposure, contrast, color temperature, tint, and saturation
+    - Exposure and Contrast: Range from -100 to +100
+    - Color Temperature: Range from -100 to +100, where negative values add blue and positive values add yellow
+    - Tint: Range from -100 to +100, where negative values add green and positive values add magenta
+    - Saturation: Range from -100 to +100
+
+- Offers multiple filter effects via a selection list that calls filters from the `pilgram` library
+    - All filters are sequentially numbered, with an added "None" option to apply no filter
+
+- Customizable filter strength
+    - Strength ranges from 0 to 100 (0 means no filter applied, 100 means full filter application)
+
+- Option to "apply all filters" generates and returns a sequence of images with each filter effect applied
+
+- After adjusting exposure, contrast, color temperature, tint, and saturation, the selected filter is applied
+
+### CustomSaveImage Node Feature Description (English)
+
+- Choose the image format for saving (PNG or JPG)
+- Customizable JPG image quality (0-100)
+- Supports two color profiles (sRGB IEC61966-2.1 and Adobe RGB (1998))
+    - When Adobe RGB is selected, the image is automatically converted to the Adobe RGB color space to ensure color accuracy
+- Option to save metadata (including workflow information, author, copyright info, and custom prompts)
+- Customizable metadata fields:
+    - Author
+    - Copyright Info
+- Automatically generates a unique filename to ensure each saved image has a distinct name
+- Automatically creates an output folder `output/Custom_Save_Image` to store all generated images
+- When saved in PNG format, metadata is stored as PNG information (PngInfo); when saved in JPG format, metadata is stored in EXIF format
 
 ## Additional Notes:
 - To save in **JPG** format, the **metadata** option must be set to **False**.
