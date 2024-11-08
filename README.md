@@ -17,7 +17,7 @@ KayTool is a custom node utility package developed for ComfyUI. I plan to add mo
     - Tint: Range from -100 to +100, where negative values add green and positive values add magenta
     - Saturation: Range from -100 to +100
 
-- Offers multiple filter effects via a selection list that calls filters from the `pilgram` library
+- Provides a selection list of popular Instagram-style filters for easy application.
     - All filters are sequentially numbered, with an added "None" option to apply no filter
 
 - Customizable filter strength
