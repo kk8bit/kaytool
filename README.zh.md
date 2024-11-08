@@ -5,7 +5,7 @@
 这是一个为 ComfyUI 开发的自定义节点实用工具包，在未来我会陆续为它增加功能
 
 # 节点预览:
-![preview_custom_save_image_node](https://github.com/user-attachments/assets/18342f1b-ba11-4601-8fb3-641457b35224)
+![preview_custom_save_image_node](https://github.com/user-attachments/assets/b12043aa-7bc0-4c29-b5a8-aa918c9943ac)
 
 ## 当前功能：
 

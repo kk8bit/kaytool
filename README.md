@@ -6,7 +6,7 @@
 KayTool is a custom node utility package developed for ComfyUI. I plan to add more features in the future.
 
 # Nodes:
-![preview_custom_save_image_node](https://github.com/user-attachments/assets/18342f1b-ba11-4601-8fb3-641457b35224)
+![preview_custom_save_image_node](https://github.com/user-attachments/assets/b12043aa-7bc0-4c29-b5a8-aa918c9943ac)
 
 ## Current Features:
 ### ColorAdjustment Node Feature Description
