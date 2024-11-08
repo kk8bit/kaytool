@@ -50,3 +50,4 @@
 # 安装与使用
 
 - 将本项目克隆到你的 `ComfyUI/custom_nodes`目录下，并确保将 sRGB Profile.icc 和AdobeRGB1998.icc 文件放在 resources 目录中
+- 使用ComfyUI manager 搜索 Kaytool 进行安装
