@@ -5,7 +5,7 @@
 这是一个为 ComfyUI 开发的自定义节点实用工具包，在未来我会陆续为它增加功能
 
 # 自定义保存图片节点:
-![preview_custom_save_image_node](https://github.com/user-attachments/assets/6b48bb68-3897-44d3-94c7-1ed01d538017)
+![preview_custom_save_image_node](https://github.com/user-attachments/assets/c11c03e4-31e0-4c05-be6e-27d1835c161b)
 
 ## 当前功能：
 
