@@ -1,5 +1,5 @@
 [project]
-name = "kayTool"
+name = "kaytool"
 description ="KayTool is a versatile and ever-expanding toolkit for ComfyUI, offering powerful node functionalities such as “Custom Save Image,” “Professional Color Adjustment,” and “Prompt Enhancer.” Its features include precise image saving with support for ICC color profiles (sRGB/Adobe RGB), metadata embedding, advanced image adjustments (exposure, contrast, color temperature, hue, saturation), professional filter previews, dynamic prompt editing, and high-quality AI translation."
 version = "0.3.6"
 license = {file = "LICENSE"}
