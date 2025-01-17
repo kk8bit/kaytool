@@ -1,6 +1,6 @@
 # KayTool
 
-[更新日志](./CHANGELOG.md) [CHANGELOG](./CHANGELOG.md)
+[更新日志(CHANGELOG)](./CHANGELOG.md)
 
 这是一个为 ComfyUI 开发的自定义节点实用工具包，起初只是为了自己用方便，在未来我会陆续为它增加功能  
 This is a custom node utility package developed for ComfyUI. Initially created for personal convenience, I will continue adding features in the future.
