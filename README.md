@@ -102,7 +102,7 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 ---
 
-# Installation & Usage:
+# 安装 Installation:
 
 - 使用 ComfyUI Manager 搜索 KayTool 进行安装
 - 将本项目克隆到你的 `ComfyUI/custom_nodes` 目录下，并确保将 sRGB Profile.icc 和 AdobeRGB1998.icc 文件放在 resources 目录中
