@@ -1,0 +1,162 @@
+[
+    {
+        "name": "none",
+        "positive": "",
+        "negative": ""
+    },
+    {
+        "name": "🪛 编辑列表(Edit list):KayTool/json/Stromg_Prompt",
+        "positive": "(breathtaking:1.3), award-winning, professional, highly detailed",
+        "negative": "ugly, deformed, noisy, blurry, distorted, grainy"
+    },
+    {
+        "name": "-----------------📌 通用(General)v0.0.1----------------- ",
+        "positive": "",
+        "negative": ""
+    },
+    {
+        "name": "001-⚙️ 增强 (Enhance)",
+        "positive": "(breathtaking:1.3) professional highly detailed",
+        "negative": "ugly, deformed, noisy, blurry, distorted, grainy"
+    },
+    {
+        "name": "002-📷 摄影 (Photographic)",
+        "positive": "(cinematic photo:1.3) 4k highly detailed",
+        "negative": "drawing, painting, crayon, sketch, graphite, impressionist, noisy, blurry, soft, deformed, ugly"
+    },
+    {
+        "name": "003-🎞 模拟胶片 (Analog Film)",
+        "positive": "(analog film photo:1.3) vintage highly detailed",
+        "negative": "painting, drawing, illustration, glitch, mutated, cross-eyed, disfigured"
+    },
+    {
+        "name": "004-🎬 电影感 (Cinematic)",
+        "positive": "(cinematic film still:1.3) epic highly detailed",
+        "negative": "anime, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, disfigured"
+    },
+    {
+        "name": "005-🎨 幻想艺术 (Fantasy Art)",
+        "positive": "(ethereal fantasy concept art:1.3) dreamy highly detailed",
+        "negative": "photographic, realistic, cropped, frame, text, glitch, noise, off-center, cross-eyed, closed eyes, bad anatomy, disfigured, sloppy, duplicate, mutated, black and white"
+    },
+    {
+        "name": "006-✏️ 线条艺术 (Line Art)",
+        "positive": "(line art drawing:1.3) modern minimalist",
+        "negative": "anime, photorealistic, 35mm film, deformed, glitch, blurry, noisy, off-center, cross-eyed, closed eyes, bad anatomy, disfigured, mutated, realism, realistic, impressionism, expressionism, oil, acrylic"
+    },
+    {
+        "name": "007-🌌 超现实主义 (Surrealism)",
+        "positive": "(surrealist:1.3) dream-like highly detailed",
+        "negative": "realistic, mundane, rational, low detail"
+    },
+    {
+        "name": "008-🧸 3D模型 (3D Model)",
+        "positive": "(professional 3d model:1.3) octane render highly detailed",
+        "negative": "ugly, deformed, noisy, low poly, blurry, painting"
+    },
+    {
+        "name": "009-✨ 霓虹朋克 (Neonpunk)",
+        "positive": "(neonpunk style:1.3) vibrant highly detailed",
+        "negative": "painting, drawing, illustration, glitch, deformed, mutated, cross-eyed, ugly, disfigured"
+    },
+    {
+        "name": "010-🏙 赛博朋克城市景观 (Cyberpunk Cityscape)",
+        "positive": "(cyberpunk cityscape:1.3) futuristic highly detailed",
+        "negative": "natural, rural, deformed, low contrast, black and white, sketch, watercolor"
+    },
+    {
+        "name": "011-🔮 未来风格 (Futuristic Style)",
+        "positive": "(futuristic style:1.3) sleek ultramodern",
+        "negative": "ugly, deformed, noisy, blurry, low contrast, realism, photorealistic, vintage, antique"
+    },
+    {
+        "name": "012-👗 时尚编辑广告 (Fashion Editorial Ads)",
+        "positive": "(fashion editorial style:1.3) trendy highly detailed",
+        "negative": "outdated, blurry, noisy, unattractive, sloppy"
+    },
+    {
+        "name": "013-🏠 房地产广告 (Real Estate Ads)",
+        "positive": "(real estate photography style:1.3) well-lit highly detailed",
+        "negative": "dark, blurry, unappealing, noisy, unprofessional"
+    },
+    {
+        "name": "014-🖌 数字艺术 (Digital Art)",
+        "positive": "(concept art:1.3) painterly highly detailed",
+        "negative": "photo, photorealistic, realism, ugly"
+    },
+    {
+        "name": "015-💬 漫画书 (Comic Book Art)",
+        "positive": "(comic art:1.3) vibrant highly detailed",
+        "negative": "photograph, deformed, glitch, noisy, realistic, stock photo"
+    },
+    {
+        "name": "016-🪨 低多边形 (Lowpoly)",
+        "positive": "(low-poly style:1.3) blocky centered composition",
+        "negative": "noisy, sloppy, messy, grainy, ultra textured, photo"
+    },
+    {
+        "name": "017-🧩 折纸 (Origami)",
+        "positive": "(origami style:1.3) pleated paper highly detailed",
+        "negative": "noisy, sloppy, messy, grainy, ultra textured, photo"
+    },
+    {
+        "name": "018-🎨 手工粘土 (Craft Clay)",
+        "positive": "(play-doh style:1.3) clay art centered composition",
+        "negative": "sloppy, messy, grainy, ultra textured, photo"
+    },
+    {
+        "name": "019-🎮 像素艺术 (Pixel Art)",
+        "positive": "(pixel-art:1.3) 8-bit graphics",
+        "negative": "sloppy, messy, blurry, noisy, highly detailed, ultra textured, photo, realistic"
+    },
+    {
+        "name": "020-🖋 矢量动画 (Vector Animation)",
+        "positive": "(digital vector animation:1.3) clean lines, geometric shapes, bold colors, highly detailed",
+        "negative": "stop-motion, claymation, 3D, CG, black and white"
+    },
+    {
+        "name": "021-📺 动漫风格动画 (Anime Style Animation)",
+        "positive": "(Japanese anime style:1.3) hand-drawn or digital, vibrant, unique character designs, highly detailed",
+        "negative": "western cartoons, 3D, CG, black and white"
+    },
+    {
+        "name": "022-📚 漫画风格艺术 (Manga Style Art)",
+        "positive": "(Japanese manga style:1.3) black and white, unique character designs, detailed backgrounds, highly detailed",
+        "negative": "western comics, 3D, CG, vibrant colors"
+    },
+    {
+        "name": "023-🌸 浮世绘 (Ukiyo-e)",
+        "positive": "(Japanese ukiyo-e style:1.3) woodblock prints, flat areas of color, detailed patterns, subjects from history and mythology, highly detailed",
+        "negative": "modern, 3D, CG, western art styles, black and white"
+    },
+    {
+        "name": "024-🎭 西方漫画艺术 (Western Comics Art)",
+        "positive": "(western comic style:1.3) bold lines, dynamic poses, vibrant colors, dramatic lighting, highly detailed",
+        "negative": "anime, manga, 3D, CG, black and white"
+    },
+    {
+        "name": "025-🎠 迪士尼经典 (Disney Classic)",
+        "positive": "(Disney classic animation:1.3) fairy tales, musical numbers, expressive characters, bright colors, detailed, professional",
+        "negative": "manga, anime, black and white, sketchy, rough"
+    },
+    {
+        "name": "026-🍃 吉卜力工作室 (Studio Ghibli)",
+        "positive": "(Studio Ghibli style:1.3) magical realism, environmental themes, unique characters, breathtaking landscapes, highly detailed",
+        "negative": "cartoon, slapstick, black and white, photo-realistic, barren"
+    },
+    {
+        "name": "027-🎞 皮克斯 (Pixar)",
+        "positive": "(Pixar animation style:1.3) 3D animation, heartwarming stories, photorealistic environments, appealing character designs, emotional depth, highly detailed, professional",
+        "negative": "2D, anime, manga, black and white, sketchy"
+    },
+    {
+        "name": "028-🤖 机甲 (Mecha)",
+        "positive": "(Mecha style:1.3) anime, robots, futuristic technologies, dynamic battles, detailed mechanical designs, highly detailed",
+        "negative": "Disney, Pixar, cartoon, Looney Tunes, realism, fairy tales"
+    },
+    {
+        "name": "029-🌀 抽象动画 (Abstract Animation)",
+        "positive": "(abstract animation style:1.3) nonrepresentational, uses movement and color to create mood or emotion, highly detailed",
+        "negative": "realistic, 3D, CG, anime, manga, black and white"
+    }
+]
