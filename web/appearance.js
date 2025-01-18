@@ -16,7 +16,10 @@ const NODE_COLORS = {
     "Baidu_Translater": "green",
     "Display_Any": "pale_blue",  
     "Color_Adjustment": "purple",
-    "Custom_Save_Image": "black"
+    "Custom_Save_Image": "black",
+    "Abc_Math": "green",
+    "Image_Size_Extractor": "pale_blue"
+
 };
 
 function setNodeColors(node, theme) {

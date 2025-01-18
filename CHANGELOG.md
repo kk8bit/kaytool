@@ -1,5 +1,15 @@
 # Changelog
 
+
+## [0.7.0] - 2025-01-19
+### Added
+- 增加abc数学 abc Math 节点，支持多种数学运算。  
+  Added the abc Math node, supporting various mathematical operations.
+  
+- 增加图像尺寸获取 Image Size 节点，支持获取图像的宽度、高度。
+  Added the Image Size node, supporting the retrieval of image width and height.  
+
+
 ## [0.3.6] - 2025-01-18
 ### Added
 - 增加大壮提示词 Strong Prompt 节点，支持负向提示词零化功能以及预设样式编辑与导入。  
