@@ -3,11 +3,15 @@
 import { app } from "../../../scripts/app.js";
 
 const COLOR_THEMES = {
-    blue: { nodeColor: "#222233", nodeBgColor: "#333355" },
+    red: { nodeColor: "#332222", nodeBgColor: "#553333" },
     green: { nodeColor: "#223322", nodeBgColor: "#335533" },
+    blue: { nodeColor: "#222233", nodeBgColor: "#333355" },
     pale_blue: { nodeColor: "#2a363b", nodeBgColor: "#3f5159" },
-    purple: { nodeColor: "#323", nodeBgColor: "#535" },
-    black: { nodeColor: "#333", nodeBgColor: "#000" }
+    cyan: { nodeColor: "#223333", nodeBgColor: "#335555" },
+    purple: { nodeColor: "#332233", nodeBgColor: "#553355" },
+    yellow: { nodeColor: "#443322", nodeBgColor: "#665533" },
+    black: { nodeColor: "#222", nodeBgColor: "#000" },
+    none: { nodeColor: null, nodeBgColor: null } 
 };
 
 
@@ -15,9 +19,9 @@ const NODE_COLORS = {
     "Strong_Prompt": "blue",
     "Baidu_Translater": "green",
     "Display_Any": "pale_blue",  
-    "Color_Adjustment": "purple",
+    "Color_Adjustment": "pale_blue",
     "Custom_Save_Image": "black",
-    "Abc_Math": "green",
+    "Abc_Math": "cyan",
     "Image_Size_Extractor": "pale_blue"
 
 };
