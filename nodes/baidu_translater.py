@@ -50,17 +50,17 @@ class BaiduTranslater:
                          '中文（简体）',
                          '中文（繁体）'
                        ], {"default": "English", "tooltip": "Choose the target language into which the text will be translated. (选择文本要翻译成的目标语言。)"}),
-                "baidu_appid": ("STRING", {"multiline": False, "placeholder": "Input AppId (输入 AppId)", 
-                                           "tooltip": "Enter your Baidu API App ID here. You can obtain an App ID and API key by registering at https://fanyi-api.baidu.com/. (在此处输入你的百度 API App ID。你可以通过注册 https://fanyi-api.baidu.com/ 获得 App ID 和 API 密钥。)"}),
-                "baidu_appkey": ("STRING", {"multiline": False, "placeholder": "Input AppKey (输入 AppKey)", 
-                                            "tooltip": "Enter your Baidu API App Key here. You can obtain an App ID and API key by registering at https://fanyi-api.baidu.com/. (在此处输入你的百度 API App Key。你可以通过注册 https://fanyi-api.baidu.com/ 获得 App ID 和 API 密钥。)"}),
+                "ID": ("STRING", {"multiline": False, "placeholder": "Input AppId (输入 AppId)", 
+                                 "tooltip": "Enter your Baidu API App ID here. You can obtain an App ID and API key by registering at https://fanyi-api.baidu.com/. (在此处输入你的百度 API App ID。你可以通过注册 https://fanyi-api.baidu.com/ 获得 App ID 和 API 密钥。)"}),
+                "Key": ("STRING", {"multiline": False, "placeholder": "Input AppKey (输入 AppKey)", 
+                                  "tooltip": "Enter your Baidu API App Key here. You can obtain an App ID and API key by registering at https://fanyi-api.baidu.com/. (在此处输入你的百度 API App Key。你可以通过注册 https://fanyi-api.baidu.com/ 获得 App ID 和 API 密钥。)"}),
             }
         }
 
         # Load the saved appid and appkey if they exist
         if s._config_data:
-            input_types["required"]["baidu_appid"] = ("STRING", {"multiline": False, "default": s._config_data.get('baidu_appid', ''), "tooltip": input_types["required"]["baidu_appid"][1]["tooltip"]})
-            input_types["required"]["baidu_appkey"] = ("STRING", {"multiline": False, "default": s._config_data.get('baidu_appkey', ''), "tooltip": input_types["required"]["baidu_appkey"][1]["tooltip"]})
+            input_types["required"]["ID"] = ("STRING", {"multiline": False, "default": s._config_data.get('baidu_appid', ''), "tooltip": input_types["required"]["ID"][1]["tooltip"]})
+            input_types["required"]["Key"] = ("STRING", {"multiline": False, "default": s._config_data.get('baidu_appkey', ''), "tooltip": input_types["required"]["Key"][1]["tooltip"]})
 
         return input_types
 
@@ -93,15 +93,15 @@ class BaiduTranslater:
         except Exception as e:
             print(f"Error saving Baidu Translater config JSON: {e}")
 
-    def translate_texts(self, Text_A, Text_B, Translate, From, To, baidu_appid, baidu_appkey):
+    def translate_texts(self, Text_A, Text_B, Translate, From, To, ID, Key):
         if not Translate:
             # If translation is disabled, return the original texts.
             return (Text_A, Text_B)
 
         # If user has entered new appid or appkey, save them
-        if baidu_appid != self.appid or baidu_appkey != self.appkey:
-            self.save_config(baidu_appid, baidu_appkey)
-            self.appid, self.appkey = baidu_appid, baidu_appkey
+        if ID != self.appid or Key != self.appkey:
+            self.save_config(ID, Key)
+            self.appid, self.appkey = ID, Key
 
         from_lang_map = {
             'Auto': 'auto',
