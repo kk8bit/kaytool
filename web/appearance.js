@@ -18,6 +18,7 @@ const COLOR_THEMES = {
 const NODE_COLORS = {
     "Strong_Prompt": "blue",
     "Baidu_Translater": "green",
+    "Tencent_Translater": "blue",
     "Display_Any": "pale_blue",  
     "Color_Adjustment": "pale_blue",
     "Custom_Save_Image": "black",
