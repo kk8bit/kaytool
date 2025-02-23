@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.0] - 2025-02-24
+### Added
+- 增加腾讯AI翻译节点
+  Add Tencent AI translation nod
+  e
+- 增加Set&Get无线传输节点
+  Add Set&Get wireless transmission node
+
 
 ## [0.7.0] - 2025-01-19
 ### Added

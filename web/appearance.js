@@ -14,7 +14,6 @@ const COLOR_THEMES = {
     none: { nodeColor: null, nodeBgColor: null } 
 };
 
-
 const NODE_COLORS = {
     "Strong_Prompt": "blue",
     "Baidu_Translater": "green",
@@ -24,23 +23,22 @@ const NODE_COLORS = {
     "Custom_Save_Image": "black",
     "Abc_Math": "cyan",
     "Image_Size_Extractor": "pale_blue"
-
 };
 
 function setNodeColors(node, theme) {
     if (!theme) return;
-    node.shape = "box";
+    node.shape = "box";  
     if (theme.nodeColor && theme.nodeBgColor) {
         node.color = theme.nodeColor;
         node.bgcolor = theme.nodeBgColor;
     }
 }
 
-// 创建扩展对象并注册
+
 app.registerExtension({
     name: "kaytool.appearance",
     nodeCreated(node) {
-        // 检查是否需要应用主题
+        
         if (NODE_COLORS.hasOwnProperty(node.comfyClass)) {
             const colorKey = NODE_COLORS[node.comfyClass];
             const theme = COLOR_THEMES[colorKey];

@@ -27,6 +27,30 @@ Include predefined ID groups and group switches for persistent usage.
 Easy-to-edit and import presets for professional prompt enhancement.  
 **Edit Path**: `KayTool/json/strong_prompt.json`
 
+--- 
+
+### 无线传输节点 Set&Get Node
+- 无线发送和接收节点，用于保持工作流的整洁
+- 支持任意数据类型的传递
+- Wireless sending and receiving nodes to keep workflows clean
+- Supports arbitrary data type transfer
+
+---
+
+### 腾讯AI翻译 Tencent Translator Node
+
+- 无需的 API 密钥
+- 支持多种语言翻译
+- 自动检测输入语言
+- 快速启用或禁用翻译
+- 支持多种翻译场景
+- 国内可用的高质量 AI 翻译
+- No need for API keys
+- Supports multiple languages for translation
+- Automatically detects input language
+- Quick enable/disable of translation
+- Supports various translation scenarios
+- High-quality AI translation available in China.
 ---
 
 ### 百度AI翻译 Baidu Translator Node
@@ -37,13 +61,12 @@ Easy-to-edit and import presets for professional prompt enhancement.
 - 配置百度 API [链接](https://fanyi-api.baidu.com/)
 - 自动存储 API 信息避免重复输入
 - 国内可用的高质量 AI 翻译
-
-Support translation of two separate texts.
-Support auto-detection, Simplified/Traditional Chinese, and English.
-Quick enable/disable of translation.
-Configure Baidu API [Link](https://fanyi-api.baidu.com/)
-Automatically save API credentials to avoid repeated input.
-High-quality AI translation accessible in China.
+- Two texts (Text_A and Text_B) are supported for translation
+- Support automatic detection, simplified/traditional Chinese and English
+- Quickly enable or disable translation
+- Configure Baidu API [link](https://fanyi-api.baidu.com/)
+- Automatically store API information to avoid duplicate input
+- High quality AI translation available in China
 
 ---
 
@@ -53,6 +76,11 @@ High-quality AI translation accessible in China.
 - 使用变量 `a`, `b`, `c` 进行数学表达式的计算
 - 返回整形和浮点型的结果，适用于需要数值结果的场景
 - 提供算术、比较运算功能，支持自定义函数调用
+
+- Supports multiple data types as input (e.g. integers, floating-point numbers, strings representing numeric values, etc.)
+- Use variables `a`, `b`, `c` to evaluate mathematical expressions
+- Returns integer and floating-point results for scenarios where numerical results are required
+- Arithmetic and comparison functions, custom function calls
 
 #### 支持的表达式和基本用法 Supported Expressions and Basic Usage:
 
@@ -81,8 +109,6 @@ High-quality AI translation accessible in China.
 - 最小值 Min: `min(a, b)`
 - 最大值 Max: `max(a, b)`
 - 四舍五入 Round: `round(a)`
-- 求和 Sum: `sum([a, b, c])` (接受列表参数)
-- 长度 Len: `len([a, b, c])` (接受列表参数)
 
 ##### 示例用法 Example Usage:
 - 计算两数之和 Calculate sum: `value = "a + b"`
@@ -109,9 +135,10 @@ Allow complex calculations by entering mathematical expressions in string form. 
 - 返回字符串类型的输出，可用于后续处理
 - 适合调试或检查工作流输出内容
 
-Accept any data type input and display converted text for inspection.
-Return a string output for subsequent processing.
-Ideal for debugging or checking workflow outputs.
+- Accepts input of any data type (e.g. numbers, text, lists, etc.)
+- Display converted text for easy viewing
+- Returns output of string type that can be used for subsequent processing
+- Suitable for debugging or checking workflow output
 
 ---
 
@@ -122,8 +149,11 @@ Ideal for debugging or checking workflow outputs.
   - 色温：范围 -100 到 +100，负值增加蓝色，正值增加黄色
   - 色调：范围 -100 到 +100，负值增加绿色，正值增加洋红
   - 饱和度：范围 -100 到 +100
-
-Adjust exposure, contrast, color temperature, hue, and saturation of images within specified ranges.
+  - Adjust exposure, contrast, color temperature, hue, and saturation of a picture
+  - Exposure and contrast: range-100 to +100
+  - Color temperature: range-100 to +100, negative values increase blue, positive values increase yellow
+  - Hue: Range-100 to +100, negative values increase green, positive values increase magenta
+  - Saturation: Range-100 to +100
 
 ---
 
