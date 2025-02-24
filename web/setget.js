@@ -24,7 +24,7 @@ app.registerExtension({
         class KaySetNode extends LGraphNode {
             defaultVisibility = true;
             serialize_widgets = true;
-            canvas = app.canvas; // 恢复 canvas 属性
+            canvas = app.canvas; 
 
             constructor(title) {
                 super(title);
