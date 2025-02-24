@@ -27,7 +27,7 @@ const NODE_COLORS = {
 
 function setNodeColors(node, theme) {
     if (!theme) return;
-    //node.shape = "box";  
+    //node.shape = "box";  // Uncomment this line to see the node shape 
     if (theme.nodeColor && theme.nodeBgColor) {
         node.color = theme.nodeColor;
         node.bgcolor = theme.nodeBgColor;

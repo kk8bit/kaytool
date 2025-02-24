@@ -79,7 +79,7 @@ app.registerExtension({
                         const fromNode = node.graph._nodes.find((n) => n.id === link_info.origin_id);
                         if (fromNode && fromNode.outputs && fromNode.outputs[link_info.origin_slot]) {
                             const type = fromNode.outputs[link_info.origin_slot].type;
-                            // 仅更新输入类型，不设置 ID 的值
+            
                             this.inputs[0].type = type;
                             this.inputs[0].name = type;
                         } else {
