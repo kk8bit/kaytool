@@ -1,6 +1,7 @@
 import { app } from "../../../scripts/app.js";
 
-//基于diffus 3的SetGet：https://github.com/diffus3/ComfyUI-extensions
+//based on diffus3's SetGet：https://github.com/diffus3/ComfyUI-extensions
+//based on kijai's SetGet：https://github.com/kijai/ComfyUI-KJNodes
 
 console.log("[KayTool] Loading SetGet extension");
 
@@ -23,19 +24,13 @@ app.registerExtension({
         class KaySetNode extends LGraphNode {
             defaultVisibility = true;
             serialize_widgets = true;
-            drawConnection = false;
-            currentGetters = null;
-            slotColor = "#FFF";
-            canvas = app.canvas;
-            menuEntry = "Show connections";
+            canvas = app.canvas; // 恢复 canvas 属性
 
             constructor(title) {
                 super(title);
 
-                // 直接设置节点样式
-                //this.shape = "box";  // 设置节点形状
-                this.color = "#000"; // 设置节点颜色
-                this.bgcolor = "#000"; // 设置节点背景颜色
+                this.color = "#000";
+                this.bgcolor = "#000";
 
                 if (!this.properties) {
                     this.properties = { "previousName": "" };
@@ -79,7 +74,6 @@ app.registerExtension({
                         const fromNode = node.graph._nodes.find((n) => n.id === link_info.origin_id);
                         if (fromNode && fromNode.outputs && fromNode.outputs[link_info.origin_slot]) {
                             const type = fromNode.outputs[link_info.origin_slot].type;
-            
                             this.inputs[0].type = type;
                             this.inputs[0].name = type;
                         } else {
@@ -160,43 +154,9 @@ app.registerExtension({
             }
 
             getExtraMenuOptions(_, options) {
-                this.menuEntry = this.drawConnection ? "Hide connections" : "Show connections";
-                options.unshift(
-                    {
-                        content: this.menuEntry,
-                        callback: () => {
-                            this.currentGetters = this.findGetters(this.graph);
-                            if (this.currentGetters.length === 0) return;
-                            let linkType = this.currentGetters[0].outputs[0].type;
-                            this.slotColor = this.canvas.default_connection_color_byType[linkType];
-                            this.drawConnection = !this.drawConnection;
-                            this.canvas.setDirty(true, true);
-                        },
-                        has_submenu: true,
-                        submenu: {
-                            title: "Color",
-                            options: [{
-                                content: "Highlight",
-                                callback: () => {
-                                    this.slotColor = "orange";
-                                    this.canvas.setDirty(true, true);
-                                }
-                            }],
-                        },
-                    },
-                    {
-                        content: "Hide all connections",
-                        callback: () => {
-                            const allNodes = this.graph._nodes.filter(n => n.type === "KayGetNode" || n.type === "KaySetNode");
-                            allNodes.forEach(n => n.drawConnection = false);
-                            this.drawConnection = false;
-                            this.canvas.setDirty(true, true);
-                        },
-                    }
-                );
-                this.currentGetters = this.findGetters(this.graph);
-                if (this.currentGetters.length) {
-                    let gettersSubmenu = this.currentGetters.map(getter => ({
+                const getters = this.findGetters(this.graph);
+                if (getters.length) {
+                    let gettersSubmenu = getters.map(getter => ({
                         content: `${getter.title} id: ${getter.id}`,
                         callback: () => {
                             this.canvas.centerOnNode(getter);
@@ -211,26 +171,6 @@ app.registerExtension({
                     });
                 }
             }
-
-            onDrawForeground(ctx) {
-                if (this.drawConnection) this._drawVirtualLinks(app.canvas, ctx);
-            }
-
-            _drawVirtualLinks(lGraphCanvas, ctx) {
-                if (!this.currentGetters?.length) return;
-                const title = this.getTitle ? this.getTitle() : this.title;
-                const title_width = ctx.measureText(title).width;
-                const start_node_slotpos = !this.flags.collapsed
-                    ? [this.size[0], LiteGraph.NODE_TITLE_HEIGHT * 0.5]
-                    : [title_width + 55, -15];
-                const defaultLink = { type: 'default', color: this.slotColor };
-                for (const getter of this.currentGetters) {
-                    const end_node_slotpos = !this.flags.collapsed
-                        ? [getter.pos[0] - this.pos[0] + this.size[0], getter.pos[1] - this.pos[1]]
-                        : [getter.pos[0] - this.pos[0] + title_width + 50, getter.pos[1] - this.pos[1] - 30];
-                    lGraphCanvas.renderLink(ctx, start_node_slotpos, end_node_slotpos, defaultLink, false, null, this.slotColor, LiteGraph.RIGHT, LiteGraph.LEFT);
-                }
-            }
         }
 
         LiteGraph.registerNodeType("KaySetNode", Object.assign(KaySetNode, { 
@@ -241,18 +181,13 @@ app.registerExtension({
         class KayGetNode extends LGraphNode {
             defaultVisibility = true;
             serialize_widgets = true;
-            drawConnection = false;
-            slotColor = "#FFF";
-            currentSetter = null;
             canvas = app.canvas;
 
             constructor(title) {
                 super(title);
 
-                // 直接设置节点样式
-                //this.shape = "box";  // 设置节点形状
-                this.color = "#000"; // 设置节点颜色
-                this.bgcolor = "#000"; // 设置节点背景颜色
+                this.color = "#000";
+                this.bgcolor = "#000";
 
                 if (!this.properties) this.properties = {};
                 this.properties.showOutputText = KayGetNode.defaultVisibility;
@@ -321,8 +256,12 @@ app.registerExtension({
 
                 this.goToSetter = function () {
                     const setter = this.findSetter(this.graph);
-                    this.canvas.centerOnNode(setter);
-                    this.canvas.selectNode(setter, false);
+                    if (setter) {
+                        this.canvas.centerOnNode(setter);
+                        this.canvas.selectNode(setter, false);
+                    } else {
+                        showAlert(`No setter found for ID: ${this.widgets[0].value}`);
+                    }
                 };
 
                 this.isVirtualNode = true;
@@ -340,39 +279,10 @@ app.registerExtension({
             }
 
             getExtraMenuOptions(_, options) {
-                const menuEntry = this.drawConnection ? "Hide connections" : "Show connections";
-                options.unshift(
-                    {
-                        content: "Go to setter",
-                        callback: () => this.goToSetter(),
-                    },
-                    {
-                        content: menuEntry,
-                        callback: () => {
-                            this.currentSetter = this.findSetter(this.graph);
-                            if (!this.currentSetter) return;
-                            const linkType = this.currentSetter.inputs[0].type;
-                            this.drawConnection = !this.drawConnection;
-                            this.slotColor = this.canvas.default_connection_color_byType[linkType];
-                            this.canvas.setDirty(true, true);
-                        },
-                    }
-                );
-            }
-
-            onDrawForeground(ctx) {
-                if (this.drawConnection) this._drawVirtualLink(app.canvas, ctx);
-            }
-
-            _drawVirtualLink(lGraphCanvas, ctx) {
-                if (!this.currentSetter) return;
-                const defaultLink = { type: 'default', color: this.slotColor };
-                const start_node_slotpos = [
-                    this.currentSetter.pos[0] - this.pos[0],
-                    this.currentSetter.pos[1] - this.pos[1]
-                ];
-                const end_node_slotpos = [0, -LiteGraph.NODE_TITLE_HEIGHT * 0.5];
-                lGraphCanvas.renderLink(ctx, start_node_slotpos, end_node_slotpos, defaultLink, false, null, this.slotColor);
+                options.unshift({
+                    content: "Go to setter",
+                    callback: () => this.goToSetter(),
+                });
             }
         }
 

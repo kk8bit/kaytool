@@ -1,7 +1,7 @@
 [project]
 name = "kaytool"
 description ="This is a custom node toolkit that includes a variety of practical nodes, such as a custom prompt preset node, wireless transmission nodes, Tencent and Baidu AI translator nodes, mathematical operation nodes, image size extraction nodes, display-any nodes, color adjustment nodes, and custom image saving nodes, among others."
-version = "0.10.0"
+version = "0.10.1"
 license = {file = "LICENSE"}
 
 [project.urls]
