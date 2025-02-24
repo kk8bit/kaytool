@@ -34,7 +34,7 @@ app.registerExtension({
 
                 // 直接设置节点样式
                 //this.shape = "box";  // 设置节点形状
-                this.color = "#222"; // 设置节点颜色
+                this.color = "#000"; // 设置节点颜色
                 this.bgcolor = "#000"; // 设置节点背景颜色
 
                 if (!this.properties) {
@@ -250,8 +250,8 @@ app.registerExtension({
                 super(title);
 
                 // 直接设置节点样式
-                this.shape = "box";  // 设置节点形状
-                this.color = "#222"; // 设置节点颜色
+                //this.shape = "box";  // 设置节点形状
+                this.color = "#000"; // 设置节点颜色
                 this.bgcolor = "#000"; // 设置节点背景颜色
 
                 if (!this.properties) this.properties = {};
