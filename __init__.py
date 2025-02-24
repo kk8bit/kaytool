@@ -8,6 +8,7 @@ from .nodes.display_any import DisplayAny
 from .nodes.abc_math import AbcMath
 from .nodes.image_size_extractor import ImageSizeExtractor
 from .nodes.tencent_translater import TencentTranslater
+from .nodes.text import Text 
 
 NODE_CLASS_MAPPINGS = {
     "Custom_Save_Image": CustomSaveImage,
@@ -18,6 +19,7 @@ NODE_CLASS_MAPPINGS = {
     "Abc_Math": AbcMath,
     "Image_Size_Extractor": ImageSizeExtractor,
     "Tencent_Translater": TencentTranslater,
+    "Text": Text,  
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -29,6 +31,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Abc_Math": "abc Math",
     "Image_Size_Extractor": "Image Size Extractor",
     "Tencent_Translater": "Tencent Translater",
+    "Text": "Text",  
 }
 
 WEB_DIRECTORY = "web"

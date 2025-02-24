@@ -22,7 +22,8 @@ const NODE_COLORS = {
     "Color_Adjustment": "pale_blue",
     "Custom_Save_Image": "black",
     "Abc_Math": "cyan",
-    "Image_Size_Extractor": "pale_blue"
+    "Image_Size_Extractor": "pale_blue",
+    "Text": "pale_blue"
 };
 
 function setNodeColors(node, theme) {
