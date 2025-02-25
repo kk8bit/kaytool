@@ -1,7 +1,7 @@
 import json
 import requests
 
-class TencentTranslater:
+class AIOTranslater:
     def __init__(self):
         pass
 
@@ -9,26 +9,7 @@ class TencentTranslater:
     def INPUT_TYPES(s):
         input_types = {
             "required": {
-                "Text_A": ("STRING", {"multiline": True}),
-                "Text_B": ("STRING", {"multiline": True}),
-                "Translate": ("BOOLEAN", {"default": True}),
-                "From": ([
-                    "Auto",         # 自动检测
-                    "English",      # 英语
-                    "中文",         # 中文 (zh)
-                    "Deutsch",      # 德语
-                    "Español",      # 西班牙语
-                    "Français",     # 法语
-                    "Italiano",     # 意大利语
-                    "日本語",        # 日语
-                    "한국어",        # 韩语
-                    "Português",    # 葡萄牙语
-                    "Русский",      # 俄语
-                    "العربية",      # 阿拉伯语
-                    "ไทย",          # 泰语
-                    "Türkçe",       # 土耳其语
-                    "Tiếng Việt"    # 越南语
-                ], {"default": "Auto"}),
+                "Text": ("STRING", {"multiline": True}),
                 "To": ([
                     "English",      # 英语
                     "中文",         # 中文 (zh)
@@ -51,11 +32,11 @@ class TencentTranslater:
 
     CATEGORY = "KayTool"
 
-    RETURN_TYPES = ("STRING", "STRING")
-    RETURN_NAMES = ("A", "B")
-    FUNCTION = "translate_texts"
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("Translated_Text",)
+    FUNCTION = "translate_text"
 
-    DESCRIPTION = "The TencentTranslater node provides a convenient way to translate text using the Tencent Translate API. It supports multiple languages and allows users to specify source and target languages."
+    DESCRIPTION = "The AIOTranslater node provides automatic translation of a single text input using the Tencent Translate API with support for multiple target languages."
 
     def initData(self, source_lang, target_lang, translate_text):
         return {
@@ -74,16 +55,11 @@ class TencentTranslater:
             }
         }
 
-    def translate_texts(self, Text_A, Text_B, Translate, From, To):
-        if not Translate:
-            # 如果翻译被禁用，返回原始文本
-            return (Text_A, Text_B)
-
+    def translate_text(self, Text, To):
         # 语言名称到代码的映射
         lang_map = {
-            "Auto": None,         # 自动检测
             "English": "en",
-            "中文": "zh",
+            "中文": "zh",       # 恢复为 zh
             "Deutsch": "de",
             "Español": "es",
             "Français": "fr",
@@ -98,14 +74,14 @@ class TencentTranslater:
             "Tiếng Việt": "vi"
         }
 
-        source_lang = lang_map[From]
+        # 获取目标语言代码
         target_lang = lang_map[To]
 
-        def translate_text(text):
+        def translate_single_text(text):
             if not text:
                 return ""
             url = 'https://transmart.qq.com/api/imt'
-            post_data = self.initData(source_lang, target_lang, text)
+            post_data = self.initData(None, target_lang, text)
             headers = {
                 'Content-Type': 'application/json',
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
@@ -124,7 +100,5 @@ class TencentTranslater:
                 print(error_msg)
                 raise RuntimeError(error_msg)
 
-        translated_a = translate_text(Text_A)
-        translated_b = translate_text(Text_B)
-
-        return (translated_a, translated_b)
+        translated_text = translate_single_text(Text)
+        return (translated_text,)

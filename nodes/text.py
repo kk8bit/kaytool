@@ -8,18 +8,20 @@ class Text:
             "required": {
                 "text": ("STRING", {
                     "multiline": True,  
-                    #"default": "text",  
                     "dynamicPrompts": False,  
                 }),
             },
         }
 
-    RETURN_TYPES = ("*",)  
-    RETURN_NAMES = ("*",)  
-    FUNCTION = "process_text"  
-    CATEGORY = "KayTool"  
-    #OUTPUT_NODE = True  
+    RETURN_TYPES = ("STRING",)  
+    FUNCTION = "process_text"
+    OUTPUT_NODE = True  
+    CATEGORY = "KayTool"
+    NAME = "Text"  
 
     def process_text(self, text):
+        result_text = str(text)  
+        
+        return {"ui": {"text": result_text}, "result": (result_text,)} 
 
-        return (text,)
+__all__ = ['Text']
