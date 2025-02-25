@@ -16,14 +16,15 @@ const COLOR_THEMES = {
 
 const NODE_COLORS = {
     "Strong_Prompt": "blue",
-    "Baidu_Translater": "green",
-    "Tencent_Translater": "blue",
+    "Baidu_Translater": "cyan",
+    "Tencent_Translater": "cyan",
     "Display_Any": "pale_blue",  
     "Color_Adjustment": "pale_blue",
     "Custom_Save_Image": "black",
     "Abc_Math": "cyan",
     "Image_Size_Extractor": "pale_blue",
-    "Text": "pale_blue"
+    "Text": "pale_blue",
+    "AIO_Translater": "cyan",
 };
 
 function setNodeColors(node, theme) {
