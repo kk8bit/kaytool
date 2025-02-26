@@ -1,4 +1,4 @@
-class DisplayAny:
+class ToInt:
     def __init__(self):
         pass
 
@@ -10,18 +10,22 @@ class DisplayAny:
             },
         }
 
-    RETURN_TYPES = ("STRING",)
+    RETURN_TYPES = ("INT",)
     FUNCTION = "execute"
     OUTPUT_NODE = True
     CATEGORY = "KayTool"
-    NAME = "Display_Any"
+    NAME = "To Int"
 
     @classmethod
     def VALIDATE_INPUTS(cls, input_types):
         return True
 
     def execute(self, input):
-        text = str(input)
-        return {"ui": {"text": text}, "result": (text,)}
+        try:
+            rounded_value = int(round(float(input)))
+        except (ValueError, TypeError):
+            rounded_value = 0
+        text = str(rounded_value)
+        return {"ui": {"text": text}, "result": (rounded_value,)}
 
-__all__ = ['DisplayAny']
+__all__ = ['ToInt']

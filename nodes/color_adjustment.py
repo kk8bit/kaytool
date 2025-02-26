@@ -4,13 +4,12 @@ from PIL import Image, ImageEnhance
 import torch
 import subprocess
 
-# 安装 pilgram 库（如果尚未安装）
 try:
     import pilgram
 except ImportError:
     subprocess.check_call(['pip', 'install', 'pilgram'])
 
-# 将 tensor 转换为 PIL 图像
+
 def tensor2pil(image):
     return Image.fromarray(np.clip(255. * image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
 
@@ -18,7 +17,7 @@ def tensor2pil(image):
 def pil2tensor(image):
     return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
 
-# 动态获取所有 pilgram 滤镜，并为每个滤镜编号，增加一个 "None" 选项
+
 def get_pilgram_filters():
     filters = [f for f in dir(pilgram) if not f.startswith('_') and callable(getattr(pilgram, f))]
     numbered_filters = [f"{i+1}_{filters[i]}" for i in range(len(filters))]

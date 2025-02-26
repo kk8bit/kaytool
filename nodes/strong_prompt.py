@@ -31,8 +31,8 @@ class StrongPrompt:
 
         input_types = {
             "required": {
-                "positive": ("STRING", {"multiline": True, "placeholder": "positive (正向提示词)", "tooltip": "The positive prompt text. (正向提示词文本。)"}),  # 用户输入的正向提示词
-                "negative": ("STRING", {"multiline": True, "placeholder": "negative (负向提示词)", "tooltip": "The negative prompt text. (负向提示词文本。)"}),  # 用户输入的负向提示词
+                "positive": ("STRING", {"multiline": True, "placeholder": "positive", "tooltip": "The positive prompt text. (正向提示词文本。)"}),  # 用户输入的正向提示词
+                "negative": ("STRING", {"multiline": True, "placeholder": "negative", "tooltip": "The negative prompt text. (负向提示词文本。)"}),  # 用户输入的负向提示词
                 "clip": ("CLIP", {"tooltip": "The CLIP model used for encoding the prompts. (用于编码提示词的CLIP模型。)"})  # 接收一个CLIP模型作为输入
             },
             "optional": {},

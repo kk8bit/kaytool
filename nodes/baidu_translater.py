@@ -4,7 +4,6 @@ import requests
 import random
 from hashlib import md5
 
-# 设置资源目录
 JSON_DIR = os.path.join(os.path.dirname(__file__), "../json")
 
 def make_md5(s, encoding='utf-8'):
@@ -33,8 +32,8 @@ class BaiduTranslater:
         
         input_types = {
             "required": {
-                "Text_A": ("STRING", {"multiline": True, "placeholder": "Input Text A (输入文本 A)"}),
-                "Text_B": ("STRING", {"multiline": True, "placeholder": "Input Text B (输入文本 B)"}),
+                "Text_A": ("STRING", {"multiline": True, "placeholder": "Text A"}),
+                "Text_B": ("STRING", {"multiline": True, "placeholder": "Text B"}),
                 "Translate": ("BOOLEAN", {"default": True, "label": "Enable Translation (启用翻译)", "tooltip": "Toggle this switch to enable or disable the translation function. (切换此开关以启用或禁用翻译功能。)"}),  # 参数名称为 Translate，默认值为 true
                 "From": (
                     [
