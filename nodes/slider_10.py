@@ -18,7 +18,7 @@ class Slider10:
 
     RETURN_TYPES = ("INT",)
     FUNCTION = "get_value"
-    CATEGORY = "KayTool"
+    CATEGORY = "KayTool/Slider"
 
     def get_value(self, value):
         return (value,)

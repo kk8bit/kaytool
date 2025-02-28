@@ -10,7 +10,7 @@ const COLOR_THEMES = {
     cyan: { nodeColor: "#223333", nodeBgColor: "#335555" },
     purple: { nodeColor: "#332233", nodeBgColor: "#553355" },
     yellow: { nodeColor: "#443322", nodeBgColor: "#665533" },
-    black: { nodeColor: "#222", nodeBgColor: "#000" },
+    black: { nodeColor: "#000", nodeBgColor: "#000" },
     none: { nodeColor: null, nodeBgColor: null } 
 };
 
@@ -19,12 +19,21 @@ const NODE_COLORS = {
     "Baidu_Translater": "cyan",
     "Tencent_Translater": "cyan",
     "Display_Any": "pale_blue",  
-    "Color_Adjustment": "pale_blue",
+    "Color_Adjustment": "blue",
     "Custom_Save_Image": "black",
     "Abc_Math": "cyan",
     "Image_Size_Extractor": "pale_blue",
     "Text": "pale_blue",
     "AIO_Translater": "cyan",
+    "RemBG_Loader": "purple",
+    "Remove_BG": "purple",
+    "Preview_Mask_Plus": "cyan",
+    "Mask_Blur_Plus": "cyan",
+    "Preview_Mask": "pale_blue",
+    "To_Int": "pale_blue",
+    "Slider_1000": "blue",
+    "Slider_100": "blue",
+    "Slider_10": "blue",
 };
 
 function setNodeColors(node, theme) {

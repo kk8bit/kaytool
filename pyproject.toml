@@ -1,8 +1,9 @@
 [project]
 name = "kaytool"
-description ="This is a custom node toolkit that includes a variety of practical nodes, such as a custom prompt preset node, wireless transmission nodes, Tencent and Baidu AI translator nodes, mathematical operation nodes, image size extraction nodes, display-any nodes, color adjustment nodes, and custom image saving nodes, among others."
-version = "0.15.10"
+description ="The KayTool custom node toolkit is designed to enhance the efficiency of building ComfyUI workflows. It includes a variety of practical nodes: wireless data transfer (Set & Get), AI translation (Tencent and Baidu), dynamic mathematical operations, image processing (size extraction, color adjustment, background removal, mask blurring and expansion), flexible text handling, precision sliders, advanced image saving with metadata support, and more."
+version = "0.20.16"
 license = {file = "LICENSE"}
+dependencies = ["rembg"]
 
 [project.urls]
 Repository = "https://github.com/kk8bit/KayTool"

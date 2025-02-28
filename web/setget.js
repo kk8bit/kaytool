@@ -11,7 +11,7 @@ function showAlert(message) {
     app.extensionManager.toast.add({
         severity: 'warn',
         summary: "KayTool Set/Get",
-        detail: `${message}. Most likely you're missing custom nodes`,
+        detail: `${message} Most likely you're missing custom nodes`,
         life: 5000,
     });
 }
