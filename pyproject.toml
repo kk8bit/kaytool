@@ -1,7 +1,7 @@
 [project]
 name = "kaytool"
 description ="The KayTool custom node toolkit is designed to enhance the efficiency of building ComfyUI workflows. It includes a variety of practical nodes: wireless data transfer (Set & Get), AI translation (Tencent and Baidu), dynamic mathematical operations, image processing (size extraction, color adjustment, background removal, mask blurring and expansion), flexible text handling, precision sliders, advanced image saving with metadata support, and more."
-version = "0.20.16"
+version = "0.20.19"
 license = {file = "LICENSE"}
 dependencies = ["rembg"]
 

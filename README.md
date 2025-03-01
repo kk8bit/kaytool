@@ -109,18 +109,45 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 ### 自定义图像保存节点 CustomSaveImage
 
+- 支持自定义文件名前缀和后缀，确保输出文件名的唯一性
 - 提供灵活的图像保存功能，支持多种格式（PNG、JPG）
 - 可选择色彩配置文件（sRGB IEC61966-2.1 或 Adobe RGB 1998），确保色彩准确性
 - 支持保存元数据（作者信息、版权信息、生成提示词等）
 - 提供高质量 JPG 保存选项，可自定义压缩质量
 - 自动生成唯一文件名，避免覆盖已有文件
 - 适用于需要精确控制输出图像的工作流
+- Supports custom filename prefixes and suffixes to ensure the recognizability of output filenames
 - Offers flexible image saving functionality with support for multiple formats (PNG, JPG)
 - Allows selection of color profiles (sRGB IEC61966-2.1 or Adobe RGB 1998) to ensure color accuracy
 - Supports saving metadata (author info, copyright info, generation prompts, etc.)
 - Provides high-quality JPG saving options with customizable compression quality
 - Automatically generates unique filenames to prevent overwriting existing files
 - Suitable for workflows requiring precise control over output images
+
+#### 变量使用说明
+- 变量名大小写敏感，请确保正确输入
+- Variable names are case-sensitive; please ensure correct input
+
+在 `filename_prefix` 中，可以使用以下动态变量来自定义文件名：
+In `filename_prefix`, you can use the following dynamic variables to customize the filename:
+
+##### 1. 日期和时间
+- `%date:yyyy-MM-dd%`：当前日期，例如 `2023-10-05`
+- `%time:HH-mm-ss%`：当前时间，例如 `14-30-45`
+
+##### 2. KSampler 参数
+支持以下变量，多个 `KSampler` 节点会自动编号（如 `_1`, `_2`）：
+- `%KSampler.seed%`：随机种子值
+- `%KSampler.steps%`：采样步数
+- `%KSampler.cfg%`：CFG 值
+- `%KSampler.sampler_name%`：采样器名称
+- `%KSampler.scheduler%`：调度器名称
+- `%KSampler.denoise%`：去噪强度
+
+##### 3. 图像信息
+- `%width%`：图像宽度（像素）
+- `%height%`：图像高度（像素）
+
 ---
 
 ### 百度翻译节点 BaiduTranslater

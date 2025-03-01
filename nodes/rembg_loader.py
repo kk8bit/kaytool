@@ -1,30 +1,20 @@
-from ..utils.helpers import get_default_provider
-
 class RemBGLoader:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "model": ([
-                    "u2net", 
-                    "u2netp", 
-                    "u2net_human_seg", 
-                    "u2net_cloth_seg", 
-                    "silueta", 
+                    "u2net",
+                    "u2netp",
+                    "u2net_human_seg",
                     "isnet-general-use", 
-                    "isnet-anime", 
-                    "sam"
+                    "isnet-anime"
                 ],),
                 "providers": ([
                     "auto",
                     "CPU",
                     "CUDA",
-                    "ROCM",
-                    "DirectML",
-                    "OpenVINO",
                     "CoreML",
-                    "Tensorrt",
-                    "Azure"
                 ],),
             },
         }
@@ -34,8 +24,9 @@ class RemBGLoader:
     CATEGORY = "KayTool/Background Removal"
 
     def execute(self, model, providers):
+
         if providers == "auto":
-            providers = get_default_provider()
+            providers = self.get_default_provider()
 
         class Session:
             def __init__(self, model, providers):
@@ -47,3 +38,15 @@ class RemBGLoader:
                 return remove(image, session=self.session)
 
         return (Session(model, providers),)
+
+    @staticmethod
+    def get_default_provider():
+
+        import torch
+
+        if torch.cuda.is_available():
+            return "CUDA"
+        elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            return "CoreML"
+        else:
+            return "CPU"
