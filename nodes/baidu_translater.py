@@ -34,7 +34,7 @@ class BaiduTranslater:
             "required": {
                 "Text_A": ("STRING", {"multiline": True, "placeholder": "Text A"}),
                 "Text_B": ("STRING", {"multiline": True, "placeholder": "Text B"}),
-                "Translate": ("BOOLEAN", {"default": True, "label": "Enable Translation (启用翻译)", "tooltip": "Toggle this switch to enable or disable the translation function. (切换此开关以启用或禁用翻译功能。)"}),  # 参数名称为 Translate，默认值为 true
+                "Translate": ("BOOLEAN", {"default": True, "label": "Enable Translation (启用翻译)", "tooltip": "Toggle this switch to enable or disable the translation function. (切换此开关以启用或禁用翻译功能。)"}), 
                 "From": (
                     [
                         'Auto',
@@ -56,7 +56,7 @@ class BaiduTranslater:
             }
         }
 
-        # Load the saved appid and appkey if they exist
+       
         if s._config_data:
             input_types["required"]["ID"] = ("STRING", {"multiline": False, "default": s._config_data.get('baidu_appid', ''), "tooltip": input_types["required"]["ID"][1]["tooltip"]})
             input_types["required"]["Key"] = ("STRING", {"multiline": False, "default": s._config_data.get('baidu_appkey', ''), "tooltip": input_types["required"]["Key"][1]["tooltip"]})
@@ -142,15 +142,15 @@ class BaiduTranslater:
                 print("Unexpected response format:", result)
                 raise RuntimeError("Unexpected response format from translation service.")
 
-        # Attempt to translate both texts regardless of whether appid and appkey are empty or not.
+        
         try:
             translated_a = translate_text(Text_A)
             translated_b = translate_text(Text_B)
         except RuntimeError as e:
-            # If there's an error during translation, re-raise the exception to inform the user.
+            
             raise RuntimeError(f"An error occurred during translation: {e}")
 
         return (translated_a, translated_b)
 
-# Ensure the JSON directory exists
+
 os.makedirs(JSON_DIR, exist_ok=True)

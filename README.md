@@ -12,9 +12,28 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 ## 当前功能 Current Features:
 
+
+
+**所有KayTool节点包用到的资源都在ComfyUI/custom_nodes/kaytool文件夹内。| All KayTool node packages use resources in the ComfyUI/custom_nodes/kaytool folder.**
+
+### BiRefNet背景移除处理节点 BiRefNet Background Removal Processing Node
+
+[BiRefNet仓库](https://github.com/zhengpeng7/birefnet)
+
+- 强大的BiRefNet预训练模型：`BiRefNet`、`BiRefNet_HR`、`BiRefNet-portrait`，适用于不同背景移除场景。  
+  **Offers multiple powerful pre-trained model options**: `BiRefNet`, `BiRefNet_HR`, `BiRefNet-portrait`, suitable for various background removal scenarios.
+
+- 支持多种硬件加速（如 CPU、CUDA、MPS 等），可根据设备自动优化性能。  
+  **Supports various hardware acceleration options** (e.g., CPU, CUDA, MPS) with automatic performance optimization based on the device.
+
+- 兼容 `REMOVE_BG` 类型输出，供后续节点使用。  
+  **Compatible with `REMOVE_BG` type output**, for use in subsequent nodes.
+
 ### 背景移除加载器 & 处理节点 RemBGLoader & RemoveBG
 
-- **RemBGLoader**: 提供多种预训练模型选择（如 `u2net`、`isnet-general-use`、`sam` 等），适用于不同背景移除场景。支持多种硬件加速提供者（如 CPU、CUDA、TensorRT 等），可根据设备自动优化性能。加载的模型会作为 `REMBG_LOADER` 类型输出，供后续节点使用。
+[RemBG仓库](https://github.com/danielgatis/rembg)
+
+- **RemBGLoader**: 提供多种高效的预训练模型选择（如 `u2net`、`isnet-general-use`、`sam` 等），适用于不同背景移除场景。支持多种硬件加速提供者（如 CPU、CUDA、TensorRT 等），可根据设备自动优化性能。加载的模型会作为 `REMBG_LOADER` 类型输出，供后续节点使用。
 - **RemoveBG**: 使用加载的背景移除模型处理图像，生成透明背景或指定颜色背景。支持遮罩模糊和扩展功能，增强背景移除效果。提供多种背景预览选项（黑、白、红、绿、蓝），便于快速验证结果。输出处理后的图像和遮罩，满足后续合成或编辑需求。
 - 整体流程：通过 **RemBGLoader** 加载模型并配置硬件加速，然后使用 **RemoveBG** 对图像进行背景移除处理，支持灵活调整遮罩效果和背景样式。
 - **RemBGLoader**: Offers multiple pre-trained model options (e.g., `u2net`, `isnet-general-use`, `sam`) for different background removal scenarios. Supports various hardware acceleration providers (e.g., CPU, CUDA, TensorRT) with automatic performance optimization based on the device. The loaded model is output as a `REMBG_LOADER` type for use in subsequent nodes.

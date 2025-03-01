@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 class RemBGLoader:
     @classmethod
     def INPUT_TYPES(cls):
@@ -19,11 +22,19 @@ class RemBGLoader:
             },
         }
 
-    RETURN_TYPES = ("REMBG_LOADER",)  
+    RETURN_TYPES = ("REMOVE_BG",)  
     FUNCTION = "execute"
-    CATEGORY = "KayTool/Background Removal"
+    CATEGORY = "KayTool/Remove BG"
 
     def execute(self, model, providers):
+        
+        base_path = Path(__file__).parent.parent 
+
+        model_dir = base_path / "models" / "RemBG" / model
+        model_dir.mkdir(parents=True, exist_ok=True)  
+
+   
+        os.environ["U2NET_HOME"] = str(model_dir)
 
         if providers == "auto":
             providers = self.get_default_provider()
@@ -41,7 +52,6 @@ class RemBGLoader:
 
     @staticmethod
     def get_default_provider():
-
         import torch
 
         if torch.cuda.is_available():

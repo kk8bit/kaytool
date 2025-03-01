@@ -13,7 +13,7 @@ class TencentTranslater:
                 "Text_B": ("STRING", {"multiline": True}),
                 "Translate": ("BOOLEAN", {"default": True}),
                 "From": ([
-                    "Auto",         # 自动检测
+                    "Auto",         
                     "English",      # 英语
                     "中文",         # 中文 (zh)
                     "Deutsch",      # 德语
@@ -76,12 +76,12 @@ class TencentTranslater:
 
     def translate_texts(self, Text_A, Text_B, Translate, From, To):
         if not Translate:
-            # 如果翻译被禁用，返回原始文本
+            
             return (Text_A, Text_B)
 
-        # 语言名称到代码的映射
+        
         lang_map = {
-            "Auto": None,         # 自动检测
+            "Auto": None,         
             "English": "en",
             "中文": "zh",
             "Deutsch": "de",

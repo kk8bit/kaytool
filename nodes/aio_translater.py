@@ -56,10 +56,10 @@ class AIOTranslater:
         }
 
     def translate_text(self, Text, To):
-        # 语言名称到代码的映射
+       
         lang_map = {
             "English": "en",
-            "中文": "zh",       # 恢复为 zh
+            "中文": "zh",       
             "Deutsch": "de",
             "Español": "es",
             "Français": "fr",
@@ -74,7 +74,7 @@ class AIOTranslater:
             "Tiếng Việt": "vi"
         }
 
-        # 获取目标语言代码
+        
         target_lang = lang_map[To]
 
         def translate_single_text(text):

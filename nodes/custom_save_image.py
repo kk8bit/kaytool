@@ -170,7 +170,7 @@ class CustomSaveImage:
 
         ksamplers = self.extractksampler_from_prompt(prompt)
 
-        # 自动为每个 KSampler 的参数添加编号
+        
         for index, params in enumerate(ksamplers, start=1):
             for key, value in params.items():
                 placeholder = f'%KSampler.{key}%' if len(ksamplers) == 1 else f'%KSampler_{index}.{key}%'
