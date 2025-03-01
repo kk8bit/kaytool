@@ -14,7 +14,7 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 
 
-**所有KayTool节点包用到的资源都在ComfyUI/custom_nodes/kaytool文件夹内。| All KayTool node packages use resources in the ComfyUI/custom_nodes/kaytool folder.**
+**所有KayTool节点包用到的资源都在`ComfyUI/custom_nodes/kaytool`文件夹内。| All KayTool node packages use resources in the `ComfyUI/custom_nodes/kaytool` folder.**
 
 ### BiRefNet背景移除处理节点 BiRefNet Background Removal Processing Node
 
