@@ -46,7 +46,7 @@ app.registerExtension({
                     (s) => {
                         node.validateName(node.graph);
                         if (this.widgets[0].value !== '') {
-                            this.title = "🛜Set_" + this.widgets[0].value;
+                            this.title = "𝙆 🛜Out_" + this.widgets[0].value;
                         }
                         this.update();
                         this.properties.previousName = this.widgets[0].value;
@@ -55,22 +55,17 @@ app.registerExtension({
                 );
 
                 this.addInput("*", "*");
-                this.addOutput("*", '*');
 
                 this.onConnectionsChange = function (slotType, slot, isChangeConnect, link_info) {
-                    if (slotType === 1 && !isChangeConnect) { // Disconnect
+                    if (slotType === 1 && !isChangeConnect) { 
                         if (this.inputs[slot].name === '') {
                             this.inputs[slot].type = '*';
                             this.inputs[slot].name = '*';
-                            this.title = "🛜Set";
+                            this.title = "𝙆 🛜Out";
                             this.widgets[0].value = '';
                         }
                     }
-                    if (slotType === 2 && !isChangeConnect) {
-                        this.outputs[slot].type = '*';
-                        this.outputs[slot].name = '*';
-                    }
-                    if (link_info && node.graph && slotType === 1 && isChangeConnect) { // Connect
+                    if (link_info && node.graph && slotType === 1 && isChangeConnect) { 
                         const fromNode = node.graph._nodes.find((n) => n.id === link_info.origin_id);
                         if (fromNode && fromNode.outputs && fromNode.outputs[link_info.origin_slot]) {
                             const type = fromNode.outputs[link_info.origin_slot].type;
@@ -78,16 +73,6 @@ app.registerExtension({
                             this.inputs[0].name = type;
                         } else {
                             showAlert("Node input undefined.");
-                        }
-                    }
-                    if (link_info && node.graph && slotType === 2 && isChangeConnect) {
-                        const fromNode = node.graph._nodes.find((n) => n.id === link_info.origin_id);
-                        if (fromNode && fromNode.inputs && fromNode.inputs[link_info.origin_slot]) {
-                            const type = fromNode.inputs[link_info.origin_slot].type;
-                            this.outputs[0].type = type;
-                            this.outputs[0].name = type;
-                        } else {
-                            showAlert("Node output undefined.");
                         }
                     }
                     this.update();
@@ -109,7 +94,7 @@ app.registerExtension({
                             tries++;
                         }
                         this.widgets[0].value = widgetValue;
-                        this.title = "🛜Set_" + widgetValue;
+                        this.title = "𝙆 🛜Out_" + widgetValue;
                         this.update();
                     }
                 };
@@ -155,8 +140,20 @@ app.registerExtension({
 
             getExtraMenuOptions(_, options) {
                 const getters = this.findGetters(this.graph);
-                if (getters.length) {
-                    let gettersSubmenu = getters.map(getter => ({
+                if (getters.length === 1) {
+                    
+                    options.unshift({
+                        content: "Go to 🛜 In",
+                        callback: () => {
+                            const getter = getters[0];
+                            this.canvas.centerOnNode(getter);
+                            this.canvas.selectNode(getter, false);
+                            this.canvas.setDirty(true, true);
+                        },
+                    });
+                } else if (getters.length > 1) {
+                   
+                    let inNodesSubmenu = getters.map(getter => ({
                         content: `${getter.title} id: ${getter.id}`,
                         callback: () => {
                             this.canvas.centerOnNode(getter);
@@ -165,16 +162,16 @@ app.registerExtension({
                         },
                     }));
                     options.unshift({
-                        content: "Getters",
+                        content: "🛜 In Nodes",
                         has_submenu: true,
-                        submenu: { title: "GetNodes", options: gettersSubmenu }
+                        submenu: { title: "🛜 In Nodes", options: inNodesSubmenu }
                     });
                 }
             }
         }
 
         LiteGraph.registerNodeType("KaySetNode", Object.assign(KaySetNode, { 
-            title: "🛜Set"
+            title: "𝙆 🛜Out"
         }));
         KaySetNode.category = "KayTool";
 
@@ -222,7 +219,7 @@ app.registerExtension({
                     if (setter) {
                         const linkType = setter.inputs[0].type;
                         this.setType(linkType);
-                        this.title = "🛜Get_" + setter.widgets[0].value;
+                        this.title = "𝙆 🛜In_" + setter.widgets[0].value;
                     } else {
                         this.setType('*');
                     }
@@ -280,14 +277,14 @@ app.registerExtension({
 
             getExtraMenuOptions(_, options) {
                 options.unshift({
-                    content: "Go to setter",
+                    content: "Go to 🛜 Out",
                     callback: () => this.goToSetter(),
                 });
             }
         }
 
         LiteGraph.registerNodeType("KayGetNode", Object.assign(KayGetNode, { 
-            title: "🛜Get"
+            title: "𝙆 🛜In"
         }));
         KayGetNode.category = "KayTool";
     },
