@@ -1,16 +1,16 @@
 import { app } from "../../../scripts/app.js";
 
-//based on diffus3's SetGet：https://github.com/diffus3/ComfyUI-extensions
-//based on kijai's SetGet：https://github.com/kijai/ComfyUI-KJNodes
+// Based on diffus3's SetGet: https://github.com/diffus3/ComfyUI-extensions
+// Inspired by: https://github.com/kijai/ComfyUI-KJNodes
 
-console.log("[KayTool] Loading SetGet extension");
+console.log("[KayTool] Loading 𝙆 🛜Out and 𝙆 🛜In extension");
 
 const LGraphNode = LiteGraph.LGraphNode;
 
 function showAlert(message) {
     app.extensionManager.toast.add({
         severity: 'warn',
-        summary: "KayTool Set/Get",
+        summary: "KayTool 𝙆 🛜Out/In",
         detail: `${message} Most likely you're missing custom nodes`,
         life: 5000,
     });
@@ -19,12 +19,12 @@ function showAlert(message) {
 app.registerExtension({
     name: "KayTool.SetGet",
     registerCustomNodes() {
-        console.log("[KayTool] Registering KaySetNode and KayGetNode");
+        console.log("[KayTool] Registering 𝙆 🛜Out and 𝙆 🛜In");
 
-        class KaySetNode extends LGraphNode {
+        class KayoutNode extends LGraphNode {
             defaultVisibility = true;
             serialize_widgets = true;
-            canvas = app.canvas; 
+            canvas = app.canvas;
 
             constructor(title) {
                 super(title);
@@ -35,7 +35,7 @@ app.registerExtension({
                 if (!this.properties) {
                     this.properties = { "previousName": "" };
                 }
-                this.properties.showOutputText = KaySetNode.defaultVisibility;
+                this.properties.showOutputText = KayoutNode.defaultVisibility;
 
                 const node = this;
 
@@ -57,7 +57,7 @@ app.registerExtension({
                 this.addInput("*", "*");
 
                 this.onConnectionsChange = function (slotType, slot, isChangeConnect, link_info) {
-                    if (slotType === 1 && !isChangeConnect) { 
+                    if (slotType === 1 && !isChangeConnect) {
                         if (this.inputs[slot].name === '') {
                             this.inputs[slot].type = '*';
                             this.inputs[slot].name = '*';
@@ -65,7 +65,7 @@ app.registerExtension({
                             this.widgets[0].value = '';
                         }
                     }
-                    if (link_info && node.graph && slotType === 1 && isChangeConnect) { 
+                    if (link_info && node.graph && slotType === 1 && isChangeConnect) {
                         const fromNode = node.graph._nodes.find((n) => n.id === link_info.origin_id);
                         if (fromNode && fromNode.outputs && fromNode.outputs[link_info.origin_slot]) {
                             const type = fromNode.outputs[link_info.origin_slot].type;
@@ -84,7 +84,7 @@ app.registerExtension({
                         let tries = 1;
                         const existingValues = new Set();
                         graph._nodes.forEach(otherNode => {
-                            if (otherNode !== this && otherNode.type === 'KaySetNode') {
+                            if (otherNode !== this && otherNode.type === 'KayoutNode') {
                                 existingValues.add(otherNode.widgets[0].value);
                             }
                         });
@@ -100,7 +100,7 @@ app.registerExtension({
                 };
 
                 this.clone = function () {
-                    const cloned = KaySetNode.prototype.clone.apply(this);
+                    const cloned = KayoutNode.prototype.clone.apply(this);
                     cloned.inputs[0].name = '*';
                     cloned.inputs[0].type = '*';
                     cloned.value = '';
@@ -121,29 +121,28 @@ app.registerExtension({
                         const gettersWithPreviousName = this.findGetters(this.graph, true);
                         gettersWithPreviousName.forEach(getter => getter.setName(this.widgets[0].value));
                     }
-                    const allGetters = this.graph._nodes.filter(n => n.type === "KayGetNode");
+                    const allGetters = this.graph._nodes.filter(n => n.type === "KayInNode");
                     allGetters.forEach(n => { if (n.setComboValues) n.setComboValues(); });
                 };
 
                 this.findGetters = function (graph, checkForPreviousName) {
                     const name = checkForPreviousName ? this.properties.previousName : this.widgets[0].value;
-                    return graph._nodes.filter(n => n.type === 'KayGetNode' && n.widgets[0].value === name && name !== '');
+                    return graph._nodes.filter(n => n.type === 'KayInNode' && n.widgets[0].value === name && name !== '');
                 };
 
                 this.isVirtualNode = true;
             }
 
             onRemoved() {
-                const allGetters = this.graph._nodes.filter(n => n.type === "KayGetNode");
+                const allGetters = this.graph._nodes.filter(n => n.type === "KayInNode");
                 allGetters.forEach(n => { if (n.setComboValues) n.setComboValues([this]); });
             }
 
             getExtraMenuOptions(_, options) {
                 const getters = this.findGetters(this.graph);
                 if (getters.length === 1) {
-                    
                     options.unshift({
-                        content: "Go to 🛜 In",
+                        content: "Go to 𝙆 🛜In",
                         callback: () => {
                             const getter = getters[0];
                             this.canvas.centerOnNode(getter);
@@ -152,7 +151,6 @@ app.registerExtension({
                         },
                     });
                 } else if (getters.length > 1) {
-                   
                     let inNodesSubmenu = getters.map(getter => ({
                         content: `${getter.title} id: ${getter.id}`,
                         callback: () => {
@@ -162,20 +160,20 @@ app.registerExtension({
                         },
                     }));
                     options.unshift({
-                        content: "🛜 In Nodes",
+                        content: "𝙆 🛜In Nodes",
                         has_submenu: true,
-                        submenu: { title: "🛜 In Nodes", options: inNodesSubmenu }
+                        submenu: { title: "𝙆 🛜In Nodes", options: inNodesSubmenu }
                     });
                 }
             }
         }
 
-        LiteGraph.registerNodeType("KaySetNode", Object.assign(KaySetNode, { 
+        LiteGraph.registerNodeType("KayoutNode", Object.assign(KayoutNode, {
             title: "𝙆 🛜Out"
         }));
-        KaySetNode.category = "KayTool";
+        KayoutNode.category = "KayTool";
 
-        class KayGetNode extends LGraphNode {
+        class KayInNode extends LGraphNode {
             defaultVisibility = true;
             serialize_widgets = true;
             canvas = app.canvas;
@@ -187,7 +185,7 @@ app.registerExtension({
                 this.bgcolor = "#000";
 
                 if (!this.properties) this.properties = {};
-                this.properties.showOutputText = KayGetNode.defaultVisibility;
+                this.properties.showOutputText = KayInNode.defaultVisibility;
                 const node = this;
                 this.addWidget(
                     "combo",
@@ -196,7 +194,7 @@ app.registerExtension({
                     () => this.onRename(),
                     {
                         values: () => {
-                            const setterNodes = node.graph._nodes.filter(n => n.type === 'KaySetNode');
+                            const setterNodes = node.graph._nodes.filter(n => n.type === 'KayoutNode');
                             return setterNodes.map(n => n.widgets[0].value).sort();
                         }
                     }
@@ -226,7 +224,7 @@ app.registerExtension({
                 };
 
                 this.clone = function () {
-                    const cloned = KayGetNode.prototype.clone.apply(this);
+                    const cloned = KayInNode.prototype.clone.apply(this);
                     cloned.size = cloned.computeSize();
                     return cloned;
                 };
@@ -248,7 +246,7 @@ app.registerExtension({
 
                 this.findSetter = function (graph) {
                     const name = this.widgets[0].value;
-                    return graph._nodes.find(n => n.type === 'KaySetNode' && n.widgets[0].value === name && name !== '');
+                    return graph._nodes.find(n => n.type === 'KayoutNode' && n.widgets[0].value === name && name !== '');
                 };
 
                 this.goToSetter = function () {
@@ -257,7 +255,7 @@ app.registerExtension({
                         this.canvas.centerOnNode(setter);
                         this.canvas.selectNode(setter, false);
                     } else {
-                        showAlert(`No setter found for ID: ${this.widgets[0].value}`);
+                        showAlert(`No 𝙆 🛜Out found for ID: ${this.widgets[0].value}`);
                     }
                 };
 
@@ -270,22 +268,22 @@ app.registerExtension({
                     const slotInfo = setter.inputs[slot];
                     return this.graph.links[slotInfo.link];
                 } else {
-                    const errorMessage = `No KaySetNode found for ${this.widgets[0].value} (${this.type})`;
+                    const errorMessage = `No 𝙆 🛜Out found for ${this.widgets[0].value} (${this.type})`;
                     showAlert(errorMessage);
                 }
             }
 
             getExtraMenuOptions(_, options) {
                 options.unshift({
-                    content: "Go to 🛜 Out",
+                    content: "Go to 𝙆 🛜Out",
                     callback: () => this.goToSetter(),
                 });
             }
         }
 
-        LiteGraph.registerNodeType("KayGetNode", Object.assign(KayGetNode, { 
+        LiteGraph.registerNodeType("KayInNode", Object.assign(KayInNode, {
             title: "𝙆 🛜In"
         }));
-        KayGetNode.category = "KayTool";
+        KayInNode.category = "KayTool";
     },
 });

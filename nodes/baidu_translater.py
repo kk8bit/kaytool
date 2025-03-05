@@ -94,10 +94,10 @@ class BaiduTranslater:
 
     def translate_texts(self, Text_A, Text_B, Translate, From, To, ID, Key):
         if not Translate:
-            # If translation is disabled, return the original texts.
+            
             return (Text_A, Text_B)
 
-        # If user has entered new appid or appkey, save them
+       
         if ID != self.appid or Key != self.appkey:
             self.save_config(ID, Key)
             self.appid, self.appkey = ID, Key

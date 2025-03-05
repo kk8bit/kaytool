@@ -13,7 +13,7 @@ except ImportError:
 def tensor2pil(image):
     return Image.fromarray(np.clip(255. * image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
 
-# 将 PIL 图像转换为 tensor
+
 def pil2tensor(image):
     return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
 
@@ -120,7 +120,7 @@ class ColorAdjustment:
             tensors = torch.cat(tensors, dim=0)
             return (tensors,)
 
-    # 根据强度应用滤镜
+ 
     def apply_strength(self, filtered_img, original_img, strength):
         if strength == 100:
             return filtered_img
@@ -129,7 +129,7 @@ class ColorAdjustment:
         else:
             return Image.blend(original_img, filtered_img, strength / 100.0)
 
-    # 调整曝光、对比度、色温、色调和饱和度的方法
+
     def adjust_exposure_contrast_color(self, img, exposure, contrast, temperature, tint, saturation):
         if exposure == 0 and contrast == 0 and temperature == 0 and tint == 0 and saturation == 0:
             return img
@@ -157,7 +157,7 @@ class ColorAdjustment:
 
         return img
 
-    # 色温调整函数（负值增加蓝色，正值增加黄色）
+
     def adjust_temperature(self, img, temperature):
         img_array = np.array(img)
         if temperature > 0:
@@ -168,7 +168,7 @@ class ColorAdjustment:
             img_array[:, :, 0] = np.clip(img_array[:, :, 0] * (1 - abs(temperature) / 100.0), 0, 255)
         return Image.fromarray(img_array)
 
-    # 色调调整函数
+ 
     def adjust_tint(self, img, tint):
         img_array = np.array(img)
         if tint > 0:

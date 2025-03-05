@@ -65,7 +65,7 @@ class CustomSaveImage:
 
             icc_profile = self.load_icc_profile(icc_profile_path)
 
-            # 为每张图像独立解析 filename_prefix
+  
             base_prefix = self.parse_filename_prefix(filename_prefix, prompt, image)
             temp_prefix = f"{base_prefix}_temp_{''.join(random.choice(string.ascii_lowercase) for _ in range(5))}"
 
@@ -139,7 +139,7 @@ class CustomSaveImage:
 
     def get_unique_filename(self, idx):
         import time
-        return f"{int(time.time() * 1000)}_{idx:03d}"  # 添加索引避免重复
+        return f"{int(time.time() * 1000)}_{idx:03d}" 
 
     def get_output_directory(self):
         return os.path.join(os.getcwd(), "output", "Custom_Save_Image")

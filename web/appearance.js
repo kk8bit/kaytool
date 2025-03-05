@@ -1,5 +1,3 @@
-// web/appearance_extension.js
-
 import { app } from "../../../scripts/app.js";
 
 const COLOR_THEMES = {
@@ -14,28 +12,29 @@ const COLOR_THEMES = {
     none: { nodeColor: null, nodeBgColor: null } 
 };
 
-const NODE_COLORS = {
-    "Strong_Prompt": "blue",
-    "Baidu_Translater": "cyan",
-    "Tencent_Translater": "cyan",
-    "Display_Any": "pale_blue",  
-    "Color_Adjustment": "blue",
-    "Custom_Save_Image": "black",
-    "Abc_Math": "cyan",
-    "Image_Size_Extractor": "pale_blue",
-    "Text": "pale_blue",
-    "AIO_Translater": "cyan",
-    "RemBG_Loader": "purple",
-    "BiRefNet_Loader": "purple",
-    "Remove_BG": "purple",
-    "Preview_Mask_Plus": "pale_blue",
-    "Mask_Blur_Plus": "cyan",
-    "Preview_Mask": "pale_blue",
-    "To_Int": "pale_blue",
-    "Slider_1000": "blue",
-    "Slider_100": "blue",
-    "Slider_10": "blue",
-};
+// const NODE_COLORS = {
+//     "Strong_Prompt": "blue",
+//     "Baidu_Translater": "cyan",
+//     "Tencent_Translater": "cyan",
+//     "Display_Any": "pale_blue",  
+//     "Color_Adjustment": "blue",
+//     "Custom_Save_Image": "black",
+//     "Abc_Math": "cyan",
+//     "Image_Size_Extractor": "pale_blue",
+//     "Text": "pale_blue",
+//     "AIO_Translater": "cyan",
+//     "RemBG_Loader": "purple",
+//     "BiRefNet_Loader": "purple",
+//     "Remove_BG": "purple",
+//     "Preview_Mask_Plus": "pale_blue",
+//     "Mask_Blur_Plus": "cyan",
+//     "Preview_Mask": "pale_blue",
+//     "To_Int": "pale_blue",
+//     "Slider_1000": "blue",
+//     "Slider_100": "blue",
+//     "Slider_10": "blue",
+//     "AB_Images": "black",
+// };
 
 function setNodeColors(node, theme) {
     if (!theme) return;
