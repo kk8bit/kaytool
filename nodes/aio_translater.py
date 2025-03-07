@@ -30,7 +30,7 @@ class AIOTranslater:
         }
         return input_types
 
-    CATEGORY = "KayTool"
+    CATEGORY = "KayTool/Translate"
 
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("Translated_Text",)

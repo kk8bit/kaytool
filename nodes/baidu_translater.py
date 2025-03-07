@@ -63,7 +63,7 @@ class BaiduTranslater:
 
         return input_types
 
-    CATEGORY = "KayTool"
+    CATEGORY = "KayTool/Translate"
 
     RETURN_TYPES = ("STRING", "STRING")
     RETURN_NAMES = ("A", "B")
