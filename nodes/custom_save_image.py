@@ -21,10 +21,7 @@ class CustomSaveImage:
             "required": {
                 "preview_only": ("BOOLEAN", {"default": False}),
                 "images": ("IMAGE",),
-                "filename_prefix": ("STRING", {
-                    "default": "Custom_Save_Image",
-                    "tooltip": "Supports: %KSampler.seed%, %KSampler.steps%, %KSampler.cfg%, %KSampler.sampler_name%, %KSampler.scheduler%, %KSampler.denoise%, %date:yyyy-MM-dd%, %time:HH-mm-ss%, %width%, %height%"
-                }),
+                "filename_prefix": ("STRING", {"default": "Custom_Save_Image"}),
                 "color_profile": (["sRGB IEC61966-2.1", "Adobe RGB (1998)"], {"default": "sRGB IEC61966-2.1"}),
                 "format": (["PNG", "JPG"], {"default": "PNG"}),
                 "jpg_quality": ("INT", {"default": 95, "min": 0, "max": 100}),
@@ -57,6 +54,11 @@ class CustomSaveImage:
             i = 255. * image.cpu().numpy()
             img = Image.fromarray(np.clip(i, 0, 255).astype(np.uint8))
 
+            if img.mode == "RGBA" and format == "JPG":
+                background = Image.new("RGB", img.size, (0, 0, 0))
+                background.paste(img, (0, 0), img)
+                img = background
+
             if color_profile == "Adobe RGB (1998)":
                 img = self.convert_to_adobe_rgb(img, srgb_profile_path, adobergb_profile_path)
                 icc_profile_path = adobergb_profile_path
@@ -65,7 +67,6 @@ class CustomSaveImage:
 
             icc_profile = self.load_icc_profile(icc_profile_path)
 
-  
             base_prefix = self.parse_filename_prefix(filename_prefix, prompt, image)
             temp_prefix = f"{base_prefix}_temp_{''.join(random.choice(string.ascii_lowercase) for _ in range(5))}"
 
@@ -83,7 +84,16 @@ class CustomSaveImage:
 
                 temp_filename = f"{temp_prefix}_{self.get_unique_filename(idx)}.{format.lower()}"
                 temp_full_path = os.path.join(temp_dir, temp_filename)
-                img.save(temp_full_path, pnginfo=metadata, icc_profile=icc_profile)
+                if format == "PNG":
+                    img.save(temp_full_path, pnginfo=metadata, icc_profile=icc_profile)
+                else:
+                    exif_data = img.getexif()
+                    if author:
+                        exif_data[0x013B] = author
+                    if copyright_info:
+                        exif_data[0x8298] = copyright_info
+                    exif_bytes = exif_data.tobytes()
+                    img.save(temp_full_path, quality=jpg_quality, exif=exif_bytes, icc_profile=icc_profile)
 
             else:
                 if format == "PNG":
@@ -92,11 +102,9 @@ class CustomSaveImage:
                         metadata.add_text("Author", author)
                     if copyright_info:
                         metadata.add_text("Copyright", copyright_info)
-
                     temp_filename = f"{temp_prefix}_{self.get_unique_filename(idx)}.png"
                     temp_full_path = os.path.join(temp_dir, temp_filename)
                     img.save(temp_full_path, pnginfo=metadata, icc_profile=icc_profile)
-
                 elif format == "JPG":
                     exif_data = img.getexif()
                     if author:
@@ -104,18 +112,15 @@ class CustomSaveImage:
                     if copyright_info:
                         exif_data[0x8298] = copyright_info
                     exif_bytes = exif_data.tobytes()
-
                     temp_filename = f"{temp_prefix}_{self.get_unique_filename(idx)}.jpg"
                     temp_full_path = os.path.join(temp_dir, temp_filename)
                     img.save(temp_full_path, quality=jpg_quality, exif=exif_bytes, icc_profile=icc_profile)
-
 
             results.append({
                 "filename": temp_filename,
                 "subfolder": "",
                 "type": "temp",
             })
-
 
             if not preview_only:
                 final_filename = f"{base_prefix}_{self.get_unique_filename(idx)}.{format.lower()}"
@@ -131,11 +136,8 @@ class CustomSaveImage:
         return img
 
     def load_icc_profile(self, path):
-        try:
-            with open(path, "rb") as f:
-                return f.read()
-        except FileNotFoundError:
-            raise Exception(f"ICC profile not found at: {path}")
+        with open(path, "rb") as f:
+            return f.read()
 
     def get_unique_filename(self, idx):
         import time
@@ -145,37 +147,27 @@ class CustomSaveImage:
         return os.path.join(os.getcwd(), "output", "Custom_Save_Image")
 
     def parse_filename_prefix(self, prefix, prompt, image):
-
         if not prefix or not isinstance(prefix, str):
             return "Custom_Save_Image"
 
-
         def replace_date_time(match):
             prefix_type, format_str = match.group(1), match.group(2)
-            try:
-                format_str = (format_str.replace('yyyy', '%Y')
-                                       .replace('MM', '%m')
-                                       .replace('dd', '%d')
-                                       .replace('HH', '%H')
-                                       .replace('mm', '%M')
-                                       .replace('ss', '%S'))
-                now = datetime.now()
-                return now.strftime(format_str)
-            except ValueError:
-                return match.group(0)
-
+            format_str = (format_str.replace('yyyy', '%Y')
+                                   .replace('MM', '%m')
+                                   .replace('dd', '%d')
+                                   .replace('HH', '%H')
+                                   .replace('mm', '%M')
+                                   .replace('ss', '%S'))
+            now = datetime.now()
+            return now.strftime(format_str)
 
         prefix = re.sub(r'(%date|%time):([^%]+)%', replace_date_time, prefix)
-
-
         ksamplers = self.extractksampler_from_prompt(prompt)
 
-        
         for index, params in enumerate(ksamplers, start=1):
             for key, value in params.items():
                 placeholder = f'%KSampler.{key}%' if len(ksamplers) == 1 else f'%KSampler_{index}.{key}%'
                 prefix = prefix.replace(placeholder, str(value))
-
 
         if image is not None:
             height, width, _ = image.shape 
@@ -185,7 +177,6 @@ class CustomSaveImage:
         return prefix
 
     def extractksampler_from_prompt(self, prompt):
-        """从 prompt 中提取所有 KSampler 的参数"""
         ksamplers = []
         for node_id, node_data in prompt.items():
             if isinstance(node_data, dict) and node_data.get("class_type") == "KSampler":
