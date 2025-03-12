@@ -19,6 +19,7 @@ class PreviewMaskPlus(SaveImage):
     def INPUT_TYPES(cls):
         return {
             "required": {
+                "invert_mask": ("BOOLEAN", {"default": False, "tooltip": "Invert mask values (0->1, 1->0)"}),
                 "Preview": (["none", "image", "mask", "Black", "White", "Gray", "Red", "Green", "Blue"],),
                 "image": ("IMAGE", {}),
                 "mask": ("MASK", {}),
@@ -30,16 +31,14 @@ class PreviewMaskPlus(SaveImage):
     FUNCTION = "execute"
     CATEGORY = "KayTool/Mask"
 
-    def execute(self, Preview, image, mask, filename_prefix="ComfyUI", prompt=None, extra_pnginfo=None):
+    def execute(self, invert_mask, Preview, image, mask, filename_prefix="ComfyUI", prompt=None, extra_pnginfo=None):
         device = comfy.model_management.get_torch_device()
 
-        # Ensure image is in the correct format
         image = image.permute([0, 3, 1, 2])
         image = image.permute([0, 2, 3, 1])
         foreground = image[:, :, :, :3] if image.shape[3] == 4 else image
         foreground = foreground.to(device)
 
-        # Ensure mask is in the correct format
         if not isinstance(mask, torch.Tensor):
             raise ValueError("Input mask must be a PyTorch tensor.")
         if mask.dim() not in [2, 3]:
@@ -52,7 +51,9 @@ class PreviewMaskPlus(SaveImage):
             mask = mask.unsqueeze(0)
         mask = mask.to(device)
 
-        # Resize mask to match image dimensions
+        if invert_mask:
+            mask = 1. - mask
+
         target_height, target_width = foreground.shape[1], foreground.shape[2]
         mask_height, mask_width = mask.shape[1], mask.shape[2]
         if mask_height > target_height:
@@ -63,7 +64,6 @@ class PreviewMaskPlus(SaveImage):
             padding = (0, max(0, target_width - mask_width), 0, max(0, target_height - mask_height))
             mask = F.pad(mask, padding, "constant", 0)
 
-        # Generate preview based on selected option
         if Preview == "image":
             preview = foreground
         elif Preview == "mask":
