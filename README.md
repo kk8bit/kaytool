@@ -20,6 +20,7 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 ### 右键快速Run功能 quick Run options via right-click (Run Group/Node)
 - 右键点击节点组或节点，选择“Run Group/Node”，即可快速运行节点组或节点进行调试。
 - Right-click on a node group or node, select "Run Group/Node," and quickly run the node group or node for debugging.
+---
 
 ### BiRefNet背景移除处理节点 BiRefNet Background Removal Processing Node
 
@@ -45,6 +46,10 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - **RemoveBG**: Processes images using the loaded background removal model to generate transparent or custom-colored backgrounds. Supports mask blurring and expansion for enhanced background removal effects. Offers multiple background preview options (black, white, red, green, blue) for quick result validation. Outputs the processed image and mask for subsequent compositing or editing needs.
 - Combined Workflow: Load the model and configure hardware acceleration using **RemBGLoader**, then process images with **RemoveBG** for background removal, with flexible adjustments for mask effects and background styles.
 ---
+
+### 批量图片载入节点 Load Image Folder
+- 提供图片的批量载入及批处理 Provide batch loading and batch processing of images
+- 支持image和mask的批量输出 Support batch output of images and masks
 
 ### 无线数据传输节点 Set & Get
 

@@ -20,6 +20,7 @@ from .nodes.preview_mask import PreviewMask
 from .nodes.mask_blur_plus import MaskBlurPlus 
 from .nodes.preview_mask_plus import PreviewMaskPlus
 from .nodes.ab_images import ABImages 
+from .nodes.load_image_folder import LoadImageFolder  
 
 NODE_CLASS_MAPPINGS = {
     "Custom_Save_Image": CustomSaveImage,
@@ -42,7 +43,8 @@ NODE_CLASS_MAPPINGS = {
     "Preview_Mask": PreviewMask,
     "Mask_Blur_Plus": MaskBlurPlus,  
     "Preview_Mask_Plus": PreviewMaskPlus,
-    "AB_Images": ABImages,   
+    "AB_Images": ABImages,
+    "Load_Image_Folder": LoadImageFolder, 
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -66,7 +68,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Preview_Mask": "𝙆 Preview Mask",
     "Mask_Blur_Plus": "𝙆 Mask Blur +",  
     "Preview_Mask_Plus": "𝙆 Preview Mask +",
-    "AB_Images": "𝙆 ab Images", 
+    "AB_Images": "𝙆 ab Images",
+    "Load_Image_Folder": "𝙆 Load Image Folder", 
 }
 
 WEB_DIRECTORY = "web"
