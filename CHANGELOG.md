@@ -1,8 +1,9 @@
 # Changelog
 
-## [0.26.0] - 2025-03-12
+## [0.26.3] - 2025-03-12
 ### Added
 - 增加Load Image Folder节点
+- 增加`remove bg` `mask blur plus` `mask preview plus`节点的invert mask功能
 
 ## [0.25.1] - 2025-03-12
 ### Added

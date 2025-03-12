@@ -8,6 +8,7 @@ class MaskBlurPlus:
     def INPUT_TYPES(cls):
         return {
             "required": {
+                "invert_mask": ("BOOLEAN", {"default": False, "tooltip": "Invert mask values (0->1, 1->0)"}),
                 "mask": ("MASK",),
                 "blur": ("INT", {
                     "default": 0,
@@ -30,11 +31,16 @@ class MaskBlurPlus:
     FUNCTION = "execute"
     CATEGORY = "KayTool/Mask"
 
-    def execute(self, mask, blur, expand):
+    def execute(self, invert_mask, mask, blur, expand):
         if mask.dim() == 2:
             mask = mask.unsqueeze(0)
         device = comfy.model_management.get_torch_device()
         mask = mask.to(device)
+
+      
+        if invert_mask:
+            mask = 1. - mask
+
         if expand != 0.0:
             expand_pixels = int(abs(expand) * 10)
             kernel_size = 2 * expand_pixels + 1
