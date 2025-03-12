@@ -14,7 +14,12 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 
 
-**所有KayTool节点包用到的资源都在`ComfyUI/custom_nodes/kaytool`文件夹内。| All KayTool node packages use resources in the `ComfyUI/custom_nodes/kaytool` folder.**
+**📌所有KayTool节点包用到的资源都在`ComfyUI/custom_nodes/kaytool`文件夹内。| All KayTool node packages use resources in the `ComfyUI/custom_nodes/kaytool` folder.**
+
+
+### 右键快速Run功能 quick Run options via right-click (Run Group/Node)
+- 右键点击节点组或节点，选择“Run Group/Node”，即可快速运行节点组或节点进行调试。
+- Right-click on a node group or node, select "Run Group/Node," and quickly run the node group or node for debugging.
 
 ### BiRefNet背景移除处理节点 BiRefNet Background Removal Processing Node
 
