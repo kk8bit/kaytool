@@ -8,17 +8,8 @@ class BiRefNetLoader:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "model": ([
-                    "BiRefNet",         
-                    "BiRefNet_HR",
-                    "BiRefNet-portrait"
-                ],),
-                "providers": ([
-                    "auto",
-                    "cpu",
-                    "cuda",
-                    "mps",
-                ],),
+                "model": (["BiRefNet", "BiRefNet_HR", "BiRefNet-portrait"],),
+                "providers": (["auto", "cpu", "cuda", "mps"],),
             },
         }
 
@@ -27,7 +18,6 @@ class BiRefNetLoader:
     CATEGORY = "KayTool/Remove BG"
 
     def execute(self, model, providers):
-       
         base_path = Path(__file__).parent.parent
         
         model_map = {
@@ -36,31 +26,31 @@ class BiRefNetLoader:
             "BiRefNet-portrait": "ZhengPeng7/BiRefNet-portrait"
         }
         full_model_name = model_map[model]
-       
         model_dir = base_path / "models" / "BiRefNet" / full_model_name  
-        model_dir.mkdir(parents=True, exist_ok=True)
-
-        
-        os.environ["HF_HOME"] = str(model_dir.parent)
-        os.environ["TRANSFORMERS_CACHE"] = str(model_dir)
 
         if providers == "auto":
             providers = self.get_default_provider()
 
         class BiRefNetSession:
-            def __init__(self, model, providers):
-                from transformers import AutoModelForImageSegmentation
-                self.model = AutoModelForImageSegmentation.from_pretrained(
-                    model, trust_remote_code=True, cache_dir=str(model_dir)
-                )
-                self.device = providers
-                self.model.to(self.device)
+            def __init__(self, model, providers, model_dir):
+                self.model_name = model
+                self.providers = providers
+                self.model_dir = model_dir
+                self.model = None
 
             def process(self, image):
-                """处理 PIL 图像，返回带 alpha 通道的 PIL 图像"""
                 from torchvision import transforms
                 import torch.nn.functional as F
                 import numpy as np
+                from transformers import AutoModelForImageSegmentation
+
+                if self.model is None:
+                    self.model_dir.mkdir(parents=True, exist_ok=True)
+                    self.model = AutoModelForImageSegmentation.from_pretrained(
+                        self.model_name, trust_remote_code=True, cache_dir=str(self.model_dir)
+                    )
+                    self.device = torch.device(self.providers)  # 确保 device 是 torch.device 对象
+                    self.model.to(self.device)
 
                 transform = transforms.Compose([
                     transforms.Resize((1024, 1024)),
@@ -83,16 +73,14 @@ class BiRefNetLoader:
                 output_image.paste(image.convert("RGB"), (0, 0), mask_pil)
                 return output_image
 
-        return (BiRefNetSession(full_model_name, providers),)
+        return (BiRefNetSession(full_model_name, providers, model_dir),)
 
     @staticmethod
     def get_default_provider():
         import torch
-
         if torch.cuda.is_available():
             return "cuda"
         elif torch.backends.mps.is_available():
             return "mps"
         else:
             return "cpu"
-
