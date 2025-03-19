@@ -231,7 +231,7 @@ app.registerExtension({
                     null, // “▶️ Run”组后的分隔线
                     {
                         content: "𝙆 🛜 Set",
-                        callback: () => { addNode("KaysetNode", this, { side: "right", offset: 20 }); }
+                        callback: () => { addNode("KaySetNode", this, { side: "right", offset: 20 }); }
                     },
                     {
                         content: "𝙆 🛜 Get",

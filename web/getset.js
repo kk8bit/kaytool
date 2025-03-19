@@ -21,7 +21,7 @@ app.registerExtension({
     registerCustomNodes() {
         console.log("[KayTool] Registering 𝙆 🛜Set and 𝙆 🛜Get");
 
-        class KaysetNode extends LGraphNode {
+        class KaySetNode extends LGraphNode {
             defaultVisibility = true;
             serialize_widgets = true;
             canvas = app.canvas;
@@ -35,7 +35,7 @@ app.registerExtension({
                 if (!this.properties) {
                     this.properties = { "previousName": "" };
                 }
-                this.properties.showOutputText = KaysetNode.defaultVisibility;
+                this.properties.showOutputText = KaySetNode.defaultVisibility;
 
                 const node = this;
 
@@ -84,7 +84,7 @@ app.registerExtension({
                         let tries = 1;
                         const existingValues = new Set();
                         graph._nodes.forEach(otherNode => {
-                            if (otherNode !== this && otherNode.type === 'KaysetNode') {
+                            if (otherNode !== this && otherNode.type === 'KaySetNode') {
                                 existingValues.add(otherNode.widgets[0].value);
                             }
                         });
@@ -100,7 +100,7 @@ app.registerExtension({
                 };
 
                 this.clone = function () {
-                    const cloned = KaysetNode.prototype.clone.apply(this);
+                    const cloned = KaySetNode.prototype.clone.apply(this);
                     cloned.inputs[0].name = '*';
                     cloned.inputs[0].type = '*';
                     cloned.value = '';
@@ -168,10 +168,10 @@ app.registerExtension({
             }
         }
 
-        LiteGraph.registerNodeType("KaysetNode", Object.assign(KaysetNode, {
+        LiteGraph.registerNodeType("KaySetNode", Object.assign(KaySetNode, {
             title: "𝙆 🛜Set"
         }));
-        KaysetNode.category = "KayTool";
+        KaySetNode.category = "KayTool";
 
         class KayGetNode extends LGraphNode {
             defaultVisibility = true;
@@ -194,7 +194,7 @@ app.registerExtension({
                     () => this.onRename(),
                     {
                         values: () => {
-                            const setterNodes = node.graph._nodes.filter(n => n.type === 'KaysetNode');
+                            const setterNodes = node.graph._nodes.filter(n => n.type === 'KaySetNode');
                             return setterNodes.map(n => n.widgets[0].value).sort();
                         }
                     }
@@ -246,7 +246,7 @@ app.registerExtension({
 
                 this.findSetter = function (graph) {
                     const name = this.widgets[0].value;
-                    return graph._nodes.find(n => n.type === 'KaysetNode' && n.widgets[0].value === name && name !== '');
+                    return graph._nodes.find(n => n.type === 'KaySetNode' && n.widgets[0].value === name && name !== '');
                 };
 
                 this.goToSetter = function () {
