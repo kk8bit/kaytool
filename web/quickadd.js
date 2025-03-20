@@ -5,7 +5,7 @@ console.log("[KayTool] Loading QuickAdd extension");
 
 const UNSUPPORTED_NODES = new Set([
   "Group",
-  "Reroute", 
+  "Reroute",
   "Note"
 ]);
 
@@ -90,8 +90,6 @@ function initializeHooks() {
                 kayRecursiveAddNodes(String(queueNodeId), oldOutput, newOutput);
             }
             prompt.output = newOutput;
-            // 移除日志输出
-            // console.log("[KayTool] Filtered prompt:", JSON.stringify(prompt, null, 2));
         }
         return originalApiQueuePrompt.apply(this, [index, prompt]);
     };
@@ -109,8 +107,6 @@ function initializeHooks() {
 async function kayExecuteNodes(graph, nodesToRun) {
     KayToolState.queueNodeIds = nodesToRun.map(n => n.id);
     try {
-        // 移除日志输出
-        // console.log("[KayTool] Executing nodes:", KayToolState.queueNodeIds);
         return await app.queuePrompt(0);
     } finally {
         KayToolState.queueNodeIds = null;
@@ -121,7 +117,7 @@ function addGroupMenuHandler() {
     const originalGetCanvasMenuOptions = LGraphCanvas.prototype.getCanvasMenuOptions;
 
     LGraphCanvas.prototype.getCanvasMenuOptions = function() {
-        const original = originalGetCanvasMenuOptions ? 
+        const original = originalGetCanvasMenuOptions ?
             originalGetCanvasMenuOptions.apply(this, arguments) || [] : [];
 
         if (KayToolState.activeGroup && KayToolState.mousePos) {
@@ -139,8 +135,11 @@ function addGroupMenuHandler() {
                 const nodesToRun = Array.from(allNodesToRun);
                 const outputNodes = kayGetOutputNodes(nodesToRun);
 
-                const customMenu = [
-                    {
+                const showRunOption = app.ui.settings.getSettingValue("Kaytool.ShowRunOption", true);
+                const customMenu = [];
+
+                if (showRunOption) {
+                    customMenu.push({
                         content: "𝙆 ▶️ Run Group",
                         disabled: !outputNodes.length,
                         callback: async () => {
@@ -168,9 +167,8 @@ function addGroupMenuHandler() {
                                 });
                             }
                         }
-                    },
-                    // null // "Run Group" 下方的分割线
-                ];
+                    });
+                }
 
                 return [...customMenu, ...original.filter(item => item !== null)];
             } catch(e) {
@@ -194,9 +192,24 @@ app.registerExtension({
                 const outputNodes = kayGetOutputNodes(nodesToRun);
 
                 const safeOptions = Array.isArray(options) ? options : [];
+                const showRunOption = app.ui.settings.getSettingValue("Kaytool.ShowRunOption", true);
+                const showSetGetOptions = app.ui.settings.getSettingValue("Kaytool.ShowSetGetOptions", true);
 
-                safeOptions.unshift(
-                    {
+                if (showSetGetOptions) {
+                    safeOptions.unshift(
+                        {
+                            content: "𝙆 🛜 Get",
+                            callback: () => { addNode("KayGetNode", this, { side: "left", offset: 20 }); }
+                        },
+                        {
+                            content: "𝙆 🛜 Set",
+                            callback: () => { addNode("KaySetNode", this, { side: "right", offset: 20 }); }
+                        }
+                    );
+                }
+
+                if (showRunOption) {
+                    safeOptions.unshift({
                         content: "𝙆 ▶️ Run",
                         disabled: !outputNodes.length,
                         callback: async () => {
@@ -218,18 +231,8 @@ app.registerExtension({
                                 });
                             }
                         }
-                    },
-                    // null, // "Run" 下方的分割线
-                    {
-                        content: "𝙆 🛜 Set",
-                        callback: () => { addNode("KaySetNode", this, { side: "right", offset: 20 }); }
-                    },
-                    {
-                        content: "𝙆 🛜 Get",
-                        callback: () => { addNode("KayGetNode", this, { side: "left", offset: 20 }); }
-                    },
-                    // null // "Set/Get" 下方的分割线
-                );
+                    });
+                }
 
                 options.splice(0, options.length, ...safeOptions.filter(Boolean));
             });

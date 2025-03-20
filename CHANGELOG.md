@@ -1,12 +1,13 @@
 # Changelog
 
-## [0.36.0] - 2025-03-20
+## [0.36.7] - 2025-03-20
 ### Added
 - 增加`image_composer`节点
 - 增加`image_cropper`节点
 - 增加`image_resizer`节点
 - 增加`mask_filler`节点
 - 增加右键快捷菜单的`Run`功能的条件判断
+- 增加KayTool右键快捷功能设置项
 
 
 ## [0.26.3] - 2025-03-12
