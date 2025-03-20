@@ -21,7 +21,7 @@ class LoadImageFolder:
             }
         }
 
-    CATEGORY = "KayTool"
+    CATEGORY = "KayTool/Image"
     RETURN_TYPES = ("IMAGE", "MASK")
     RETURN_NAMES = ("images", "masks")
     OUTPUT_IS_LIST = (True, True)

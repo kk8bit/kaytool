@@ -21,6 +21,10 @@ from .nodes.mask_blur_plus import MaskBlurPlus
 from .nodes.preview_mask_plus import PreviewMaskPlus
 from .nodes.ab_images import ABImages 
 from .nodes.load_image_folder import LoadImageFolder  
+from .nodes.image_composer import ImageComposer 
+from .nodes.image_cropper import ImageCropper    
+from .nodes.image_resizer import ImageResizer
+from .nodes.mask_filler import MaskFiller
 
 NODE_CLASS_MAPPINGS = {
     "Custom_Save_Image": CustomSaveImage,
@@ -44,7 +48,11 @@ NODE_CLASS_MAPPINGS = {
     "Mask_Blur_Plus": MaskBlurPlus,  
     "Preview_Mask_Plus": PreviewMaskPlus,
     "AB_Images": ABImages,
-    "Load_Image_Folder": LoadImageFolder, 
+    "Load_Image_Folder": LoadImageFolder,
+    "Image_Composer": ImageComposer,  
+    "Image_Cropper": ImageCropper,    
+    "Image_Resizer": ImageResizer,
+    "Mask_Filler": MaskFiller,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -69,7 +77,11 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Mask_Blur_Plus": "𝙆 Mask Blur +",  
     "Preview_Mask_Plus": "𝙆 Preview Mask +",
     "AB_Images": "𝙆 ab Images",
-    "Load_Image_Folder": "𝙆 Load Image Folder", 
+    "Load_Image_Folder": "𝙆 Load Image Folder",
+    "Image_Composer": "𝙆 Image Composer",  
+    "Image_Cropper": "𝙆 Image Cropper",   
+    "Image_Resizer": "𝙆 Image Resizer",
+    "Mask_Filler": "𝙆 Mask Filler",
 }
 
 WEB_DIRECTORY = "web"

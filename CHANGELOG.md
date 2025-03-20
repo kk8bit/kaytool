@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.36.0] - 2025-03-20
+### Added
+- 增加`image_composer`节点
+- 增加`image_cropper`节点
+- 增加`image_resizer`节点
+- 增加`mask_filler`节点
+- 增加右键快捷菜单的`Run`功能的条件判断
+
+
 ## [0.26.3] - 2025-03-12
 ### Added
 - 增加Load Image Folder节点

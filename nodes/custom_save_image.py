@@ -35,7 +35,7 @@ class CustomSaveImage:
     RETURN_TYPES = ()
     FUNCTION = "save_images"
     OUTPUT_NODE = True
-    CATEGORY = "KayTool"
+    CATEGORY = "KayTool/Image"
 
     def save_images(self, images, preview_only=False, filename_prefix="Custom_Save_Image", save_metadata=True, format="PNG", 
                     jpg_quality=95, author="", copyright_info="", color_profile="sRGB IEC61966-2.1", prompt=None, extra_pnginfo=None):
