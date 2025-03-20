@@ -14,6 +14,15 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 **📌 所有 KayTool 节点包用到的资源都在 `ComfyUI/custom_nodes/kaytool` 文件夹内。| All KayTool node packages use resources in the `ComfyUI/custom_nodes/kaytool` folder.**
 
+
+### 自定义ComfyUI Logo功能 Custom ComfyUI Logo
+- 在设置菜单中（KayTool）自定义 ComfyUI 的 Logo，支持 PNG、JPG、JPEG 格式。
+  Customize the ComfyUI Logo in the settings menu (KayTool), supporting PNG, JPG, and JPEG formats.
+- 将 LOGO 文件重命名为“logo.(png/jpg/jpeg/ico)”并将其放置在“/ComfyUI/custom_nodes/kaytool”文件夹。
+  Rename the LOGO file to "logo.(png/jpg/jpeg/ico)" and place it in "/ComfyUI/custom_nodes/kaytool"
+
+---
+
 ### 右键快速 Run 功能 Quick Run Options via Right-Click (Run Group/Node)
 - 右键点击节点组或节点，选择“Run Group/Node”，即可快速运行节点组或节点进行调试。  
 - Right-click on a node group or node, select "Run Group/Node," and quickly run the node group or node for debugging.

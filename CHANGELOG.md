@@ -1,7 +1,10 @@
 # Changelog
 
-## [0.36.7] - 2025-03-20
-### Added
+## [0.31.0] - 2025-03-20
+- 增加自定义ComfyUI logo功能
+
+## [0.30.7] - 2025-03-20
+
 - 增加`image_composer`节点
 - 增加`image_cropper`节点
 - 增加`image_resizer`节点
@@ -11,21 +14,21 @@
 
 
 ## [0.26.3] - 2025-03-12
-### Added
+
 - 增加Load Image Folder节点
 - 增加`remove bg` `mask blur plus` `mask preview plus`节点的invert mask功能
 
 ## [0.25.1] - 2025-03-12
-### Added
+
 - 增加节点右键菜单 Run 功能（快速对节点调试）
 - 增加组右键菜单 Run 功能（快速对组节点调试）
 
 ## [0.21.0] - 2025-03-02
-### Added
+
 - 增加BiRefNet
 
 ## [0.20.0] - 2025-02-27
-### Added
+
 - 增加AIO翻译节点
 
 - 增加RemBG背景移除节点组
@@ -43,7 +46,7 @@
 - 增加部分节点的数据显示功能
 
 ## [0.9.0] - 2025-02-24
-### Added
+
 - 增加腾讯AI翻译节点
   Add Tencent AI translation nod
   e
@@ -52,7 +55,7 @@
 
 
 ## [0.7.0] - 2025-01-19
-### Added
+
 - 增加abc数学 abc Math 节点，支持多种数学运算。  
   Added the abc Math node, supporting various mathematical operations.
   
@@ -61,7 +64,7 @@
 
 
 ## [0.3.6] - 2025-01-18
-### Added
+
 - 增加大壮提示词 Strong Prompt 节点，支持负向提示词零化功能以及预设样式编辑与导入。  
   Added the Strong Prompt node, supporting negative prompt nullification and preset style editing and importing.  
 - 增加百度AI翻译 Baidu Translater 节点，支持双文本翻译、自动检测语言及百度API配置。  
@@ -79,14 +82,14 @@
 ---
 
 ## [0.1.3] - 2024-10-23
-### Added
+
 - 色彩调节节点中增加滤镜强度调节。  
   Added filter intensity adjustment in the Color Adjustment node.  
 
 ---
 
 ## [0.1.2] - 2024-10-23
-### Added
+
 - 增加色彩调节节点。  
   Added the Color Adjustment node.  
 - 支持模拟相机曝光调节、对比度、色温、色调、饱和度调节。  
@@ -99,7 +102,7 @@
 ---
 
 ## [0.0.1] - 2024-10-19
-### Added
+
 - 创建自定义保存图像节点。  
   Created the Custom SaveImage node.  
 - 支持保存为 PNG 和 JPG 格式。  

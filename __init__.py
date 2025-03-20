@@ -1,4 +1,6 @@
 import os
+import json
+from aiohttp import web
 from .nodes.custom_save_image import CustomSaveImage
 from .nodes.color_adjustment import ColorAdjustment
 from .nodes.strong_prompt import StrongPrompt
@@ -14,15 +16,15 @@ from .nodes.slider_100 import Slider100
 from .nodes.slider_10 import Slider10
 from .nodes.to_int import ToInt
 from .nodes.remove_bg import RemoveBG
-from .nodes.rembg_loader import RemBGLoader 
-from .nodes.birefnet_loader import BiRefNetLoader 
+from .nodes.rembg_loader import RemBGLoader
+from .nodes.birefnet_loader import BiRefNetLoader
 from .nodes.preview_mask import PreviewMask
-from .nodes.mask_blur_plus import MaskBlurPlus 
+from .nodes.mask_blur_plus import MaskBlurPlus
 from .nodes.preview_mask_plus import PreviewMaskPlus
-from .nodes.ab_images import ABImages 
-from .nodes.load_image_folder import LoadImageFolder  
-from .nodes.image_composer import ImageComposer 
-from .nodes.image_cropper import ImageCropper    
+from .nodes.ab_images import ABImages
+from .nodes.load_image_folder import LoadImageFolder
+from .nodes.image_composer import ImageComposer
+from .nodes.image_cropper import ImageCropper
 from .nodes.image_resizer import ImageResizer
 from .nodes.mask_filler import MaskFiller
 
@@ -42,15 +44,15 @@ NODE_CLASS_MAPPINGS = {
     "Slider_10": Slider10,
     "To_Int": ToInt,
     "Remove_BG": RemoveBG,
-    "RemBG_Loader": RemBGLoader,  
-    "BiRefNet_Loader": BiRefNetLoader, 
+    "RemBG_Loader": RemBGLoader,
+    "BiRefNet_Loader": BiRefNetLoader,
     "Preview_Mask": PreviewMask,
-    "Mask_Blur_Plus": MaskBlurPlus,  
+    "Mask_Blur_Plus": MaskBlurPlus,
     "Preview_Mask_Plus": PreviewMaskPlus,
     "AB_Images": ABImages,
     "Load_Image_Folder": LoadImageFolder,
-    "Image_Composer": ImageComposer,  
-    "Image_Cropper": ImageCropper,    
+    "Image_Composer": ImageComposer,
+    "Image_Cropper": ImageCropper,
     "Image_Resizer": ImageResizer,
     "Mask_Filler": MaskFiller,
 }
@@ -71,17 +73,54 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Slider_10": "𝙆 Slider 10",
     "To_Int": "𝙆 To Int",
     "Remove_BG": "𝙆 Remove BG",
-    "RemBG_Loader": "𝙆 RemBG Loader",  
-    "BiRefNet_Loader": "𝙆 BiRefNet Loader",  
+    "RemBG_Loader": "𝙆 RemBG Loader",
+    "BiRefNet_Loader": "𝙆 BiRefNet Loader",
     "Preview_Mask": "𝙆 Preview Mask",
-    "Mask_Blur_Plus": "𝙆 Mask Blur +",  
+    "Mask_Blur_Plus": "𝙆 Mask Blur +",
     "Preview_Mask_Plus": "𝙆 Preview Mask +",
     "AB_Images": "𝙆 ab Images",
     "Load_Image_Folder": "𝙆 Load Image Folder",
-    "Image_Composer": "𝙆 Image Composer",  
-    "Image_Cropper": "𝙆 Image Cropper",   
+    "Image_Composer": "𝙆 Image Composer",
+    "Image_Cropper": "𝙆 Image Cropper",
     "Image_Resizer": "𝙆 Image Resizer",
     "Mask_Filler": "𝙆 Mask Filler",
 }
 
 WEB_DIRECTORY = "web"
+SETTINGS_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "settings.json")
+LOGO_DIR = os.path.dirname(os.path.realpath(__file__))
+VALID_EXTENSIONS = [".png", ".jpg", ".jpeg", ".ico"]
+
+async def load_settings(request):
+    if os.path.exists(SETTINGS_FILE):
+        with open(SETTINGS_FILE, "r") as f:
+            return web.json_response(json.load(f))
+    return web.json_response({"ShowRunOption": True, "ShowSetGetOptions": True, "EnableCustomLogo": True})
+
+async def save_settings(request):
+    data = await request.json()
+    settings = {}
+    if os.path.exists(SETTINGS_FILE):
+        with open(SETTINGS_FILE, "r") as f:
+            settings = json.load(f)
+    settings.update(data)
+    with open(SETTINGS_FILE, "w") as f:
+        json.dump(settings, f, indent=2)
+    return web.Response(status=200)
+
+async def serve_logo(request):
+    for ext in VALID_EXTENSIONS:
+        logo_file = os.path.join(LOGO_DIR, f"logo{ext}")
+        if os.path.exists(logo_file):
+            print(f"[Kaytool] Serving logo: {logo_file}")
+            return web.FileResponse(logo_file)
+    print("[Kaytool] Logo not found")
+    return web.Response(status=404, text="Logo not found")
+
+import server
+app = server.PromptServer.instance
+app.app.add_routes([
+    web.get("/kaytool/load_settings", load_settings),
+    web.post("/kaytool/save_settings", save_settings),
+    web.get("/kaytool/logo", serve_logo)
+])
