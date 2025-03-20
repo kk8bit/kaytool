@@ -3,6 +3,12 @@ import { api } from "../../../scripts/api.js";
 
 console.log("[KayTool] Loading QuickAdd extension");
 
+const UNSUPPORTED_NODES = new Set([
+  "Group",
+  "Reroute", 
+  "Note"
+]);
+
 function addMenuHandler(nodeType, cb) {
     const getOpts = nodeType.prototype.getExtraMenuOptions;
     nodeType.prototype.getExtraMenuOptions = function () {
@@ -26,7 +32,7 @@ function addNode(name, nextTo, options = {}) {
     return node;
 }
 
-function getUpstreamNodes(node, graph) {
+function kayGetUpstreamNodes(node, graph) {
     const upstreamNodes = new Set();
     function traverse(node) {
         if (!node.inputs) return;
@@ -47,14 +53,22 @@ function getUpstreamNodes(node, graph) {
     return Array.from(upstreamNodes);
 }
 
-function recursiveAddNodes(nodeId, oldOutput, newOutput) {
+function kayGetOutputNodes(nodes) {
+    return ((nodes === null || nodes === void 0 ? void 0 : nodes.filter((n) => {
+        var _a;
+        return (n.mode != LiteGraph.NEVER &&
+            ((_a = n.constructor.nodeData) === null || _a === void 0 ? void 0 : _a.output_node));
+    })) || []);
+}
+
+function kayRecursiveAddNodes(nodeId, oldOutput, newOutput) {
     let currentId = nodeId;
     let currentNode = oldOutput[currentId];
     if (!currentNode || newOutput[currentId]) return;
     newOutput[currentId] = currentNode;
     for (const inputValue of Object.values(currentNode.inputs || {})) {
         if (Array.isArray(inputValue)) {
-            recursiveAddNodes(inputValue[0], oldOutput, newOutput);
+            kayRecursiveAddNodes(inputValue[0], oldOutput, newOutput);
         }
     }
     return newOutput;
@@ -62,7 +76,8 @@ function recursiveAddNodes(nodeId, oldOutput, newOutput) {
 
 const KayToolState = {
     queueNodeIds: null,
-    lastAdjustedMouseEvent: null
+    mousePos: null,
+    activeGroup: null
 };
 
 function initializeHooks() {
@@ -72,31 +87,31 @@ function initializeHooks() {
             const oldOutput = prompt.output;
             let newOutput = {};
             for (const queueNodeId of KayToolState.queueNodeIds) {
-                recursiveAddNodes(String(queueNodeId), oldOutput, newOutput);
+                kayRecursiveAddNodes(String(queueNodeId), oldOutput, newOutput);
             }
             prompt.output = newOutput;
-            console.log("[KayTool] Filtered prompt:", JSON.stringify(prompt, null, 2));
+            // 移除日志输出
+            // console.log("[KayTool] Filtered prompt:", JSON.stringify(prompt, null, 2));
         }
-        const response = originalApiQueuePrompt.apply(this, [index, prompt]);
-        return response;
+        return originalApiQueuePrompt.apply(this, [index, prompt]);
     };
 
-    const originalAdjustMouseEvent = LGraphCanvas.prototype.adjustMouseEvent;
-    LGraphCanvas.prototype.adjustMouseEvent = function (e) {
-        originalAdjustMouseEvent.apply(this, [...arguments]);
-        KayToolState.lastAdjustedMouseEvent = e;
+    const originalDraw = LGraphCanvas.prototype.draw;
+    LGraphCanvas.prototype.draw = function() {
+        if (this.canvas_mouse) {
+            KayToolState.mousePos = [this.canvas_mouse[0], this.canvas_mouse[1]];
+            KayToolState.activeGroup = app.graph.getGroupOnPos(...KayToolState.mousePos);
+        }
+        return originalDraw.apply(this, arguments);
     };
 }
 
-async function executeNodes(graph, nodesToRun) {
+async function kayExecuteNodes(graph, nodesToRun) {
     KayToolState.queueNodeIds = nodesToRun.map(n => n.id);
     try {
-        console.log("[KayTool] Executing nodes:", KayToolState.queueNodeIds);
-        const result = await app.queuePrompt(0);
-        console.log("[KayTool] Queue result:", result);
-        return result;
-    } catch (error) {
-        throw error;
+        // 移除日志输出
+        // console.log("[KayTool] Executing nodes:", KayToolState.queueNodeIds);
+        return await app.queuePrompt(0);
     } finally {
         KayToolState.queueNodeIds = null;
     }
@@ -104,59 +119,44 @@ async function executeNodes(graph, nodesToRun) {
 
 function addGroupMenuHandler() {
     const originalGetCanvasMenuOptions = LGraphCanvas.prototype.getCanvasMenuOptions;
-    LGraphCanvas.prototype.getCanvasMenuOptions = function (...args) {
-        const existingOptions = originalGetCanvasMenuOptions.apply(this, [...args]);
-        const group = KayToolState.lastAdjustedMouseEvent
-            ? app.graph.getGroupOnPos(KayToolState.lastAdjustedMouseEvent.canvasX, KayToolState.lastAdjustedMouseEvent.canvasY)
-            : null;
 
-        if (group) {
-            existingOptions.unshift(
-                {
-                    content: "𝙆 ▶️ Run Group",
-                    callback: async () => {
-                        const graph = app.graph;
-                        const groupNodes = group._nodes || [];
-                        if (!groupNodes.length) {
-                            app.extensionManager.toast.add({
-                                severity: 'warn',
-                                summary: "KayTool Quick Run",
-                                detail: "No nodes in group to run",
-                                life: 3000,
+    LGraphCanvas.prototype.getCanvasMenuOptions = function() {
+        const original = originalGetCanvasMenuOptions ? 
+            originalGetCanvasMenuOptions.apply(this, arguments) || [] : [];
+
+        if (KayToolState.activeGroup && KayToolState.mousePos) {
+            try {
+                const groupNodes = KayToolState.activeGroup._nodes || [];
+                if (groupNodes.length === 0) {
+                    return original;
+                }
+
+                const allNodesToRun = new Set(groupNodes);
+                groupNodes.forEach(node => {
+                    const upstream = kayGetUpstreamNodes(node, app.graph);
+                    upstream.forEach(upNode => allNodesToRun.add(upNode));
+                });
+                const nodesToRun = Array.from(allNodesToRun);
+                const outputNodes = kayGetOutputNodes(nodesToRun);
+
+                const customMenu = [
+                    {
+                        content: "𝙆 ▶️ Run Group",
+                        disabled: !outputNodes.length,
+                        callback: async () => {
+                            const graph = app.graph;
+                            const groupNodes = KayToolState.activeGroup._nodes || [];
+                            if (!groupNodes.length) return;
+
+                            const allNodesToRun = new Set(groupNodes);
+                            groupNodes.forEach(node => {
+                                const upstream = kayGetUpstreamNodes(node, graph);
+                                upstream.forEach(upNode => allNodesToRun.add(upNode));
                             });
-                            return;
-                        }
+                            const nodesToRun = Array.from(allNodesToRun);
 
-                        const allNodesToRun = new Set(groupNodes);
-                        groupNodes.forEach(node => {
-                            const upstream = getUpstreamNodes(node, graph);
-                            upstream.forEach(upNode => allNodesToRun.add(upNode));
-                        });
-                        const nodesToRun = Array.from(allNodesToRun);
-
-                        let canRun = true;
-                        for (const n of nodesToRun) {
-                            if (n.inputs) {
-                                for (const input of n.inputs) {
-                                    if (input.link === null && input.type !== "*" && !input.optional) {
-                                        canRun = false;
-                                        console.log(`[KayTool] Cannot run group: Node ${n.id} (${n.type}) has unconnected required input: ${input.name}`);
-                                        app.extensionManager.toast.add({
-                                            severity: 'warn',
-                                            summary: "KayTool Quick Run",
-                                            detail: `Cannot run group: Node ${n.id} (${n.type}) has unconnected required input: ${input.name}`,
-                                            life: 5000,
-                                        });
-                                        break;
-                                    }
-                                }
-                            }
-                            if (!canRun) break;
-                        }
-
-                        if (canRun) {
                             try {
-                                await executeNodes(graph, nodesToRun);
+                                await kayExecuteNodes(graph, nodesToRun);
                                 app.graph.setDirtyCanvas(true, true);
                             } catch (error) {
                                 console.error("[KayTool] Group execution failed:", error);
@@ -168,67 +168,58 @@ function addGroupMenuHandler() {
                                 });
                             }
                         }
-                    }
-                },
-                null // “▶️ Run Group”组后的分隔线
-            );
+                    },
+                    // null // "Run Group" 下方的分割线
+                ];
+
+                return [...customMenu, ...original.filter(item => item !== null)];
+            } catch(e) {
+                console.error("[KayTool] Group menu error:", e);
+            }
         }
 
-        return existingOptions;
+        return original;
     };
 }
 
 app.registerExtension({
     name: "KayTool.QuickAdd",
-    async beforeRegisterNodeDef(nodeType, nodeData, app) {
-        if (nodeData.input && nodeData.input.required) {
+    beforeRegisterNodeDef(nodeType, nodeData) {
+        if (nodeData.input?.required && !UNSUPPORTED_NODES.has(nodeData.name)) {
             addMenuHandler(nodeType, function (_, options) {
-                options.unshift(
+                if (UNSUPPORTED_NODES.has(this.type)) return;
+
+                const upstreamNodes = kayGetUpstreamNodes(this, app.graph);
+                const nodesToRun = [this, ...upstreamNodes];
+                const outputNodes = kayGetOutputNodes(nodesToRun);
+
+                const safeOptions = Array.isArray(options) ? options : [];
+
+                safeOptions.unshift(
                     {
                         content: "𝙆 ▶️ Run",
+                        disabled: !outputNodes.length,
                         callback: async () => {
                             const node = this;
                             const graph = app.graph;
-                            const upstreamNodes = getUpstreamNodes(node, graph);
+                            const upstreamNodes = kayGetUpstreamNodes(node, graph);
                             const nodesToRun = [node, ...upstreamNodes];
 
-                            let canRun = true;
-                            for (const n of nodesToRun) {
-                                if (n.inputs) {
-                                    for (const input of n.inputs) {
-                                        if (input.link === null && input.type !== "*" && !input.optional) {
-                                            canRun = false;
-                                            console.log(`[KayTool] Cannot run: Node ${n.id} (${n.type}) has unconnected required input: ${input.name}`);
-                                            app.extensionManager.toast.add({
-                                                severity: 'warn',
-                                                summary: "KayTool Quick Run",
-                                                detail: `Cannot run: Node ${n.id} (${n.type}) has unconnected required input: ${input.name}`,
-                                                life: 5000,
-                                            });
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (!canRun) break;
-                            }
-
-                            if (canRun) {
-                                try {
-                                    await executeNodes(graph, nodesToRun);
-                                    app.graph.setDirtyCanvas(true, true);
-                                } catch (error) {
-                                    console.error("[KayTool] Execution failed:", error);
-                                    app.extensionManager.toast.add({
-                                        severity: 'error',
-                                        summary: "KayTool Quick Run",
-                                        detail: `Failed to execute node ${node.id}: ${error.message}`,
-                                        life: 5000,
-                                    });
-                                }
+                            try {
+                                await kayExecuteNodes(graph, nodesToRun);
+                                app.graph.setDirtyCanvas(true, true);
+                            } catch (error) {
+                                console.error("[KayTool] Execution failed:", error);
+                                app.extensionManager.toast.add({
+                                    severity: 'error',
+                                    summary: "KayTool Quick Run",
+                                    detail: `Failed to execute node ${node.id}: ${error.message}`,
+                                    life: 5000,
+                                });
                             }
                         }
                     },
-                    null, // “▶️ Run”组后的分隔线
+                    // null, // "Run" 下方的分割线
                     {
                         content: "𝙆 🛜 Set",
                         callback: () => { addNode("KaySetNode", this, { side: "right", offset: 20 }); }
@@ -237,12 +228,14 @@ app.registerExtension({
                         content: "𝙆 🛜 Get",
                         callback: () => { addNode("KayGetNode", this, { side: "left", offset: 20 }); }
                     },
-                    null // “+ 🛜 Set”和“+ 🛜 Get”组后的分隔线
+                    // null // "Set/Get" 下方的分割线
                 );
+
+                options.splice(0, options.length, ...safeOptions.filter(Boolean));
             });
         }
     },
-    async setup() {
+    setup() {
         initializeHooks();
         addGroupMenuHandler();
         console.log("[KayTool] QuickAdd extension setup complete");
