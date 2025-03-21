@@ -91,14 +91,14 @@ SETTINGS_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "setti
 LOGO_DIR = os.path.dirname(os.path.realpath(__file__))
 VALID_EXTENSIONS = [".png", ".jpg", ".jpeg", ".ico"]
 
-# 加载设置
+
 async def load_settings(request):
     if os.path.exists(SETTINGS_FILE):
         with open(SETTINGS_FILE, "r") as f:
             return web.json_response(json.load(f))
     return web.json_response({"ShowRunOption": True, "ShowSetGetOptions": True, "CustomWebLogo": "none"})
 
-# 保存设置
+
 async def save_settings(request):
     data = await request.json()
     settings = {}
@@ -110,7 +110,7 @@ async def save_settings(request):
         json.dump(settings, f, indent=2)
     return web.Response(status=200)
 
-# 提供 logo 文件列表
+
 async def serve_logo_list(request):
     logo_path = os.path.join(LOGO_DIR, "logo")
     if os.path.exists(logo_path):

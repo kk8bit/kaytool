@@ -49,7 +49,7 @@ class BiRefNetLoader:
                     self.model = AutoModelForImageSegmentation.from_pretrained(
                         self.model_name, trust_remote_code=True, cache_dir=str(self.model_dir)
                     )
-                    self.device = torch.device(self.providers)  # 确保 device 是 torch.device 对象
+                    self.device = torch.device(self.providers)  
                     self.model.to(self.device)
 
                 transform = transforms.Compose([

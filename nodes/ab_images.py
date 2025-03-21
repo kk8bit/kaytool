@@ -6,7 +6,7 @@ class ABImages(PreviewImage):
     NAME = "AB Images"
     CATEGORY = "KayTool"
     FUNCTION = "compare_images"
-#
+
     @classmethod
     def INPUT_TYPES(cls):
         return {

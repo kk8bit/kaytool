@@ -3,7 +3,7 @@ import { app } from "/scripts/app.js";
 app.registerExtension({
     name: "Kaytool.Settings",
     async setup() {
-        // 加载设置
+
         async function loadSettings() {
             try {
                 const response = await fetch("/kaytool/load_settings");
@@ -19,7 +19,7 @@ app.registerExtension({
             }
         }
 
-        // 保存设置
+
         async function saveSettings(key, value) {
             try {
                 await fetch("/kaytool/save_settings", {
@@ -32,7 +32,7 @@ app.registerExtension({
             }
         }
 
-        // 获取 logo 文件列表
+        
         async function getLogoList() {
             try {
                 const response = await fetch("/kaytool/logo_list");
@@ -44,7 +44,7 @@ app.registerExtension({
             }
         }
 
-        // 更新 favicon
+        
         function updateFavicon(value) {
             let link = document.querySelector("link[rel='icon']");
             if (!link) {
@@ -59,14 +59,14 @@ app.registerExtension({
             }
         }
 
-        // 先加载设置
+        
         await loadSettings();
 
-        // 获取 logo 文件列表并生成选项
+        
         const logoFiles = await getLogoList();
         const logoOptions = ["none", ...logoFiles];
 
-        // 添加设置项
+        
         app.ui.settings.addSetting({
             id: "Kaytool.ShowRunOption",
             name: "Show Kaytool “▶️ Run” Option in Right-Click Menu",
@@ -101,7 +101,7 @@ app.registerExtension({
             }
         });
 
-        // 初始化 favicon
+        
         const currentLogo = app.ui.settings.getSettingValue("Kaytool.CustomWebLogo", "none");
         updateFavicon(currentLogo);
     }
