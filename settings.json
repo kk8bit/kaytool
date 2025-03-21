@@ -1,5 +1,5 @@
 {
   "ShowRunOption": true,
   "ShowSetGetOptions": true,
-  "ShowCustomLogo": true
+  "CustomWebLogo": "mario.png"
 }

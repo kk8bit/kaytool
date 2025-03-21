@@ -91,12 +91,14 @@ SETTINGS_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "setti
 LOGO_DIR = os.path.dirname(os.path.realpath(__file__))
 VALID_EXTENSIONS = [".png", ".jpg", ".jpeg", ".ico"]
 
+# 加载设置
 async def load_settings(request):
     if os.path.exists(SETTINGS_FILE):
         with open(SETTINGS_FILE, "r") as f:
             return web.json_response(json.load(f))
-    return web.json_response({"ShowRunOption": True, "ShowSetGetOptions": True, "EnableCustomLogo": True})
+    return web.json_response({"ShowRunOption": True, "ShowSetGetOptions": True, "CustomWebLogo": "none"})
 
+# 保存设置
 async def save_settings(request):
     data = await request.json()
     settings = {}
@@ -108,19 +110,19 @@ async def save_settings(request):
         json.dump(settings, f, indent=2)
     return web.Response(status=200)
 
-async def serve_logo(request):
-    for ext in VALID_EXTENSIONS:
-        logo_file = os.path.join(LOGO_DIR, f"logo{ext}")
-        if os.path.exists(logo_file):
-            print(f"[Kaytool] Serving logo: {logo_file}")
-            return web.FileResponse(logo_file)
-    print("[Kaytool] Logo not found")
-    return web.Response(status=404, text="Logo not found")
+# 提供 logo 文件列表
+async def serve_logo_list(request):
+    logo_path = os.path.join(LOGO_DIR, "logo")
+    if os.path.exists(logo_path):
+        logo_files = [f for f in os.listdir(logo_path) if os.path.splitext(f)[1].lower() in VALID_EXTENSIONS]
+        return web.json_response({"files": logo_files})
+    return web.json_response({"files": []})
 
 import server
 app = server.PromptServer.instance
 app.app.add_routes([
     web.get("/kaytool/load_settings", load_settings),
     web.post("/kaytool/save_settings", save_settings),
-    web.get("/kaytool/logo", serve_logo)
+    web.get("/kaytool/logo_list", serve_logo_list),
+    web.static("/kaytool/logo", os.path.join(LOGO_DIR, "logo"))
 ])
