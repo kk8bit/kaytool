@@ -18,8 +18,8 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 ### 自定义ComfyUI Logo功能 Custom ComfyUI Logo
 - 在设置菜单中（KayTool）自定义 ComfyUI 的 Logo，支持 PNG、JPG、JPEG 格式。
   Customize the ComfyUI Logo in the settings menu (KayTool), supporting PNG, JPG, and JPEG formats.
-- 将 LOGO 文件重命名为“logo.(png/jpg/jpeg/ico)”并将其放置在“/ComfyUI/custom_nodes/kaytool”文件夹。
-  Rename the LOGO file to "logo.(png/jpg/jpeg/ico)" and place it in "/ComfyUI/custom_nodes/kaytool"
+- 将 LOGO 文件放置在“/ComfyUI/custom_nodes/kaytool/logo”文件夹。
+  Place the LOGO file in the "/ComfyUI/custom_nodes/kaytool/logo" folder.
 
 ---
 
