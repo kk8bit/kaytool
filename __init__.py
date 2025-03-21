@@ -17,7 +17,7 @@ from .nodes.slider_10 import Slider10
 from .nodes.to_int import ToInt
 from .nodes.remove_bg import RemoveBG
 from .nodes.rembg_loader import RemBGLoader
-from .nodes.birefnet_loader import BiRefNetLoader
+from .nodes.birefnet_loader import KayBiRefNetLoader 
 from .nodes.preview_mask import PreviewMask
 from .nodes.mask_blur_plus import MaskBlurPlus
 from .nodes.preview_mask_plus import PreviewMaskPlus
@@ -45,7 +45,7 @@ NODE_CLASS_MAPPINGS = {
     "To_Int": ToInt,
     "Remove_BG": RemoveBG,
     "RemBG_Loader": RemBGLoader,
-    "BiRefNet_Loader": BiRefNetLoader,
+    "Kay_BiRefNet_Loader": KayBiRefNetLoader,  
     "Preview_Mask": PreviewMask,
     "Mask_Blur_Plus": MaskBlurPlus,
     "Preview_Mask_Plus": PreviewMaskPlus,
@@ -74,7 +74,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "To_Int": "𝙆 To Int",
     "Remove_BG": "𝙆 Remove BG",
     "RemBG_Loader": "𝙆 RemBG Loader",
-    "BiRefNet_Loader": "𝙆 BiRefNet Loader",
+    "Kay_BiRefNet_Loader": "𝙆 BiRefNet Loader",  
     "Preview_Mask": "𝙆 Preview Mask",
     "Mask_Blur_Plus": "𝙆 Mask Blur +",
     "Preview_Mask_Plus": "𝙆 Preview Mask +",
@@ -91,13 +91,11 @@ SETTINGS_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "setti
 LOGO_DIR = os.path.dirname(os.path.realpath(__file__))
 VALID_EXTENSIONS = [".png", ".jpg", ".jpeg", ".ico"]
 
-
 async def load_settings(request):
     if os.path.exists(SETTINGS_FILE):
         with open(SETTINGS_FILE, "r") as f:
             return web.json_response(json.load(f))
     return web.json_response({"ShowRunOption": True, "ShowSetGetOptions": True, "CustomWebLogo": "none"})
-
 
 async def save_settings(request):
     data = await request.json()
@@ -109,7 +107,6 @@ async def save_settings(request):
     with open(SETTINGS_FILE, "w") as f:
         json.dump(settings, f, indent=2)
     return web.Response(status=200)
-
 
 async def serve_logo_list(request):
     logo_path = os.path.join(LOGO_DIR, "logo")

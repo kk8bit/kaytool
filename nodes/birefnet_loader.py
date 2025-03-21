@@ -3,7 +3,7 @@ from pathlib import Path
 import torch
 from PIL import Image
 
-class BiRefNetLoader:
+class KayBiRefNetLoader:
     @classmethod
     def INPUT_TYPES(cls):
         return {
