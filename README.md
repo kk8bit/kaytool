@@ -23,9 +23,11 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 ---
 
-### 右键快速 Run 功能 Quick Run Options via Right-Click (Run Group/Node)
+### 快速 Run 功能 Quick Run Options (Run Group/Node)
 - 右键点击节点组或节点，选择“Run Group/Node”，即可快速运行节点组或节点进行调试。  
 - Right-click on a node group or node, select "Run Group/Node," and quickly run the node group or node for debugging.
+- 使用快捷键`Shift+R`快速运行选中节点。
+- Use the shortcut key `Shift+R` to quickly run the selected node.
 
 ---
 
@@ -324,6 +326,10 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Suitable for workflows extracting specific regions from composited images.
 
 ---
+
+### 图像遮罩合成节点 Image Mask Composer
+- 支持图片和遮罩合成后填充背景
+- supports image and mask composition with background filling
 
 ### 图像缩放节点 Image Resizer
 - 支持图像和遮罩的动态缩放，提供宽度、高度和比例保持选项。  

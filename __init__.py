@@ -27,6 +27,7 @@ from .nodes.image_composer import ImageComposer
 from .nodes.image_cropper import ImageCropper
 from .nodes.image_resizer import ImageResizer
 from .nodes.mask_filler import MaskFiller
+from .nodes.image_mask_composer import ImageMaskComposer
 
 NODE_CLASS_MAPPINGS = {
     "Custom_Save_Image": CustomSaveImage,
@@ -55,6 +56,7 @@ NODE_CLASS_MAPPINGS = {
     "Image_Cropper": ImageCropper,
     "Image_Resizer": ImageResizer,
     "Mask_Filler": MaskFiller,
+    "Image_Mask_Composer": ImageMaskComposer,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -84,6 +86,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Image_Cropper": "𝙆 Image Cropper",
     "Image_Resizer": "𝙆 Image Resizer",
     "Mask_Filler": "𝙆 Mask Filler",
+    "Image_Mask_Composer": "𝙆 Image Mask Composer",
 }
 
 WEB_DIRECTORY = "web"

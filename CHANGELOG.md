@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.32.0] - 2025-03-22
+- 增加`Shift+R`快捷键快速运行节点(可通过KayTool设置关闭)
+- 增加`image_mask_composer`节点
+
 ## [0.31.0] - 2025-03-20
 - 增加自定义ComfyUI logo功能
 
