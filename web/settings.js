@@ -3,7 +3,6 @@ import { app } from "/scripts/app.js";
 app.registerExtension({
     name: "Kaytool.Settings",
     async setup() {
-
         async function loadSettings() {
             try {
                 const response = await fetch("/kaytool/load_settings");
@@ -11,14 +10,15 @@ app.registerExtension({
                 app.ui.settings.setSettingValue("Kaytool.ShowRunOption", settings.ShowRunOption ?? true);
                 app.ui.settings.setSettingValue("Kaytool.ShowSetGetOptions", settings.ShowSetGetOptions ?? true);
                 app.ui.settings.setSettingValue("Kaytool.CustomWebLogo", settings.CustomWebLogo || "none");
+                app.ui.settings.setSettingValue("Kaytool.ShiftR", settings.ShiftR ?? true);
             } catch (e) {
                 console.error("[Kaytool] Failed to load settings:", e);
                 app.ui.settings.setSettingValue("Kaytool.ShowRunOption", true);
                 app.ui.settings.setSettingValue("Kaytool.ShowSetGetOptions", true);
                 app.ui.settings.setSettingValue("Kaytool.CustomWebLogo", "none");
+                app.ui.settings.setSettingValue("Kaytool.ShiftR", true);
             }
         }
-
 
         async function saveSettings(key, value) {
             try {
@@ -31,7 +31,6 @@ app.registerExtension({
                 console.error("[Kaytool] Failed to save settings:", e);
             }
         }
-
         
         async function getLogoList() {
             try {
@@ -43,7 +42,6 @@ app.registerExtension({
                 return [];
             }
         }
-
         
         function updateFavicon(value) {
             let link = document.querySelector("link[rel='icon']");
@@ -58,14 +56,11 @@ app.registerExtension({
                 link.href = `/kaytool/logo/${value}?${new Date().getTime()}`;
             }
         }
-
         
         await loadSettings();
-
         
         const logoFiles = await getLogoList();
         const logoOptions = ["none", ...logoFiles];
-
         
         app.ui.settings.addSetting({
             id: "Kaytool.ShowRunOption",
@@ -73,7 +68,6 @@ app.registerExtension({
             type: "boolean",
             defaultValue: true,
             onChange: (value) => {
-                console.log("Kaytool Run Option display set to:", value);
                 saveSettings("ShowRunOption", value);
             }
         });
@@ -84,7 +78,6 @@ app.registerExtension({
             type: "boolean",
             defaultValue: true,
             onChange: (value) => {
-                console.log("Kaytool Set/Get Options display set to:", value);
                 saveSettings("ShowSetGetOptions", value);
             }
         });
@@ -101,6 +94,15 @@ app.registerExtension({
             }
         });
 
+        app.ui.settings.addSetting({
+            id: "Kaytool.ShiftR",
+            name: "Use “Shift+R” to quickly execute “▶️ Run” on the selected node.",
+            type: "boolean",
+            defaultValue: true,
+            onChange: (value) => {
+                saveSettings("ShiftR", value);
+            }
+        });
         
         const currentLogo = app.ui.settings.getSettingValue("Kaytool.CustomWebLogo", "none");
         updateFavicon(currentLogo);

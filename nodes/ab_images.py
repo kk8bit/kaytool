@@ -10,9 +10,11 @@ class ABImages(PreviewImage):
     @classmethod
     def INPUT_TYPES(cls):
         return {
-            "required": {},
-            "optional": {
+            "required": {
                 "a": ("IMAGE",), 
+            },
+            "optional": {
+                
                 "b": ("IMAGE",),  
             },
             "hidden": {

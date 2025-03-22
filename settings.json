@@ -1,5 +1,6 @@
 {
   "ShowRunOption": true,
   "ShowSetGetOptions": true,
-  "CustomWebLogo": "mario.png"
+  "CustomWebLogo": "mario.png",
+  "ShiftR": true
 }
