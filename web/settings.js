@@ -1,22 +1,28 @@
 import { app } from "/scripts/app.js";
 
 app.registerExtension({
-    name: "Kaytool.Settings",
+    name: "KayTool.Settings",
     async setup() {
         async function loadSettings() {
             try {
                 const response = await fetch("/kaytool/load_settings");
                 const settings = await response.json();
-                app.ui.settings.setSettingValue("Kaytool.ShowRunOption", settings.ShowRunOption ?? true);
-                app.ui.settings.setSettingValue("Kaytool.ShowSetGetOptions", settings.ShowSetGetOptions ?? true);
-                app.ui.settings.setSettingValue("Kaytool.CustomWebLogo", settings.CustomWebLogo || "none");
-                app.ui.settings.setSettingValue("Kaytool.ShiftR", settings.ShiftR ?? true);
+                app.ui.settings.setSettingValue("KayTool.QuickAccess.ShowRunOption", settings.ShowRunOption ?? true);
+                app.ui.settings.setSettingValue("KayTool.QuickAccess.ShowSetGetOptions", settings.ShowSetGetOptions ?? true);
+                app.ui.settings.setSettingValue("KayTool.Hotkeys.ShiftR", settings.ShiftR ?? true);
+                app.ui.settings.setSettingValue("KayTool.Menu.ShowWorkflowPNG", settings.ShowWorkflowPNG ?? true);
+                app.ui.settings.setSettingValue("KayTool.Menu.ShowLogoOptions", settings.ShowLogoOptions ?? true);
+                app.ui.settings.setSettingValue("KayTool.Menu.ShowStarToMe", settings.ShowStarToMe ?? true);
+                app.ui.settings.setSettingValue("KayTool.WorkflowPNG", settings.MarginSize ?? 100); 
             } catch (e) {
-                console.error("[Kaytool] Failed to load settings:", e);
-                app.ui.settings.setSettingValue("Kaytool.ShowRunOption", true);
-                app.ui.settings.setSettingValue("Kaytool.ShowSetGetOptions", true);
-                app.ui.settings.setSettingValue("Kaytool.CustomWebLogo", "none");
-                app.ui.settings.setSettingValue("Kaytool.ShiftR", true);
+                console.error("[KayTool] Failed to load settings:", e);
+                app.ui.settings.setSettingValue("KayTool.QuickAccess.ShowRunOption", true);
+                app.ui.settings.setSettingValue("KayTool.QuickAccess.ShowSetGetOptions", true);
+                app.ui.settings.setSettingValue("KayTool.Hotkeys.ShiftR", true);
+                app.ui.settings.setSettingValue("KayTool.Menu.ShowWorkflowPNG", true);
+                app.ui.settings.setSettingValue("KayTool.Menu.ShowLogoOptions", true);
+                app.ui.settings.setSettingValue("KayTool.Menu.ShowStarToMe", true); 
+                app.ui.settings.setSettingValue("KayTool.WorkflowPNG", 100); 
             }
         }
 
@@ -28,43 +34,15 @@ app.registerExtension({
                     body: JSON.stringify({ [key]: value })
                 });
             } catch (e) {
-                console.error("[Kaytool] Failed to save settings:", e);
-            }
-        }
-        
-        async function getLogoList() {
-            try {
-                const response = await fetch("/kaytool/logo_list");
-                const data = await response.json();
-                return data.files || [];
-            } catch (e) {
-                console.error("[Kaytool] Failed to load logo list:", e);
-                return [];
-            }
-        }
-        
-        function updateFavicon(value) {
-            let link = document.querySelector("link[rel='icon']");
-            if (!link) {
-                link = document.createElement("link");
-                link.rel = "icon";
-                document.head.appendChild(link);
-            }
-            if (value === "none") {
-                link.href = "/favicon.ico";
-            } else {
-                link.href = `/kaytool/logo/${value}?${new Date().getTime()}`;
+                console.error("[KayTool] Failed to save settings:", e);
             }
         }
         
         await loadSettings();
         
-        const logoFiles = await getLogoList();
-        const logoOptions = ["none", ...logoFiles];
-        
         app.ui.settings.addSetting({
-            id: "Kaytool.ShowRunOption",
-            name: "Show Kaytool “▶️ Run” Option in Right-Click Menu",
+            id: "KayTool.QuickAccess.ShowRunOption",
+            name: "Show “▶️ Run” options in node right-click menu",
             type: "boolean",
             defaultValue: true,
             onChange: (value) => {
@@ -73,8 +51,8 @@ app.registerExtension({
         });
 
         app.ui.settings.addSetting({
-            id: "Kaytool.ShowSetGetOptions",
-            name: "Show Kaytool “🛜 Set/Get” Options in Right-Click Menu",
+            id: "KayTool.QuickAccess.ShowSetGetOptions",
+            name: "Show “🛜 Set/Get” options in node right-click menu",
             type: "boolean",
             defaultValue: true,
             onChange: (value) => {
@@ -83,28 +61,55 @@ app.registerExtension({
         });
 
         app.ui.settings.addSetting({
-            id: "Kaytool.CustomWebLogo",
-            name: "Place LOGO Images in “/ComfyUI/custom_nodes/kaytool/logo”",
-            type: "combo",
-            options: logoOptions,
-            defaultValue: "none",
-            onChange: (value) => {
-                saveSettings("CustomWebLogo", value);
-                updateFavicon(value);
-            }
-        });
-
-        app.ui.settings.addSetting({
-            id: "Kaytool.ShiftR",
-            name: "Use “Shift+R” to quickly execute “▶️ Run” on the selected node.",
+            id: "KayTool.Hotkeys.ShiftR",
+            name: "Use “Shift+R” to quickly execute “▶️ Run” on the selected node",
             type: "boolean",
             defaultValue: true,
             onChange: (value) => {
                 saveSettings("ShiftR", value);
             }
         });
+
+        app.ui.settings.addSetting({
+            id: "KayTool.Menu.ShowWorkflowPNG",
+            name: "Show “Workflow PNG” Options in KayTool Menu",
+            type: "boolean",
+            defaultValue: true,
+            onChange: (value) => {
+                saveSettings("ShowWorkflowPNG", value);
+            }
+        });
+
+        app.ui.settings.addSetting({
+            id: "KayTool.Menu.ShowLogoOptions",
+            name: "Show “Logo” Options in KayTool Menu",
+            type: "boolean",
+            defaultValue: true,
+            onChange: (value) => {
+                saveSettings("ShowLogoOptions", value);
+            }
+        });
+
+        app.ui.settings.addSetting({
+            id: "KayTool.Menu.ShowStarToMe",
+            name: "Show “⭐️ Star to me” Option in KayTool Menu",
+            type: "boolean",
+            defaultValue: true,
+            onChange: (value) => {
+                saveSettings("ShowStarToMe", value);
+            }
+        });
+
         
-        const currentLogo = app.ui.settings.getSettingValue("Kaytool.CustomWebLogo", "none");
-        updateFavicon(currentLogo);
+        app.ui.settings.addSetting({
+            id: "KayTool.WorkflowPNG",
+            name: "Margin Size for Workflow PNG Export",
+            type: "slider",
+            defaultValue: 100,
+            attrs: { min: 0, max: 200, step: 10 },
+            onChange: (value) => {
+                saveSettings("MarginSize", value);
+            }
+        });
     }
 });

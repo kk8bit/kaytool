@@ -104,7 +104,7 @@ function initializeHooks() {
     };
 
     document.addEventListener('keydown', async (e) => {
-        const ShiftR = app.ui.settings.getSettingValue("Kaytool.ShiftR", true);
+        const ShiftR = app.ui.settings.getSettingValue("KayTool.Hotkeys.ShiftR", true);
         if (!ShiftR) return;
 
         if (e.shiftKey && e.key === 'R') {
@@ -183,7 +183,7 @@ function addGroupMenuHandler() {
                 const nodesToRun = Array.from(allNodesToRun);
                 const outputNodes = kayGetOutputNodes(nodesToRun);
 
-                const showRunOption = app.ui.settings.getSettingValue("Kaytool.ShowRunOption", true);
+                const showRunOption = app.ui.settings.getSettingValue("KayTool.QuickAccess.ShowRunOption", true);
                 const customMenu = [];
 
                 if (showRunOption) {
@@ -239,8 +239,8 @@ app.registerExtension({
                 const outputNodes = kayGetOutputNodes(nodesToRun);
 
                 const safeOptions = Array.isArray(options) ? options : [];
-                const showRunOption = app.ui.settings.getSettingValue("Kaytool.ShowRunOption", true);
-                const showSetGetOptions = app.ui.settings.getSettingValue("Kaytool.ShowSetGetOptions", true);
+                const showRunOption = app.ui.settings.getSettingValue("KayTool.QuickAccess.ShowRunOption", true);
+                const showSetGetOptions = app.ui.settings.getSettingValue("KayTool.QuickAccess.ShowSetGetOptions", true);
 
                 if (showSetGetOptions) {
                     safeOptions.unshift(

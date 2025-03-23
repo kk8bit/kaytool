@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.35.0] - 2025-03-23
+- 整理设置项
+- 增加右键`KayTool菜单`
+- 增加KayTool菜单下的`workflow PNG`导出功能
+- 支持workflow在设置菜单中自定义边宽
+- 增加KayTool菜单下的自定义Logo的上传、删除功能
+- 增加`Star to me`
+
 ## [0.32.0] - 2025-03-22
 - 增加`Shift+R`快捷键快速运行节点(可通过KayTool设置关闭)
 - 增加`image_mask_composer`节点

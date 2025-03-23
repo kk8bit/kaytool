@@ -2,5 +2,9 @@
   "ShowRunOption": true,
   "ShowSetGetOptions": true,
   "CustomWebLogo": "mario.png",
-  "ShiftR": true
+  "ShiftR": true,
+  "ShowLogoOptions": true,
+  "ShowWorkflowPNG": true,
+  "ShowStarToMe": true,
+  "MarginSize": 100
 }
