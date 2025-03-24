@@ -11,21 +11,18 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 ![preview_custom_save_image_node](https://github.com/user-attachments/assets/92ef9b39-97f2-4076-903e-79ce7a7375ea)
 
 ## 当前功能 Current Features
-
 **📌 所有 KayTool 节点包用到的资源都在 `ComfyUI/custom_nodes/kaytool` 文件夹内。| All KayTool node packages use resources in the `ComfyUI/custom_nodes/kaytool` folder.**
-
+---
 
 ### workflow PNG功能 Workflow Export to PNG
 - 支持在右键菜单中`KayTool-workflow PNG`将当前工作流节点地图保存为PNG格式并内嵌工作流信息。
   Supports saving the current workflow node map as a PNG format and embedding workflow information in the right-click menu.
 
+---
+
 ### 自定义ComfyUI Logo功能 Custom ComfyUI Logo
-- 支持在右键菜单中`KayTool-Web Logo`中上传、设定、删除等功能管理Logo文件。
-  Supports uploading, setting, and deleting logo files in the right-click menu.
 - 在设置菜单中（KayTool）自定义 ComfyUI 的 Logo，支持 PNG、JPG、JPEG 格式。
   Customize the ComfyUI Logo in the settings menu (KayTool), supporting PNG, JPG, and JPEG formats.
-- 将 LOGO 文件放置在“/ComfyUI/custom_nodes/kaytool/logo”文件夹。
-  Place the LOGO file in the "/ComfyUI/custom_nodes/kaytool/logo" folder.
 
 ---
 

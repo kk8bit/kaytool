@@ -3,7 +3,6 @@ import { app } from "../../../scripts/app.js";
 // Based on diffus3's SetGet: https://github.com/diffus3/ComfyUI-extensions
 // Inspired by: https://github.com/kijai/ComfyUI-KJNodes
 
-console.log("[KayTool] Loading 𝙆 🛜Set and 𝙆 🛜Get extension");
 
 const LGraphNode = LiteGraph.LGraphNode;
 
@@ -19,7 +18,6 @@ function showAlert(message) {
 app.registerExtension({
     name: "KayTool.SetGet",
     registerCustomNodes() {
-        console.log("[KayTool] Registering 𝙆 🛜Set and 𝙆 🛜Get");
 
         class KaySetNode extends LGraphNode {
             defaultVisibility = true;
@@ -29,8 +27,11 @@ app.registerExtension({
             constructor(title) {
                 super(title);
 
-                this.color = "#000";
-                this.bgcolor = "#000";
+                // 从 settings 获取当前前景色和背景色
+                const fgColor = app.ui.settings.getSettingValue("KayTool.SetGetForegroundColor");
+                const bgColor = app.ui.settings.getSettingValue("KayTool.SetGetBackgroundColor");
+                this.color = "#" + fgColor;
+                this.bgcolor = "#" + bgColor;
 
                 if (!this.properties) {
                     this.properties = { "previousName": "" };
@@ -181,8 +182,11 @@ app.registerExtension({
             constructor(title) {
                 super(title);
 
-                this.color = "#000";
-                this.bgcolor = "#000";
+                // 从 settings 获取当前颜色，默认为 "#000000"
+                const fgColor = app.ui.settings.getSettingValue("KayTool.SetGetForegroundColor");
+                const bgColor = app.ui.settings.getSettingValue("KayTool.SetGetBackgroundColor");
+                this.color = "#" + fgColor;
+                this.bgcolor = "#" + bgColor;
 
                 if (!this.properties) this.properties = {};
                 this.properties.showOutputText = KayGetNode.defaultVisibility;

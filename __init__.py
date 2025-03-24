@@ -91,76 +91,27 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 
 WEB_DIRECTORY = "web"
 SETTINGS_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "settings.json")
-LOGO_DIR = os.path.dirname(os.path.realpath(__file__))
-VALID_EXTENSIONS = [".png", ".jpg", ".jpeg", ".ico"]
 
-async def load_settings(request):
-    if os.path.exists(SETTINGS_FILE):
-        with open(SETTINGS_FILE, "r") as f:
-            return web.json_response(json.load(f))
-    return web.json_response({"ShowRunOption": True, "ShowSetGetOptions": True, "CustomWebLogo": "none"})
+# async def load_settings(request):
+#     if os.path.exists(SETTINGS_FILE):
+#         with open(SETTINGS_FILE, "r") as f:
+#             return web.json_response(json.load(f))
+#     return web.json_response({"ShowRunOption": True, "ShowSetGetOptions": True})
 
-async def save_settings(request):
-    data = await request.json()
-    settings = {}
-    if os.path.exists(SETTINGS_FILE):
-        with open(SETTINGS_FILE, "r") as f:
-            settings = json.load(f)
-    settings.update(data)
-    with open(SETTINGS_FILE, "w") as f:
-        json.dump(settings, f, indent=2)
-    return web.Response(status=200)
+# async def save_settings(request):
+#     data = await request.json()
+#     settings = {}
+#     if os.path.exists(SETTINGS_FILE):
+#         with open(SETTINGS_FILE, "r") as f:
+#             settings = json.load(f)
+#     settings.update(data)
+#     with open(SETTINGS_FILE, "w") as f:
+#         json.dump(settings, f, indent=2)
+#     return web.Response(status=200)
 
-async def serve_logo_list(request):
-    logo_path = os.path.join(LOGO_DIR, "logo")
-    if os.path.exists(logo_path):
-        logo_files = [f for f in os.listdir(logo_path) if os.path.splitext(f)[1].lower() in VALID_EXTENSIONS]
-        return web.json_response({"files": logo_files})
-    return web.json_response({"files": []})
-
-async def upload_logo(request):
-    reader = await request.multipart()
-    field = await reader.next()
-    if field.name == "logo":
-        filename = field.filename
-        ext = os.path.splitext(filename)[1].lower()
-        if ext in VALID_EXTENSIONS:
-            logo_path = os.path.join(LOGO_DIR, "logo")
-            os.makedirs(logo_path, exist_ok=True)
-            file_path = os.path.join(logo_path, filename)
-            with open(file_path, "wb") as f:
-                while True:
-                    chunk = await field.read_chunk()
-                    if not chunk:
-                        break
-                    f.write(chunk)
-            return web.Response(status=200)
-        else:
-            return web.Response(status=400, text="Invalid file extension")
-    return web.Response(status=400, text="No file uploaded")
-
-async def delete_logo(request):
-    data = await request.json()
-    filename = data.get("filename")
-    if not filename:
-        return web.Response(status=400, text="No filename provided")
-    
-    logo_path = os.path.join(LOGO_DIR, "logo", filename)
-    if os.path.exists(logo_path) and os.path.splitext(filename)[1].lower() in VALID_EXTENSIONS:
-        try:
-            os.remove(logo_path)
-            return web.Response(status=200)
-        except Exception as e:
-            return web.Response(status=500, text=f"Failed to delete file: {str(e)}")
-    return web.Response(status=404, text="File not found")
-
-import server
-app = server.PromptServer.instance
-app.app.add_routes([
-    web.get("/kaytool/load_settings", load_settings),
-    web.post("/kaytool/save_settings", save_settings),
-    web.get("/kaytool/logo_list", serve_logo_list),
-    web.post("/kaytool/upload_logo", upload_logo),
-    web.post("/kaytool/delete_logo", delete_logo),
-    web.static("/kaytool/logo", os.path.join(LOGO_DIR, "logo"))
-])
+# import server
+# app = server.PromptServer.instance
+# app.app.add_routes([
+#     web.get("/kaytool/load_settings", load_settings),
+#     web.post("/kaytool/save_settings", save_settings),
+# ])

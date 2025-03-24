@@ -9,7 +9,7 @@ class KayWorkflowImage {
     extension = "png";
 
     getBounds() {
-        const marginSize = app.ui.settings.getSettingValue("KayTool.WorkflowPNG", 100); 
+        const marginSize = app.ui.settings.getSettingValue("KayTool.WorkflowPNG");
         const bounds = app.graph._nodes.reduce(
             (p, node) => {
                 if (node.pos[0] < p[0]) p[0] = node.pos[0];
@@ -23,7 +23,7 @@ class KayWorkflowImage {
             },
             [99999, 99999, -99999, -99999]
         );
-        bounds[0] -= marginSize; 
+        bounds[0] -= marginSize;
         bounds[1] -= marginSize;
         bounds[2] += marginSize;
         bounds[3] += marginSize;
@@ -45,7 +45,8 @@ class KayWorkflowImage {
         app.canvas.canvas.width = this.state.width;
         app.canvas.canvas.height = this.state.height;
         app.canvas.ds.offset = this.state.offset;
-        app.canvas.canvas.getContext('2d').setTransform(this.state.transform);
+        app.canvas.canvas.getContext("2d").setTransform(this.state.transform);
+        app.canvas.draw(true, true);  
     }
 
     updateView(bounds) {
@@ -57,11 +58,12 @@ class KayWorkflowImage {
         app.canvas.canvas.getContext("2d").setTransform(scale, 0, 0, scale, 0, 0);
     }
 
+
     getDrawTextConfig(_, widget) {
         return {
-            x: 10,
-            y: widget.last_y + 10,
-            resetTransform: false,
+            x: parseInt(widget.inputEl.style.left) || 10, 
+            y: parseInt(widget.inputEl.style.top) || widget.last_y + 10,
+            resetTransform: true, 
         };
     }
 
@@ -73,8 +75,7 @@ class KayWorkflowImage {
         getDrawTextConfig = null;
         const blob = await this.getBlob(includeWorkflow ? JSON.stringify(app.graph.serialize()) : undefined);
         this.restoreState();
-        app.canvas.draw(true, true);
-        this.download(blob);
+        if (blob) this.download(blob);
     }
 
     download(blob) {
@@ -87,7 +88,7 @@ class KayWorkflowImage {
         });
         document.body.append(a);
         a.click();
-        setTimeout(function () {
+        setTimeout(() => {
             a.remove();
             window.URL.revokeObjectURL(url);
         }, 0);
@@ -148,6 +149,11 @@ class KayWorkflowImage {
     async getBlob(workflow) {
         return new Promise((resolve) => {
             app.canvasEl.toBlob(async (blob) => {
+                if (!blob) {
+                    console.error("Failed to generate blob from canvas");
+                    resolve(null);
+                    return;
+                }
                 if (workflow) {
                     const buffer = await blob.arrayBuffer();
                     const typedArr = new Uint8Array(buffer);
@@ -167,7 +173,7 @@ class KayWorkflowImage {
                     blob = new Blob([result], { type: "image/png" });
                 }
                 resolve(blob);
-            });
+            }, "image/png");
         });
     }
 }
@@ -175,25 +181,42 @@ class KayWorkflowImage {
 app.registerExtension({
     name: "KayTool.WorkflowPNG",
     init() {
+
         function wrapText(context, text, x, y, maxWidth, lineHeight) {
             const words = text.split(" ");
             let line = "";
-            for (const word of words) {
-                let testLine = line + word + " ";
-                let metrics = context.measureText(testLine);
-                if (metrics.width > maxWidth && line.length > 0) {
-                    context.fillText(line, x, y);
-                    line = word + " ";
-                    y += lineHeight;
+            let currentY = y;
+
+            for (let i = 0; i < words.length; i++) {
+                let test = words[i];
+                let metrics = context.measureText(test);
+                while (metrics.width > maxWidth) {
+                    test = test.substring(0, test.length - 1);
+                    metrics = context.measureText(test);
+                }
+                if (words[i] !== test) {
+                    words.splice(i + 1, 0, words[i].substr(test.length));
+                    words[i] = test;
+                }
+
+                const testLine = line + words[i] + " ";
+                metrics = context.measureText(testLine);
+
+                if (metrics.width > maxWidth && i > 0) {
+                    context.fillText(line, x, currentY);
+                    line = words[i] + " ";
+                    currentY += lineHeight;
                 } else {
                     line = testLine;
                 }
             }
-            context.fillText(line, x, y);
+            context.fillText(line, x, currentY);
+            return currentY + lineHeight; 
         }
+
         const stringWidget = ComfyWidgets.STRING;
-        ComfyWidgets.STRING = function () {
-            const widget = stringWidget.apply(this, arguments);
+        ComfyWidgets.STRING = function (node, inputName, inputData, appInstance) {
+            const widget = stringWidget.call(this, node, inputName, inputData, appInstance);
             if (widget.widget && widget.widget.type === "customtext") {
                 const originalDraw = widget.widget.draw;
                 widget.widget.draw = function (ctx) {
@@ -209,18 +232,22 @@ app.registerExtension({
                         const style = document.defaultView.getComputedStyle(this.inputEl, null);
                         const x = config.x;
                         const y = config.y;
-                        const width = parseInt(this.inputEl.style.width);
-                        const height = parseInt(this.inputEl.style.height);
-                        ctx.fillStyle = style.getPropertyValue("background-color");
+                        const width = parseInt(this.inputEl.style.width) || 100;
+                        const height = parseInt(this.inputEl.style.height) || 20;
+                        ctx.fillStyle = style.getPropertyValue("background-color") || "#000000";
                         ctx.fillRect(x, y, width, height);
-                        ctx.fillStyle = style.getPropertyValue("color");
-                        ctx.font = style.getPropertyValue("font");
+                        ctx.fillStyle = style.getPropertyValue("color") || "#FFFFFF";
+                        ctx.font = style.getPropertyValue("font") || "12px sans-serif";
                         const lineHeight = transform.d * 12;
                         const lines = this.inputEl.value.split("\n");
                         let currentY = y;
                         for (const line of lines) {
-                            currentY += lineHeight;
-                            wrapText(ctx, line, x + 4, currentY, width, lineHeight);
+                            currentY = wrapText(ctx, line, x + 4, currentY + lineHeight, width - 8, lineHeight);
+                        }
+                        const textHeight = currentY - y + lineHeight;
+                        if (textHeight > height) {
+                            ctx.fillStyle = style.getPropertyValue("background-color") || "#000000";
+                            ctx.fillRect(x, y, width, textHeight);
                         }
                         ctx.restore();
                     }
@@ -232,22 +259,21 @@ app.registerExtension({
     setup() {
         const orig = LGraphCanvas.prototype.getCanvasMenuOptions;
         LGraphCanvas.prototype.getCanvasMenuOptions = function () {
-            const options = orig.apply(this, arguments);
-            const showWorkflowPNG = app.ui.settings.getSettingValue("KayTool.Menu.ShowWorkflowPNG", true);
+            const options = orig.apply(this, arguments) || [];
+            const showWorkflowPNG = app.ui.settings.getSettingValue("KayTool.ShowWorkflowPNG");
             if (showWorkflowPNG) {
-                
-                let kaytoolMenu = options.find(opt => opt?.content === "KayTool");
+                const newOptions = [...options];
+                let kaytoolMenu = newOptions.find(opt => opt && opt.content === "KayTool");
                 if (!kaytoolMenu) {
-                    
                     kaytoolMenu = {
                         content: "KayTool",
                         submenu: {
                             options: []
                         }
                     };
-                    options.push(null, kaytoolMenu);
+                    newOptions.push(null, kaytoolMenu);
                 }
-                
+                kaytoolMenu.submenu.options = kaytoolMenu.submenu.options || [];
                 kaytoolMenu.submenu.options.push({
                     content: "workflow PNG",
                     submenu: {
@@ -259,13 +285,13 @@ app.registerExtension({
                                 },
                             },
                             {
-                                content: "PNG",
+                                content: "Export PNG",
                                 callback: () => {
                                     new KayWorkflowImage().export(true);
                                 },
                             },
                             {
-                                content: "PNG (no workflow)",
+                                content: "Export PNG (no workflow)",
                                 callback: () => {
                                     new KayWorkflowImage().export();
                                 },
@@ -273,6 +299,7 @@ app.registerExtension({
                         ],
                     },
                 });
+                return newOptions;
             }
             return options;
         };
