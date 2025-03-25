@@ -1,0 +1,30 @@
+{
+  "KayTool_ShowRunOption": {
+    "name": "Afficher l'option '▶️ Run' dans le menu contextuel du nœud"
+  },
+  "KayTool_ShowSetGetOptions": {
+    "name": "Afficher les options '🛜 Set/Get' dans le menu contextuel du nœud"
+  },
+  "KayTool_ShiftR": {
+    "name": "Utiliser le raccourci 'Shift+R' pour exécuter rapidement '▶️ Run' sur les nœuds sélectionnés"
+  },
+  "KayTool_ShowWorkflowPNG": {
+    "name": "Afficher l'option 'Workflow PNG' dans le menu contextuel"
+  },
+  "KayTool_ShowStarToMe": {
+    "name": "Afficher l'option '⭐️ Star to me' dans le menu contextuel"
+  },
+  "KayTool_WorkflowPNG": {
+    "name": "Taille de la marge pour l'exportation Workflow PNG"
+  },
+  "KayTool_SetGetForegroundColor": {
+    "name": "Ajuster la couleur du nœud '🛜 Set/Get'"
+  },
+  "KayTool_SetGetBackgroundColor": {
+    "name": "Ajuster la couleur du titre '🛜 Set/Get'"
+  },
+  "KayTool_CustomWebLogo": {
+    "name": "Le fichier doit être < 1 Mo",
+    "tooltip": "Ceci est une fonctionnalité test, le fichier doit être < 1 Mo, sinon il pourrait ne pas s'afficher"
+  }
+}

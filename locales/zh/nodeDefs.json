@@ -1,0 +1,588 @@
+{
+    "Display_Any": {
+      "display_name": "𝙆 显示任何数据",
+      "inputs": {
+        "input": {
+          "name": "输入"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "字符串"
+        }
+      }
+    },
+    "AB_Images": {
+        "display_name": "𝙆 ab图像对比",
+        "inputs": {
+          "a": {
+            "name": "a"
+          },
+          "b": {
+            "name": "b"
+          }
+        }
+      },
+      "Abc_Math": {
+        "display_name": "𝙆 abc数学",
+        "inputs": {
+          "value": {
+            "name": "表达式"
+          },
+          "a": {
+            "name": "a"
+          },
+          "b": {
+            "name": "b"
+          },
+          "c": {
+            "name": "c"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "整数"
+          },
+          "1": {
+            "name": "浮点"
+          }
+        }
+      },
+      "AIO_Translater": {
+        "display_name": "𝙆 AI翻译器",
+        "inputs": {
+          "Text": {
+            "name": "可输入任何语言"
+          },
+          "To": {
+            "name": "目标语言"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "文本"
+          }
+        }
+      },
+      "Baidu_Translater": {
+        "display_name": "𝙆 百度AI翻译器",
+        "inputs": {
+          "Text_A": {
+            "name": "文本A"
+          },
+          "Text_B": {
+            "name": "文本B"
+          },
+          "Translate": {
+            "name": "启用翻译"
+          },
+          "From": {
+            "name": "源语言"
+          },
+          "To": {
+            "name": "目标语言"
+          },
+          "ID": {
+            "name": "ID"
+          },
+          "Key": {
+            "name": "密钥"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "A"
+          },
+          "1": {
+            "name": "B"
+          }
+        }
+      },
+      "Kay_BiRefNet_Loader": {
+        "display_name": "𝙆 BiRefNet加载",
+        "inputs": {
+          "model": {
+            "name": "模型"
+          },
+          "providers": {
+            "name": "设备"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "REMOVE_BG"
+          }
+        }
+      },
+      "Color_Adjustment": {
+        "display_name": "𝙆 色彩调整",
+        "inputs": {
+          "image": {
+            "name": "图像"
+          },
+          "exposure": {
+            "name": "曝光"
+          },
+          "contrast": {
+            "name": "对比度"
+          },
+          "temperature": {
+            "name": "色温"
+          },
+          "tint": {
+            "name": "色调"
+          },
+          "saturation": {
+            "name": "饱和度"
+          },
+          "style": {
+            "name": "滤镜风格"
+          },
+          "strength": {
+            "name": "强度"
+          },
+          "All": {
+            "name": "应用所有滤镜"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "图像"
+          }
+        }
+      },
+      "Custom_Save_Image": {
+        "display_name": "𝙆 自定义保存图像",
+        "inputs": {
+          "preview_only": {
+            "name": "仅预览"
+          },
+          "images": {
+            "name": "图像"
+          },
+          "filename_prefix": {
+            "name": "文件名前缀"
+          },
+          "color_profile": {
+            "name": "色彩配置文件"
+          },
+          "format": {
+            "name": "格式"
+          },
+          "jpg_quality": {
+            "name": "JPG质量"
+          },
+          "author": {
+            "name": "作者"
+          },
+          "copyright_info": {
+            "name": "版权信息"
+          },
+          "save_metadata": {
+            "name": "保存元数据"
+          }
+        },
+        "outputs": {}
+      },
+      "Image_Composer": {
+        "display_name": "𝙆 图像拼合",
+        "inputs": {
+          "image_a": {
+            "name": "图像A"
+          },
+          "mask_a": {
+            "name": "遮罩A"
+          },
+          "image_b": {
+            "name": "图像B"
+          },
+          "position": {
+            "name": "位置"
+          },
+          "top": {
+            "name": "上"
+          },
+          "mask_b": {
+            "name": "遮罩B"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "拼合数据"
+          },
+          "1": {
+            "name": "图像"
+          },
+          "2": {
+            "name": "遮罩"
+          }
+        }
+      },
+      "Image_Cropper": {
+        "display_name": "𝙆 图像裁剪",
+        "inputs": {
+          "image_composer_data": {
+            "name": "DATA"
+          },
+          "image": {
+            "name": "图像"
+          },
+          "target": {
+            "name": "目标"
+          },
+          "mask": {
+            "name": "遮罩"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "图像"
+          },
+          "1": {
+            "name": "遮罩"
+          }
+        }
+      },
+      "Image_Mask_Composer": {
+        "display_name": "𝙆 图像遮罩合成",
+        "inputs": {
+          "image": {
+            "name": "图像"
+          },
+          "mask": {
+            "name": "遮罩"
+          },
+          "background_color": {
+            "name": "背景颜色"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "图像"
+          }
+        }
+      },
+      "Image_Resizer": {
+        "display_name": "𝙆 图像尺寸调整",
+        "inputs": {
+          "image": {
+            "name": "图像"
+          },
+          "width": {
+            "name": "宽度"
+          },
+          "height": {
+            "name": "高度"
+          },
+          "keep_ratio": {
+            "name": "保持比例"
+          },
+          "mask": {
+            "name": "遮罩"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "图像"
+          },
+          "1": {
+            "name": "遮罩"
+          }
+        }
+      },
+      "Image_Size_Extractor": {
+        "display_name": "𝙆 获取图像尺寸",
+        "inputs": {
+          "image": {
+            "name": "图像"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "宽度"
+          },
+          "1": {
+            "name": "高度"
+          }
+        }
+      },
+      "Load_Image_Folder": {
+        "display_name": "𝙆 加载图像文件夹",
+        "inputs": {
+          "path": {
+            "name": "文件夹路径"
+          },
+          "subfolders": {
+            "name": "包含子文件夹"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "图像"
+          },
+          "1": {
+            "name": "遮罩"
+          }
+        }
+      },
+      "Mask_Blur_Plus": {
+        "display_name": "𝙆 遮罩处理+",
+        "inputs": {
+          "invert_mask": {
+            "name": "反转遮罩"
+          },
+          "mask": {
+            "name": "遮罩"
+          },
+          "blur": {
+            "name": "模糊强度"
+          },
+          "expand": {
+            "name": "扩展/收缩"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "遮罩"
+          }
+        }
+      },
+      "Mask_Filler": {
+        "display_name": "𝙆 遮罩填充",
+        "inputs": {
+          "mask": {
+            "name": "遮罩"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "遮罩"
+          }
+        }
+      },
+      "Preview_Mask_Plus": {
+        "display_name": "𝙆 遮罩预览+",
+        "inputs": {
+          "invert_mask": {
+            "name": "反转遮罩"
+          },
+          "Preview": {
+            "name": "预览模式"
+          },
+          "image": {
+            "name": "图像"
+          },
+          "mask": {
+            "name": "遮罩"
+          }
+        },
+        "outputs": {}
+      },
+      "Preview_Mask": {
+        "display_name": "𝙆 遮罩预览",
+        "inputs": {
+          "mask": {
+            "name": "遮罩"
+          }
+        }
+      },
+      "RemBG_Loader": {
+        "display_name": "𝙆 RemBG加载",
+        "inputs": {
+          "model": {
+            "name": "模型"
+          },
+          "providers": {
+            "name": "设备"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "背景移除"
+          }
+        }
+      },
+      "Remove_BG": {
+        "display_name": "𝙆 背景移除",
+        "inputs": {
+          "remove_bg": {
+            "name": "remove_bg"
+          },
+          "image": {
+            "name": "图像"
+          },
+          "invert_mask": {
+            "name": "反转遮罩"
+          },
+          "Preview": {
+            "name": "预览模式"
+          },
+          "Blur": {
+            "name": "模糊强度"
+          },
+          "Expand": {
+            "name": "扩展/收缩"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "处理后的图像"
+          },
+          "1": {
+            "name": "遮罩"
+          }
+        }
+      },
+      "Slider_10": {
+        "display_name": "𝙆 滑块10",
+        "inputs": {
+          "value": {
+            "name": "值"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "整数"
+          }
+        }
+      },
+      "Slider_100": {
+        "display_name": "𝙆 滑块100",
+        "inputs": {
+          "value": {
+            "name": "值"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "整数"
+          }
+        }
+      },
+      "Slider_1000": {
+        "display_name": "𝙆 滑块1000",
+        "inputs": {
+          "value": {
+            "name": "值"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "整数"
+          }
+        }
+      },
+      "Strong_Prompt": {
+        "display_name": "𝙆 大壮提示词",
+        "inputs": {
+          "positive": {
+            "name": "正向提示词"
+          },
+          "negative": {
+            "name": "负向提示词"
+          },
+          "clip": {
+            "name": "CLIP模型"
+          },
+          "Negative_Out": {
+            "name": "启用负向提示词"
+          },
+          "Strong_Prompt_1": {
+            "name": "预设_1"
+          },
+          "Strong_Prompt_2": {
+            "name": "预设_2"
+          },
+          "Strong_Prompt_3": {
+            "name": "预设_3"
+          },
+          "Strong_Prompt_4": {
+            "name": "预设_4"
+          },
+          "Strong_Prompt_5": {
+            "name": "预设_5"
+          },
+          "Strong_Prompt_6": {
+            "name": "预设_6"
+          },
+          "Strong_Prompt_Switch": {
+            "name": "启用预设"
+          },
+          "IDs": {
+            "name": "预设ID"
+          },
+          "IDs_Switch": {
+            "name": "启用ID"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "正面条件"
+          },
+          "1": {
+            "name": "负面条件"
+          },
+          "2": {
+            "name": "正向提示词"
+          },
+          "3": {
+            "name": "负向提示词"
+          }
+        }
+      },
+      "Tencent_Translater": {
+        "display_name": "𝙆 腾讯AI翻译",
+        "inputs": {
+          "Text_A": {
+            "name": "文本A"
+          },
+          "Text_B": {
+            "name": "文本B"
+          },
+          "Translate": {
+            "name": "启用翻译"
+          },
+          "From": {
+            "name": "源语言"
+          },
+          "To": {
+            "name": "目标语言"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "文本A"
+          },
+          "1": {
+            "name": "文本B"
+          }
+        }
+      },
+      "Text": {
+        "display_name": "𝙆 文本",
+        "inputs": {
+          "text": {
+            "name": "文本"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "字符串"
+          }
+        }
+      },
+      "To_Int": {
+        "display_name": "𝙆 转换为整数",
+        "inputs": {
+          "input": {
+            "name": "输入"
+          }
+        },
+        "outputs": {
+          "0": {
+            "name": "整数"
+          }
+        }
+      }
+
+  }

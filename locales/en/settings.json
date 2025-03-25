@@ -1,0 +1,30 @@
+{
+  "KayTool_ShowRunOption": {
+    "name": "Show '▶️ Run' option in node right-click menu"
+  },
+  "KayTool_ShowSetGetOptions": {
+    "name": "Show '🛜 Set/Get' options in node right-click menu"
+  },
+  "KayTool_ShiftR": {
+    "name": "Use 'Shift+R' shortcut to quickly execute '▶️ Run' on selected nodes"
+  },
+  "KayTool_ShowWorkflowPNG": {
+    "name": "Show 'Workflow PNG' option in right-click menu"
+  },
+  "KayTool_ShowStarToMe": {
+    "name": "Show '⭐️ Star to me' option in right-click menu"
+  },
+  "KayTool_WorkflowPNG": {
+    "name": "Margin size for Workflow PNG export"
+  },
+  "KayTool_SetGetForegroundColor": {
+    "name": "Set '🛜 Set/Get' Node color"
+  },
+  "KayTool_SetGetBackgroundColor": {
+    "name": "Set '🛜 Set/Get' Title color"
+  },
+  "KayTool_CustomWebLogo": {
+    "name": "File must be < 1MB",
+    "tooltip": "This is a test feature, the file must be < 1MB, otherwise it may not be displayed"
+  }
+}

@@ -58,7 +58,6 @@ class KayWorkflowImage {
         app.canvas.canvas.getContext("2d").setTransform(scale, 0, 0, scale, 0, 0);
     }
 
-
     getDrawTextConfig(_, widget) {
         return {
             x: parseInt(widget.inputEl.style.left) || 10, 
@@ -181,7 +180,6 @@ class KayWorkflowImage {
 app.registerExtension({
     name: "KayTool.WorkflowPNG",
     init() {
-
         function wrapText(context, text, x, y, maxWidth, lineHeight) {
             const words = text.split(" ");
             let line = "";
@@ -257,9 +255,9 @@ app.registerExtension({
         };
     },
     setup() {
-        const orig = LGraphCanvas.prototype.getCanvasMenuOptions;
+        const originalGetCanvasMenuOptions = LGraphCanvas.prototype.getCanvasMenuOptions;
         LGraphCanvas.prototype.getCanvasMenuOptions = function () {
-            const options = orig.apply(this, arguments) || [];
+            const options = originalGetCanvasMenuOptions.apply(this, arguments) || [];
             const showWorkflowPNG = app.ui.settings.getSettingValue("KayTool.ShowWorkflowPNG");
             if (showWorkflowPNG) {
                 const newOptions = [...options];
@@ -274,31 +272,36 @@ app.registerExtension({
                     newOptions.push(null, kaytoolMenu);
                 }
                 kaytoolMenu.submenu.options = kaytoolMenu.submenu.options || [];
-                kaytoolMenu.submenu.options.push({
-                    content: "workflow PNG",
-                    submenu: {
-                        options: [
-                            {
-                                content: "Import",
-                                callback: () => {
-                                    KayWorkflowImage.import();
+                const workflowOptionExists = kaytoolMenu.submenu.options.some(
+                    opt => opt && opt.content === "workflow PNG"
+                );
+                if (!workflowOptionExists) {
+                    kaytoolMenu.submenu.options.push({
+                        content: "workflow PNG",
+                        submenu: {
+                            options: [
+                                {
+                                    content: "Import",
+                                    callback: () => {
+                                        KayWorkflowImage.import();
+                                    },
                                 },
-                            },
-                            {
-                                content: "Export PNG",
-                                callback: () => {
-                                    new KayWorkflowImage().export(true);
+                                {
+                                    content: "Export PNG",
+                                    callback: () => {
+                                        new KayWorkflowImage().export(true);
+                                    },
                                 },
-                            },
-                            {
-                                content: "Export PNG (no workflow)",
-                                callback: () => {
-                                    new KayWorkflowImage().export();
+                                {
+                                    content: "Export PNG (no workflow)",
+                                    callback: () => {
+                                        new KayWorkflowImage().export();
+                                    },
                                 },
-                            },
-                        ],
-                    },
-                });
+                            ],
+                        },
+                    });
+                }
                 return newOptions;
             }
             return options;

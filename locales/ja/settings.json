@@ -1,0 +1,30 @@
+{
+  "KayTool_ShowRunOption": {
+    "name": "ノード右クリックメニューに「▶️ Run」オプションを表示"
+  },
+  "KayTool_ShowSetGetOptions": {
+    "name": "ノード右クリックメニューに「🛜 Set/Get」オプションを表示"
+  },
+  "KayTool_ShiftR": {
+    "name": "Shift+Rで選択ノードの「▶️ Run」を高速実行"
+  },
+  "KayTool_ShowWorkflowPNG": {
+    "name": "右クリックメニューに「Workflow PNG」オプションを表示"
+  },
+  "KayTool_ShowStarToMe": {
+    "name": "右クリックメニューに「⭐️ Star to me」オプションを表示"
+  },
+  "KayTool_WorkflowPNG": {
+    "name": "ワークフローPNGエクスポートの余白サイズ"
+  },
+  "KayTool_SetGetForegroundColor": {
+    "name": "「🛜 Set/Get」ノードの色を調整"
+  },
+  "KayTool_SetGetBackgroundColor": {
+    "name": "「🛜 Set/Get」タイトル色を調整"
+  },
+  "KayTool_CustomWebLogo": {
+    "name": "ファイルは1MB未満である必要があります",
+    "tooltip": "これはテスト機能です。ファイルは1MB未満である必要があります。そうでない場合、表示されない可能性があります。"
+  }
+}

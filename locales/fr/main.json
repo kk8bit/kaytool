@@ -1,0 +1,15 @@
+{
+  "settingsCategories": {
+    "▶️ Run": "▶️ Run Réglages",
+    "🛜 Set/Get": "🛜 Set/Get Réglages",
+    "KayTool Menu": "Menu contextuel",
+    "Custom Web Logo (BETA)": "Logo web personnalisé (BÊTA)"
+  },
+  "nodeCategories": {
+    "Image": "Image",
+    "Translate": "Traducteur",
+    "Slider": "Contrôleur de curseur",
+    "Remove BG": "Supprimer l'arrière-plan",
+    "Mask": "Masque"
+  }
+}

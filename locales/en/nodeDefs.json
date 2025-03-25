@@ -1,0 +1,431 @@
+{
+  "Display_Any": {
+      "display_name": "𝙆 Display Any",
+      "inputs": {
+          "input": {
+              "name": "input"
+          }
+      }
+  },
+  "AB_Images": {
+      "display_name": "𝙆 AB Images",
+      "inputs": {
+          "a": {
+              "name": "a"
+          },
+          "b": {
+              "name": "b"
+          }
+      }
+  },
+  "Abc_Math": {
+      "display_name": "𝙆 Abc Math",
+      "inputs": {
+          "value": {
+              "name": "value"
+          },
+          "a": {
+              "name": "a"
+          },
+          "b": {
+              "name": "b"
+          },
+          "c": {
+              "name": "c"
+          }
+      }
+  },
+  "AIO_Translater": {
+      "display_name": "𝙆 AIO Translater",
+      "inputs": {
+          "Text": {
+              "name": "Text"
+          },
+          "To": {
+              "name": "To"
+          }
+      }
+  },
+  "Baidu_Translater": {
+      "display_name": "𝙆 Baidu Translater",
+      "inputs": {
+          "Text_A": {
+              "name": "Text_A"
+          },
+          "Text_B": {
+              "name": "Text_B"
+          },
+          "Translate": {
+              "name": "Translate"
+          },
+          "From": {
+              "name": "From"
+          },
+          "To": {
+              "name": "To"
+          },
+          "ID": {
+              "name": "ID"
+          },
+          "Key": {
+              "name": "Key"
+          }
+      }
+  },
+  "Kay_BiRefNet_Loader": {
+      "display_name": "𝙆 BiRefNet Loader",
+      "inputs": {
+          "model": {
+              "name": "model"
+          },
+          "providers": {
+              "name": "providers"
+          }
+      }
+  },
+  "Color_Adjustment": {
+      "display_name": "𝙆 Color Adjustment",
+      "inputs": {
+          "image": {
+              "name": "image"
+          },
+          "exposure": {
+              "name": "exposure"
+          },
+          "contrast": {
+              "name": "contrast"
+          },
+          "temperature": {
+              "name": "temperature"
+          },
+          "tint": {
+              "name": "tint"
+          },
+          "saturation": {
+              "name": "saturation"
+          },
+          "style": {
+              "name": "style"
+          },
+          "strength": {
+              "name": "strength"
+          },
+          "All": {
+              "name": "All"
+          }
+      }
+  },
+  "Custom_Save_Image": {
+      "display_name": "𝙆 Custom Save Image",
+      "inputs": {
+          "preview_only": {
+              "name": "preview_only"
+          },
+          "images": {
+              "name": "images"
+          },
+          "filename_prefix": {
+              "name": "filename_prefix"
+          },
+          "color_profile": {
+              "name": "color_profile"
+          },
+          "format": {
+              "name": "format"
+          },
+          "jpg_quality": {
+              "name": "jpg_quality"
+          },
+          "author": {
+              "name": "author"
+          },
+          "copyright_info": {
+              "name": "copyright_info"
+          },
+          "save_metadata": {
+              "name": "save_metadata"
+          }
+      }
+  },
+  "Image_Composer": {
+      "display_name": "𝙆 Image Composer",
+      "inputs": {
+          "image_a": {
+              "name": "image_a"
+          },
+          "mask_a": {
+              "name": "mask_a"
+          },
+          "image_b": {
+              "name": "image_b"
+          },
+          "position": {
+              "name": "position"
+          },
+          "top": {
+              "name": "top"
+          },
+          "mask_b": {
+              "name": "mask_b"
+          }
+      }
+  },
+  "Image_Cropper": {
+      "display_name": "𝙆 Image Cropper",
+      "inputs": {
+          "image_composer_data": {
+              "name": "image_composer_data"
+          },
+          "image": {
+              "name": "image"
+          },
+          "target": {
+              "name": "target"
+          },
+          "mask": {
+              "name": "mask"
+          }
+      }
+  },
+  "Image_Mask_Composer": {
+      "display_name": "𝙆 Image Mask Composer",
+      "inputs": {
+          "image": {
+              "name": "image"
+          },
+          "mask": {
+              "name": "mask"
+          },
+          "background_color": {
+              "name": "background_color"
+          }
+      }
+  },
+  "Image_Resizer": {
+      "display_name": "𝙆 Image Resizer",
+      "inputs": {
+          "image": {
+              "name": "image"
+          },
+          "width": {
+              "name": "width"
+          },
+          "height": {
+              "name": "height"
+          },
+          "keep_ratio": {
+              "name": "keep_ratio"
+          },
+          "mask": {
+              "name": "mask"
+          }
+      }
+  },
+  "Image_Size_Extractor": {
+      "display_name": "𝙆 Image Size Extractor",
+      "inputs": {
+          "image": {
+              "name": "image"
+          }
+      }
+  },
+  "Load_Image_Folder": {
+      "display_name": "𝙆 Load Image Folder",
+      "inputs": {
+          "path": {
+              "name": "path"
+          },
+          "subfolders": {
+              "name": "subfolders"
+          }
+      }
+  },
+  "Mask_Blur_Plus": {
+      "display_name": "𝙆 Mask Blur Plus",
+      "inputs": {
+          "invert_mask": {
+              "name": "invert_mask"
+          },
+          "mask": {
+              "name": "mask"
+          },
+          "blur": {
+              "name": "blur"
+          },
+          "expand": {
+              "name": "expand"
+          }
+      }
+  },
+  "Mask_Filler": {
+      "display_name": "𝙆 Mask Filler",
+      "inputs": {
+          "mask": {
+              "name": "mask"
+          }
+      }
+  },
+  "Preview_Mask_Plus": {
+      "display_name": "𝙆 Preview Mask Plus",
+      "inputs": {
+          "invert_mask": {
+              "name": "invert_mask"
+          },
+          "Preview": {
+              "name": "Preview"
+          },
+          "image": {
+              "name": "image"
+          },
+          "mask": {
+              "name": "mask"
+          }
+      }
+  },
+  "Preview_Mask": {
+      "display_name": "𝙆 Preview Mask",
+      "inputs": {
+          "mask": {
+              "name": "mask"
+          }
+      }
+  },
+  "RemBG_Loader": {
+      "display_name": "𝙆 RemBG Loader",
+      "inputs": {
+          "model": {
+              "name": "model"
+          },
+          "providers": {
+              "name": "providers"
+          }
+      }
+  },
+  "Remove_BG": {
+      "display_name": "𝙆 Remove BG",
+      "inputs": {
+          "remove_bg": {
+              "name": "remove_bg"
+          },
+          "image": {
+              "name": "image"
+          },
+          "invert_mask": {
+              "name": "invert_mask"
+          },
+          "Preview": {
+              "name": "Preview"
+          },
+          "Blur": {
+              "name": "Blur"
+          },
+          "Expand": {
+              "name": "Expand"
+          }
+      }
+  },
+  "Slider_10": {
+      "display_name": "𝙆 Slider 10",
+      "inputs": {
+          "value": {
+              "name": "value"
+          }
+      }
+  },
+  "Slider_100": {
+      "display_name": "𝙆 Slider 100",
+      "inputs": {
+          "value": {
+              "name": "value"
+          }
+      }
+  },
+  "Slider_1000": {
+      "display_name": "𝙆 Slider 1000",
+      "inputs": {
+          "value": {
+              "name": "value"
+          }
+      }
+  },
+  "Strong_Prompt": {
+      "display_name": "𝙆 Strong Prompt",
+      "inputs": {
+          "positive": {
+              "name": "positive"
+          },
+          "negative": {
+              "name": "negative"
+          },
+          "clip": {
+              "name": "clip"
+          },
+          "Negative_Out": {
+              "name": "Negative_Out"
+          },
+          "Strong_Prompt_1": {
+              "name": "Strong_Prompt_1"
+          },
+          "Strong_Prompt_2": {
+              "name": "Strong_Prompt_2"
+          },
+          "Strong_Prompt_3": {
+              "name": "Strong_Prompt_3"
+          },
+          "Strong_Prompt_4": {
+              "name": "Strong_Prompt_4"
+          },
+          "Strong_Prompt_5": {
+              "name": "Strong_Prompt_5"
+          },
+          "Strong_Prompt_6": {
+              "name": "Strong_Prompt_6"
+          },
+          "Strong_Prompt_Switch": {
+              "name": "Strong_Prompt_Switch"
+          },
+          "IDs": {
+              "name": "IDs"
+          },
+          "IDs_Switch": {
+              "name": "IDs_Switch"
+          }
+      }
+  },
+  "Tencent_Translater": {
+      "display_name": "𝙆 Tencent Translater",
+      "inputs": {
+          "Text_A": {
+              "name": "Text_A"
+          },
+          "Text_B": {
+              "name": "Text_B"
+          },
+          "Translate": {
+              "name": "Translate"
+          },
+          "From": {
+              "name": "From"
+          },
+          "To": {
+              "name": "To"
+          }
+      }
+  },
+  "Text": {
+      "display_name": "𝙆 Text",
+      "inputs": {
+          "text": {
+              "name": "text"
+          }
+      }
+  },
+  "To_Int": {
+      "display_name": "𝙆 To Int",
+      "inputs": {
+          "input": {
+              "name": "input"
+          }
+      }
+  }
+}

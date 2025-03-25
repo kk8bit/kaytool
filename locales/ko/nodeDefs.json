@@ -1,0 +1,432 @@
+{
+    "Display_Any": {
+      "display_name": "𝙆 모든 데이터 표시",
+      "inputs": {
+        "input": {
+          "name": "입력"
+        }
+      }
+    },
+    "AB_Images": {
+        "display_name": "𝙆 ab 이미지 비교",
+        "inputs": {
+          "a": {
+            "name": "a"
+          },
+          "b": {
+            "name": "b"
+          }
+        }
+      },
+      "Abc_Math": {
+        "display_name": "𝙆 abc 수학",
+        "inputs": {
+          "value": {
+            "name": "표현식"
+          },
+          "a": {
+            "name": "a"
+          },
+          "b": {
+            "name": "b"
+          },
+          "c": {
+            "name": "c"
+          }
+        }
+      },
+      "AIO_Translater": {
+        "display_name": "𝙆 AI 번역기",
+        "inputs": {
+          "Text": {
+            "name": "모든 언어 입력 가능"
+          },
+          "To": {
+            "name": "대상 언어"
+          }
+        }
+      },
+      "Baidu_Translater": {
+        "display_name": "𝙆 바이두 AI 번역기",
+        "inputs": {
+          "Text_A": {
+            "name": "텍스트 A"
+          },
+          "Text_B": {
+            "name": "텍스트 B"
+          },
+          "Translate": {
+            "name": "번역 활성화"
+          },
+          "From": {
+            "name": "원본 언어"
+          },
+          "To": {
+            "name": "대상 언어"
+          },
+          "ID": {
+            "name": "ID"
+          },
+          "Key": {
+            "name": "키"
+          }
+        }
+      },
+      "Kay_BiRefNet_Loader": {
+        "display_name": "𝙆 BiRefNet 로더",
+        "inputs": {
+          "model": {
+            "name": "모델"
+          },
+          "providers": {
+            "name": "장치"
+          }
+        }
+      },
+      "Color_Adjustment": {
+        "display_name": "𝙆 색상 조정",
+        "inputs": {
+          "image": {
+            "name": "이미지"
+          },
+          "exposure": {
+            "name": "노출"
+          },
+          "contrast": {
+            "name": "대비"
+          },
+          "temperature": {
+            "name": "색온도"
+          },
+          "tint": {
+            "name": "색조"
+          },
+          "saturation": {
+            "name": "채도"
+          },
+          "style": {
+            "name": "필터 스타일"
+          },
+          "strength": {
+            "name": "강도"
+          },
+          "All": {
+            "name": "모든 필터 적용"
+          }
+        }
+      },
+      "Custom_Save_Image": {
+        "display_name": "𝙆 사용자 정의 이미지 저장",
+        "inputs": {
+          "preview_only": {
+            "name": "미리보기 전용"
+          },
+          "images": {
+            "name": "이미지"
+          },
+          "filename_prefix": {
+            "name": "파일 이름 접두사"
+          },
+          "color_profile": {
+            "name": "색상 프로필"
+          },
+          "format": {
+            "name": "형식"
+          },
+          "jpg_quality": {
+            "name": "JPG 품질"
+          },
+          "author": {
+            "name": "작성자"
+          },
+          "copyright_info": {
+            "name": "저작권 정보"
+          },
+          "save_metadata": {
+            "name": "메타데이터 저장"
+          }
+        }
+      },
+      "Image_Composer": {
+        "display_name": "𝙆 이미지 합성기",
+        "inputs": {
+          "image_a": {
+            "name": "이미지 A"
+          },
+          "mask_a": {
+            "name": "마스크 A"
+          },
+          "image_b": {
+            "name": "이미지 B"
+          },
+          "position": {
+            "name": "위치"
+          },
+          "top": {
+            "name": "상단"
+          },
+          "mask_b": {
+            "name": "마스크 B"
+          }
+        }
+      },
+      "Image_Cropper": {
+        "display_name": "𝙆 이미지 자르기",
+        "inputs": {
+          "image_composer_data": {
+            "name": "데이터"
+          },
+          "image": {
+            "name": "이미지"
+          },
+          "target": {
+            "name": "대상"
+          },
+          "mask": {
+            "name": "마스크"
+          }
+        }
+      },
+      "Image_Mask_Composer": {
+        "display_name": "𝙆 이미지 마스크 합성",
+        "inputs": {
+          "image": {
+            "name": "이미지"
+          },
+          "mask": {
+            "name": "마스크"
+          },
+          "background_color": {
+            "name": "배경색"
+          }
+        }
+      },
+      "Image_Resizer": {
+        "display_name": "𝙆 이미지 크기 조정",
+        "inputs": {
+          "image": {
+            "name": "이미지"
+          },
+          "width": {
+            "name": "너비"
+          },
+          "height": {
+            "name": "높이"
+          },
+          "keep_ratio": {
+            "name": "비율 유지"
+          },
+          "mask": {
+            "name": "마스크"
+          }
+        }
+      },
+      "Image_Size_Extractor": {
+        "display_name": "𝙆 이미지 크기 추출",
+        "inputs": {
+          "image": {
+            "name": "이미지"
+          }
+        }
+      },
+      "Load_Image_Folder": {
+        "display_name": "𝙆 이미지 폴더 로드",
+        "inputs": {
+          "path": {
+            "name": "폴더 경로"
+          },
+          "subfolders": {
+            "name": "하위 폴더 포함"
+          }
+        }
+      },
+      "Mask_Blur_Plus": {
+        "display_name": "𝙆 마스크 처리+",
+        "inputs": {
+          "invert_mask": {
+            "name": "마스크 반전"
+          },
+          "mask": {
+            "name": "마스크"
+          },
+          "blur": {
+            "name": "흐림 강도"
+          },
+          "expand": {
+            "name": "확장/축소"
+          }
+        }
+      },
+      "Mask_Filler": {
+        "display_name": "𝙆 마스크 채우기",
+        "inputs": {
+          "mask": {
+            "name": "마스크"
+          }
+        }
+      },
+      "Preview_Mask_Plus": {
+        "display_name": "𝙆 마스크 미리보기+",
+        "inputs": {
+          "invert_mask": {
+            "name": "마스크 반전"
+          },
+          "Preview": {
+            "name": "미리보기 모드"
+          },
+          "image": {
+            "name": "이미지"
+          },
+          "mask": {
+            "name": "마스크"
+          }
+        }
+      },
+      "Preview_Mask": {
+        "display_name": "𝙆 마스크 미리보기",
+        "inputs": {
+          "mask": {
+            "name": "마스크"
+          }
+        }
+      },
+      "RemBG_Loader": {
+        "display_name": "𝙆 RemBG 로더",
+        "inputs": {
+          "model": {
+            "name": "모델"
+          },
+          "providers": {
+            "name": "장치"
+          }
+        }
+      },
+      "Remove_BG": {
+        "display_name": "𝙆 배경 제거",
+        "inputs": {
+          "remove_bg": {
+            "name": "remove_bg"
+          },
+          "image": {
+            "name": "이미지"
+          },
+          "invert_mask": {
+            "name": "마스크 반전"
+          },
+          "Preview": {
+            "name": "미리보기 모드"
+          },
+          "Blur": {
+            "name": "흐림 강도"
+          },
+          "Expand": {
+            "name": "확장/축소"
+          }
+        }
+      },
+      "Slider_10": {
+        "display_name": "𝙆 슬라이더 10",
+        "inputs": {
+          "value": {
+            "name": "값"
+          }
+        }
+      },
+      "Slider_100": {
+        "display_name": "𝙆 슬라이더 100",
+        "inputs": {
+          "value": {
+            "name": "값"
+          }
+        }
+      },
+      "Slider_1000": {
+        "display_name": "𝙆 슬라이더 1000",
+        "inputs": {
+          "value": {
+            "name": "값"
+          }
+        }
+      },
+      "Strong_Prompt": {
+        "display_name": "𝙆 강력한 프롬프트",
+        "inputs": {
+          "positive": {
+            "name": "긍정적 프롬프트"
+          },
+          "negative": {
+            "name": "부정적 프롬프트"
+          },
+          "clip": {
+            "name": "CLIP 모델"
+          },
+          "Negative_Out": {
+            "name": "부정적 프롬프트 활성화"
+          },
+          "Strong_Prompt_1": {
+            "name": "사전 설정_1"
+          },
+          "Strong_Prompt_2": {
+            "name": "사전 설정_2"
+          },
+          "Strong_Prompt_3": {
+            "name": "사전 설정_3"
+          },
+          "Strong_Prompt_4": {
+            "name": "사전 설정_4"
+          },
+          "Strong_Prompt_5": {
+            "name": "사전 설정_5"
+          },
+          "Strong_Prompt_6": {
+            "name": "사전 설정_6"
+          },
+          "Strong_Prompt_Switch": {
+            "name": "사전 설정 활성화"
+          },
+          "IDs": {
+            "name": "사전 설정 ID"
+          },
+          "IDs_Switch": {
+            "name": "ID 활성화"
+          }
+        }
+      },
+      "Tencent_Translater": {
+        "display_name": "𝙆 텐센트 AI 번역",
+        "inputs": {
+          "Text_A": {
+            "name": "텍스트 A"
+          },
+          "Text_B": {
+            "name": "텍스트 B"
+          },
+          "Translate": {
+            "name": "번역 활성화"
+          },
+          "From": {
+            "name": "원본 언어"
+          },
+          "To": {
+            "name": "대상 언어"
+          }
+        }
+      },
+      "Text": {
+        "display_name": "𝙆 텍스트",
+        "inputs": {
+          "text": {
+            "name": "텍스트"
+          }
+        }
+      },
+      "To_Int": {
+        "display_name": "𝙆 정수로 변환",
+        "inputs": {
+          "input": {
+            "name": "입력"
+          }
+        }
+      }
+
+  }

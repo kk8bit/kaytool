@@ -1,0 +1,590 @@
+{
+  "Display_Any": {
+    "display_name": "𝙆 Afficher n'importe quelles données",
+    "inputs": {
+      "input": {
+        "name": "Entrée"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Chaîne de caractères"
+      }
+    }
+  },
+  "AB_Images": {
+      "display_name": "𝙆 Comparaison d'images ab",
+      "inputs": {
+        "a": {
+          "name": "a"
+        },
+        "b": {
+          "name": "b"
+        }
+      },
+      "outputs": {}
+    },
+    "Abc_Math": {
+      "display_name": "𝙆 Mathématiques abc",
+      "inputs": {
+        "value": {
+          "name": "Expression"
+        },
+        "a": {
+          "name": "a"
+        },
+        "b": {
+          "name": "b"
+        },
+        "c": {
+          "name": "c"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Entier"
+        },
+        "1": {
+          "name": "Flottant"
+        }
+      }
+    },
+    "AIO_Translater": {
+      "display_name": "𝙆 Traducteur IA",
+      "inputs": {
+        "Text": {
+          "name": "Peut saisir n'importe quelle langue"
+        },
+        "To": {
+          "name": "Langue cible"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Texte"
+        }
+      }
+    },
+    "Baidu_Translater": {
+      "display_name": "𝙆 Traducteur IA Baidu",
+      "inputs": {
+        "Text_A": {
+          "name": "Texte A"
+        },
+        "Text_B": {
+          "name": "Texte B"
+        },
+        "Translate": {
+          "name": "Activer la traduction"
+        },
+        "From": {
+          "name": "Langue source"
+        },
+        "To": {
+          "name": "Langue cible"
+        },
+        "ID": {
+          "name": "ID"
+        },
+        "Key": {
+          "name": "Clé"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "A"
+        },
+        "1": {
+          "name": "B"
+        }
+      }
+    },
+    "Kay_BiRefNet_Loader": {
+      "display_name": "𝙆 Chargement BiRefNet",
+      "inputs": {
+        "model": {
+          "name": "Modèle"
+        },
+        "providers": {
+          "name": "Appareil"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "REMOVE_BG"
+        }
+      }
+    },
+    "Color_Adjustment": {
+      "display_name": "𝙆 Ajustement des couleurs",
+      "inputs": {
+        "image": {
+          "name": "Image"
+        },
+        "exposure": {
+          "name": "Exposition"
+        },
+        "contrast": {
+          "name": "Contraste"
+        },
+        "temperature": {
+          "name": "Température de couleur"
+        },
+        "tint": {
+          "name": "Teinte"
+        },
+        "saturation": {
+          "name": "Saturation"
+        },
+        "style": {
+          "name": "Style de filtre"
+        },
+        "strength": {
+          "name": "Force"
+        },
+        "All": {
+          "name": "Appliquer tous les filtres"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Image"
+        }
+      }
+    },
+    "Custom_Save_Image": {
+      "display_name": "𝙆 Enregistrer l'image personnalisée",
+      "inputs": {
+        "preview_only": {
+          "name": "Aperçu uniquement"
+        },
+        "images": {
+          "name": "Images"
+        },
+        "filename_prefix": {
+          "name": "Préfixe du nom de fichier"
+        },
+        "color_profile": {
+          "name": "Profil de couleur"
+        },
+        "format": {
+          "name": "Format"
+        },
+        "jpg_quality": {
+          "name": "Qualité JPG"
+        },
+        "author": {
+          "name": "Auteur"
+        },
+        "copyright_info": {
+          "name": "Informations sur le copyright"
+        },
+        "save_metadata": {
+          "name": "Enregistrer les métadonnées"
+        }
+      },
+      "outputs": {}
+    },
+    "Image_Composer": {
+      "display_name": "𝙆 Compositeur d'images",
+      "inputs": {
+        "image_a": {
+          "name": "Image A"
+        },
+        "mask_a": {
+          "name": "Masque A"
+        },
+        "image_b": {
+          "name": "Image B"
+        },
+        "position": {
+          "name": "Position"
+        },
+        "top": {
+          "name": "Haut"
+        },
+        "mask_b": {
+          "name": "Masque B"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Données de composition"
+        },
+        "1": {
+          "name": "Image"
+        },
+        "2": {
+          "name": "Masque"
+        }
+      }
+    },
+    "Image_Cropper": {
+      "display_name": "𝙆 Rognage d'image",
+      "inputs": {
+        "image_composer_data": {
+          "name": "DONNÉES"
+        },
+        "image": {
+          "name": "Image"
+        },
+        "target": {
+          "name": "Cible"
+        },
+        "mask": {
+          "name": "Masque"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Image"
+        },
+        "1": {
+          "name": "Masque"
+        }
+      }
+    },
+    "Image_Mask_Composer": {
+      "display_name": "𝙆 Compositeur de masque d'image",
+      "inputs": {
+        "image": {
+          "name": "Image"
+        },
+        "mask": {
+          "name": "Masque"
+        },
+        "background_color": {
+          "name": "Couleur de fond"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Image"
+        }
+      }
+    },
+    "Image_Resizer": {
+      "display_name": "𝙆 Redimensionnement d'image",
+      "inputs": {
+        "image": {
+          "name": "Image"
+        },
+        "width": {
+          "name": "Largeur"
+        },
+        "height": {
+          "name": "Hauteur"
+        },
+        "keep_ratio": {
+          "name": "Conserver le ratio"
+        },
+        "mask": {
+          "name": "Masque"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Image"
+        },
+        "1": {
+          "name": "Masque"
+        }
+      }
+    },
+    "Image_Size_Extractor": {
+      "display_name": "𝙆 Extraction de la taille de l'image",
+      "inputs": {
+        "image": {
+          "name": "Image"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Largeur"
+        },
+        "1": {
+          "name": "Hauteur"
+        }
+      }
+    },
+    "Load_Image_Folder": {
+      "display_name": "𝙆 Charger le dossier d'images",
+      "inputs": {
+        "path": {
+          "name": "Chemin du dossier"
+        },
+        "subfolders": {
+          "name": "Inclure les sous-dossiers"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Image"
+        },
+        "1": {
+          "name": "Masque"
+        }
+      }
+    },
+    "Mask_Blur_Plus": {
+      "display_name": "𝙆 Traitement du masque+",
+      "inputs": {
+        "invert_mask": {
+          "name": "Inverser le masque"
+        },
+        "mask": {
+          "name": "Masque"
+        },
+        "blur": {
+          "name": "Intensité du flou"
+        },
+        "expand": {
+          "name": "Étendre/Contracter"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Masque"
+        }
+      }
+    },
+    "Mask_Filler": {
+      "display_name": "𝙆 Remplissage du masque",
+      "inputs": {
+        "mask": {
+          "name": "Masque"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Masque"
+        }
+      }
+    },
+    "Preview_Mask_Plus": {
+      "display_name": "𝙆 Aperçu du masque+",
+      "inputs": {
+        "invert_mask": {
+          "name": "Inverser le masque"
+        },
+        "Preview": {
+          "name": "Mode Aperçu"
+        },
+        "image": {
+          "name": "Image"
+        },
+        "mask": {
+          "name": "Masque"
+        }
+      },
+      "outputs": {}
+    },
+    "Preview_Mask": {
+      "display_name": "𝙆 Aperçu du masque",
+      "inputs": {
+        "mask": {
+          "name": "Masque"
+        }
+      },
+      "outputs": {}
+    },
+    "RemBG_Loader": {
+      "display_name": "𝙆 Chargeur RemBG",
+      "inputs": {
+        "model": {
+          "name": "Modèle"
+        },
+        "providers": {
+          "name": "Appareil"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Suppression de l'arrière-plan"
+        }
+      }
+    },
+    "Remove_BG": {
+      "display_name": "𝙆 Supprimer l'arrière-plan",
+      "inputs": {
+        "remove_bg": {
+          "name": "remove_bg"
+        },
+        "image": {
+          "name": "Image"
+        },
+        "invert_mask": {
+          "name": "Inverser le masque"
+        },
+        "Preview": {
+          "name": "Mode Aperçu"
+        },
+        "Blur": {
+          "name": "Intensité du flou"
+        },
+        "Expand": {
+          "name": "Étendre/Contracter"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Image traitée"
+        },
+        "1": {
+          "name": "Masque"
+        }
+      }
+    },
+    "Slider_10": {
+      "display_name": "𝙆 Curseur 10",
+      "inputs": {
+        "value": {
+          "name": "Valeur"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Entier"
+        }
+      }
+    },
+    "Slider_100": {
+      "display_name": "𝙆 Curseur 100",
+      "inputs": {
+        "value": {
+          "name": "Valeur"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Entier"
+        }
+      }
+    },
+    "Slider_1000": {
+      "display_name": "𝙆 Curseur 1000",
+      "inputs": {
+        "value": {
+          "name": "Valeur"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Entier"
+        }
+      }
+    },
+    "Strong_Prompt": {
+      "display_name": "𝙆 Invite forte",
+      "inputs": {
+        "positive": {
+          "name": "Invite positive"
+        },
+        "negative": {
+          "name": "Invite négative"
+        },
+        "clip": {
+          "name": "Modèle CLIP"
+        },
+        "Negative_Out": {
+          "name": "Activer l'invite négative"
+        },
+        "Strong_Prompt_1": {
+          "name": "Préréglage_1"
+        },
+        "Strong_Prompt_2": {
+          "name": "Préréglage_2"
+        },
+        "Strong_Prompt_3": {
+          "name": "Préréglage_3"
+        },
+        "Strong_Prompt_4": {
+          "name": "Préréglage_4"
+        },
+        "Strong_Prompt_5": {
+          "name": "Préréglage_5"
+        },
+        "Strong_Prompt_6": {
+          "name": "Préréglage_6"
+        },
+        "Strong_Prompt_Switch": {
+          "name": "Activer le préréglage"
+        },
+        "IDs": {
+          "name": "ID du préréglage"
+        },
+        "IDs_Switch": {
+          "name": "Activer l'ID"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Condition positive"
+        },
+        "1": {
+          "name": "Condition négative"
+        },
+        "2": {
+          "name": "Invite positive"
+        },
+        "3": {
+          "name": "Invite négative"
+        }
+      }
+    },
+    "Tencent_Translater": {
+      "display_name": "𝙆 Traduction IA Tencent",
+      "inputs": {
+        "Text_A": {
+          "name": "Texte A"
+        },
+        "Text_B": {
+          "name": "Texte B"
+        },
+        "Translate": {
+          "name": "Activer la traduction"
+        },
+        "From": {
+          "name": "Langue source"
+        },
+        "To": {
+          "name": "Langue cible"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Texte A"
+        },
+        "1": {
+          "name": "Texte B"
+        }
+      }
+    },
+    "Text": {
+      "display_name": "𝙆 Texte",
+      "inputs": {
+        "text": {
+          "name": "Texte"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Chaîne de caractères"
+        }
+      }
+    },
+    "To_Int": {
+      "display_name": "𝙆 Convertir en entier",
+      "inputs": {
+        "input": {
+          "name": "Entrée"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "Entier"
+        }
+      }
+    }
+
+}

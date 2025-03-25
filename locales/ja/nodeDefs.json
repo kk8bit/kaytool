@@ -1,0 +1,590 @@
+{
+  "Display_Any": {
+    "display_name": "𝙆 任意のデータを表示",
+    "inputs": {
+      "input": {
+        "name": "入力"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "文字列"
+      }
+    }
+  },
+  "AB_Images": {
+      "display_name": "𝙆 ab画像比較",
+      "inputs": {
+        "a": {
+          "name": "a"
+        },
+        "b": {
+          "name": "b"
+        }
+      },
+      "outputs": {}
+    },
+    "Abc_Math": {
+      "display_name": "𝙆 abc数学",
+      "inputs": {
+        "value": {
+          "name": "式"
+        },
+        "a": {
+          "name": "a"
+        },
+        "b": {
+          "name": "b"
+        },
+        "c": {
+          "name": "c"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "整数"
+        },
+        "1": {
+          "name": "浮動小数点"
+        }
+      }
+    },
+    "AIO_Translater": {
+      "display_name": "𝙆 AI翻訳",
+      "inputs": {
+        "Text": {
+          "name": "任意の言語を入力可能"
+        },
+        "To": {
+          "name": "ターゲット言語"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "テキスト"
+        }
+      }
+    },
+    "Baidu_Translater": {
+      "display_name": "𝙆 百度AI翻訳",
+      "inputs": {
+        "Text_A": {
+          "name": "テキストA"
+        },
+        "Text_B": {
+          "name": "テキストB"
+        },
+        "Translate": {
+          "name": "翻訳を有効化"
+        },
+        "From": {
+          "name": "ソース言語"
+        },
+        "To": {
+          "name": "ターゲット言語"
+        },
+        "ID": {
+          "name": "ID"
+        },
+        "Key": {
+          "name": "キー"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "A"
+        },
+        "1": {
+          "name": "B"
+        }
+      }
+    },
+    "Kay_BiRefNet_Loader": {
+      "display_name": "𝙆 BiRefNet読み込み",
+      "inputs": {
+        "model": {
+          "name": "モデル"
+        },
+        "providers": {
+          "name": "デバイス"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "REMOVE_BG"
+        }
+      }
+    },
+    "Color_Adjustment": {
+      "display_name": "𝙆 色調整",
+      "inputs": {
+        "image": {
+          "name": "画像"
+        },
+        "exposure": {
+          "name": "露出"
+        },
+        "contrast": {
+          "name": "コントラスト"
+        },
+        "temperature": {
+          "name": "色温度"
+        },
+        "tint": {
+          "name": "色合い"
+        },
+        "saturation": {
+          "name": "彩度"
+        },
+        "style": {
+          "name": "フィルタースタイル"
+        },
+        "strength": {
+          "name": "強度"
+        },
+        "All": {
+          "name": "すべてのフィルターを適用"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "画像"
+        }
+      }
+    },
+    "Custom_Save_Image": {
+      "display_name": "𝙆 カスタム画像保存",
+      "inputs": {
+        "preview_only": {
+          "name": "プレビューのみ"
+        },
+        "images": {
+          "name": "画像"
+        },
+        "filename_prefix": {
+          "name": "ファイル名プレフィックス"
+        },
+        "color_profile": {
+          "name": "カラープロファイル"
+        },
+        "format": {
+          "name": "フォーマット"
+        },
+        "jpg_quality": {
+          "name": "JPG品質"
+        },
+        "author": {
+          "name": "著者"
+        },
+        "copyright_info": {
+          "name": "著作権情報"
+        },
+        "save_metadata": {
+          "name": "メタデータを保存"
+        }
+      },
+      "outputs": {}
+    },
+    "Image_Composer": {
+      "display_name": "𝙆 画像合成",
+      "inputs": {
+        "image_a": {
+          "name": "画像A"
+        },
+        "mask_a": {
+          "name": "マスクA"
+        },
+        "image_b": {
+          "name": "画像B"
+        },
+        "position": {
+          "name": "位置"
+        },
+        "top": {
+          "name": "上"
+        },
+        "mask_b": {
+          "name": "マスクB"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "合成データ"
+        },
+        "1": {
+          "name": "画像"
+        },
+        "2": {
+          "name": "マスク"
+        }
+      }
+    },
+    "Image_Cropper": {
+      "display_name": "𝙆 画像トリミング",
+      "inputs": {
+        "image_composer_data": {
+          "name": "データ"
+        },
+        "image": {
+          "name": "画像"
+        },
+        "target": {
+          "name": "ターゲット"
+        },
+        "mask": {
+          "name": "マスク"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "画像"
+        },
+        "1": {
+          "name": "マスク"
+        }
+      }
+    },
+    "Image_Mask_Composer": {
+      "display_name": "𝙆 画像マスク合成",
+      "inputs": {
+        "image": {
+          "name": "画像"
+        },
+        "mask": {
+          "name": "マスク"
+        },
+        "background_color": {
+          "name": "背景色"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "画像"
+        }
+      }
+    },
+    "Image_Resizer": {
+      "display_name": "𝙆 画像サイズ調整",
+      "inputs": {
+        "image": {
+          "name": "画像"
+        },
+        "width": {
+          "name": "幅"
+        },
+        "height": {
+          "name": "高さ"
+        },
+        "keep_ratio": {
+          "name": "比率を維持"
+        },
+        "mask": {
+          "name": "マスク"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "画像"
+        },
+        "1": {
+          "name": "マスク"
+        }
+      }
+    },
+    "Image_Size_Extractor": {
+      "display_name": "𝙆 画像サイズ抽出",
+      "inputs": {
+        "image": {
+          "name": "画像"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "幅"
+        },
+        "1": {
+          "name": "高さ"
+        }
+      }
+    },
+    "Load_Image_Folder": {
+      "display_name": "𝙆 画像フォルダ読み込み",
+      "inputs": {
+        "path": {
+          "name": "フォルダパス"
+        },
+        "subfolders": {
+          "name": "サブフォルダを含む"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "画像"
+        },
+        "1": {
+          "name": "マスク"
+        }
+      }
+    },
+    "Mask_Blur_Plus": {
+      "display_name": "𝙆 マスク処理+",
+      "inputs": {
+        "invert_mask": {
+          "name": "マスクを反転"
+        },
+        "mask": {
+          "name": "マスク"
+        },
+        "blur": {
+          "name": "ぼかし強度"
+        },
+        "expand": {
+          "name": "拡張/収縮"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "マスク"
+        }
+      }
+    },
+    "Mask_Filler": {
+      "display_name": "𝙆 マスク塗りつぶし",
+      "inputs": {
+        "mask": {
+          "name": "マスク"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "マスク"
+        }
+      }
+    },
+    "Preview_Mask_Plus": {
+      "display_name": "𝙆 マスクプレビュー+",
+      "inputs": {
+        "invert_mask": {
+          "name": "マスクを反転"
+        },
+        "Preview": {
+          "name": "プレビューモード"
+        },
+        "image": {
+          "name": "画像"
+        },
+        "mask": {
+          "name": "マスク"
+        }
+      },
+      "outputs": {}
+    },
+    "Preview_Mask": {
+      "display_name": "𝙆 マスクプレビュー",
+      "inputs": {
+        "mask": {
+          "name": "マスク"
+        }
+      },
+      "outputs": {}
+    },
+    "RemBG_Loader": {
+      "display_name": "𝙆 RemBG読み込み",
+      "inputs": {
+        "model": {
+          "name": "モデル"
+        },
+        "providers": {
+          "name": "デバイス"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "背景除去"
+        }
+      }
+    },
+    "Remove_BG": {
+      "display_name": "𝙆 背景除去",
+      "inputs": {
+        "remove_bg": {
+          "name": "remove_bg"
+        },
+        "image": {
+          "name": "画像"
+        },
+        "invert_mask": {
+          "name": "マスクを反転"
+        },
+        "Preview": {
+          "name": "プレビューモード"
+        },
+        "Blur": {
+          "name": "ぼかし強度"
+        },
+        "Expand": {
+          "name": "拡張/収縮"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "処理後の画像"
+        },
+        "1": {
+          "name": "マスク"
+        }
+      }
+    },
+    "Slider_10": {
+      "display_name": "𝙆 スライダー10",
+      "inputs": {
+        "value": {
+          "name": "値"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "整数"
+        }
+      }
+    },
+    "Slider_100": {
+      "display_name": "𝙆 スライダー100",
+      "inputs": {
+        "value": {
+          "name": "値"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "整数"
+        }
+      }
+    },
+    "Slider_1000": {
+      "display_name": "𝙆 スライダー1000",
+      "inputs": {
+        "value": {
+          "name": "値"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "整数"
+        }
+      }
+    },
+    "Strong_Prompt": {
+      "display_name": "𝙆 強力なプロンプト",
+      "inputs": {
+        "positive": {
+          "name": "肯定的なプロンプト"
+        },
+        "negative": {
+          "name": "否定的なプロンプト"
+        },
+        "clip": {
+          "name": "CLIPモデル"
+        },
+        "Negative_Out": {
+          "name": "否定的なプロンプトを有効化"
+        },
+        "Strong_Prompt_1": {
+          "name": "プリセット_1"
+        },
+        "Strong_Prompt_2": {
+          "name": "プリセット_2"
+        },
+        "Strong_Prompt_3": {
+          "name": "プリセット_3"
+        },
+        "Strong_Prompt_4": {
+          "name": "プリセット_4"
+        },
+        "Strong_Prompt_5": {
+          "name": "プリセット_5"
+        },
+        "Strong_Prompt_6": {
+          "name": "プリセット_6"
+        },
+        "Strong_Prompt_Switch": {
+          "name": "プリセットを有効化"
+        },
+        "IDs": {
+          "name": "プリセットID"
+        },
+        "IDs_Switch": {
+          "name": "IDを有効化"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "肯定的な条件"
+        },
+        "1": {
+          "name": "否定的な条件"
+        },
+        "2": {
+          "name": "肯定的なプロンプト"
+        },
+        "3": {
+          "name": "否定的なプロンプト"
+        }
+      }
+    },
+    "Tencent_Translater": {
+      "display_name": "𝙆 Tencent AI翻訳",
+      "inputs": {
+        "Text_A": {
+          "name": "テキストA"
+        },
+        "Text_B": {
+          "name": "テキストB"
+        },
+        "Translate": {
+          "name": "翻訳を有効化"
+        },
+        "From": {
+          "name": "ソース言語"
+        },
+        "To": {
+          "name": "ターゲット言語"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "テキストA"
+        },
+        "1": {
+          "name": "テキストB"
+        }
+      }
+    },
+    "Text": {
+      "display_name": "𝙆 テキスト",
+      "inputs": {
+        "text": {
+          "name": "テキスト"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "文字列"
+        }
+      }
+    },
+    "To_Int": {
+      "display_name": "𝙆 整数に変換",
+      "inputs": {
+        "input": {
+          "name": "入力"
+        }
+      },
+      "outputs": {
+        "0": {
+          "name": "整数"
+        }
+      }
+    }
+
+}

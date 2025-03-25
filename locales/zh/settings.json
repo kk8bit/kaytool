@@ -1,0 +1,30 @@
+{
+    "KayTool_ShowRunOption": {
+      "name": "在节点右键菜单中显示 '▶️ Run' 选项"
+    },
+    "KayTool_ShowSetGetOptions": {
+      "name": "在节点右键菜单中显示 '🛜 Set/Get' 选项"
+    },
+    "KayTool_ShiftR": {
+      "name": "使用 'Shift+R' 快捷键在选中的节点上快速执行 '▶️ Run' "
+    },
+    "KayTool_ShowWorkflowPNG": {
+      "name": "在右键菜单菜单中显示 'Workflow PNG' 选项"
+    },
+    "KayTool_ShowStarToMe": {
+      "name": "在右键菜单菜单中显示 '⭐️ Star to me' 选项"
+    },
+    "KayTool_WorkflowPNG": {
+      "name": "Workflow PNG 导出的边距大小"
+    },
+    "KayTool_SetGetForegroundColor": {
+      "name": "调整 '🛜 Set/Get' 的节点颜色"
+    },
+    "KayTool_SetGetBackgroundColor": {
+      "name": "调整 '🛜 Set/Get' 的标题颜色"
+    },
+    "KayTool_CustomWebLogo": {
+      "name": "文件必须 < 1MB",
+      "tooltip": "这是一个测试功能，文件必须 < 1MB ，否则可能无法显示"
+    }
+  }

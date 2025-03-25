@@ -1,0 +1,15 @@
+{
+  "settingsCategories": {
+    "▶️ Run": "▶️ Run 設定",
+    "🛜 Set/Get": "🛜 Set/Get 設定",
+    "KayTool Menu": "右クリックメニュー",
+    "Custom Web Logo (BETA)": "カスタムウェブロゴ"
+  },
+  "nodeCategories": {
+    "Image": "画像",
+    "Translate": "翻訳",
+    "Slider": "スライダー",
+    "Remove BG": "背景除去",
+    "Mask": "マスク"
+  }
+}

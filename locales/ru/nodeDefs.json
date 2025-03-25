@@ -1,0 +1,431 @@
+{
+  "Display_Any": {
+    "display_name": "𝙆 Отобразить любой",
+    "inputs": {
+      "input": {
+        "name": "вход"
+      }
+    }
+  },
+  "AB_Images": {
+    "display_name": "𝙆 AB Изображения",
+    "inputs": {
+      "a": {
+        "name": "a"
+      },
+      "b": {
+        "name": "b"
+      }
+    }
+  },
+  "Abc_Math": {
+    "display_name": "𝙆 Abc Математика",
+    "inputs": {
+      "value": {
+        "name": "значение"
+      },
+      "a": {
+        "name": "a"
+      },
+      "b": {
+        "name": "b"
+      },
+      "c": {
+        "name": "c"
+      }
+    }
+  },
+  "AIO_Translater": {
+    "display_name": "𝙆 AIO Переводчик",
+    "inputs": {
+      "Text": {
+        "name": "Текст"
+      },
+      "To": {
+        "name": "Кому"
+      }
+    }
+  },
+  "Baidu_Translater": {
+    "display_name": "𝙆 Baidu Переводчик",
+    "inputs": {
+      "Text_A": {
+        "name": "Текст_A"
+      },
+      "Text_B": {
+        "name": "Текст_B"
+      },
+      "Translate": {
+        "name": "Перевести"
+      },
+      "From": {
+        "name": "От"
+      },
+      "To": {
+        "name": "Кому"
+      },
+      "ID": {
+        "name": "ID"
+      },
+      "Key": {
+        "name": "Ключ"
+      }
+    }
+  },
+  "Kay_BiRefNet_Loader": {
+    "display_name": "𝙆 BiRefNet Загрузчик",
+    "inputs": {
+      "model": {
+        "name": "модель"
+      },
+      "providers": {
+        "name": "провайдеры"
+      }
+    }
+  },
+  "Color_Adjustment": {
+    "display_name": "𝙆 Настройка Цвета",
+    "inputs": {
+      "image": {
+        "name": "изображение"
+      },
+      "exposure": {
+        "name": "экспозиция"
+      },
+      "contrast": {
+        "name": "контраст"
+      },
+      "temperature": {
+        "name": "температура"
+      },
+      "tint": {
+        "name": "оттенок"
+      },
+      "saturation": {
+        "name": "насыщенность"
+      },
+      "style": {
+        "name": "стиль"
+      },
+      "strength": {
+        "name": "сила"
+      },
+      "All": {
+        "name": "Все"
+      }
+    }
+  },
+  "Custom_Save_Image": {
+    "display_name": "𝙆 Пользовательское Сохранение Изображения",
+    "inputs": {
+      "preview_only": {
+        "name": "только_предварительный_просмотр"
+      },
+      "images": {
+        "name": "изображения"
+      },
+      "filename_prefix": {
+        "name": "префикс_имени_файла"
+      },
+      "color_profile": {
+        "name": "цветовой_профиль"
+      },
+      "format": {
+        "name": "формат"
+      },
+      "jpg_quality": {
+        "name": "качество_jpg"
+      },
+      "author": {
+        "name": "автор"
+      },
+      "copyright_info": {
+        "name": "информация_об_авторских_правах"
+      },
+      "save_metadata": {
+        "name": "сохранить_метаданные"
+      }
+    }
+  },
+  "Image_Composer": {
+    "display_name": "𝙆 Компоновщик Изображений",
+    "inputs": {
+      "image_a": {
+        "name": "изображение_a"
+      },
+      "mask_a": {
+        "name": "маска_a"
+      },
+      "image_b": {
+        "name": "изображение_b"
+      },
+      "position": {
+        "name": "позиция"
+      },
+      "top": {
+        "name": "верх"
+      },
+      "mask_b": {
+        "name": "маска_b"
+      }
+    }
+  },
+  "Image_Cropper": {
+    "display_name": "𝙆 Кадрировщик Изображений",
+    "inputs": {
+      "image_composer_data": {
+        "name": "данные_компоновщика_изображений"
+      },
+      "image": {
+        "name": "изображение"
+      },
+      "target": {
+        "name": "цель"
+      },
+      "mask": {
+        "name": "маска"
+      }
+    }
+  },
+  "Image_Mask_Composer": {
+    "display_name": "𝙆 Компоновщик Масок Изображений",
+    "inputs": {
+      "image": {
+        "name": "изображение"
+      },
+      "mask": {
+        "name": "маска"
+      },
+      "background_color": {
+        "name": "цвет_фона"
+      }
+    }
+  },
+  "Image_Resizer": {
+    "display_name": "𝙆 Изменение Размера Изображения",
+    "inputs": {
+      "image": {
+        "name": "изображение"
+      },
+      "width": {
+        "name": "ширина"
+      },
+      "height": {
+        "name": "высота"
+      },
+      "keep_ratio": {
+        "name": "сохранить_пропорции"
+      },
+      "mask": {
+        "name": "маска"
+      }
+    }
+  },
+  "Image_Size_Extractor": {
+    "display_name": "𝙆 Извлечение Размера Изображения",
+    "inputs": {
+      "image": {
+        "name": "изображение"
+      }
+    }
+  },
+  "Load_Image_Folder": {
+    "display_name": "𝙆 Загрузить Папку с Изображениями",
+    "inputs": {
+      "path": {
+        "name": "путь"
+      },
+      "subfolders": {
+        "name": "подпапки"
+      }
+    }
+  },
+  "Mask_Blur_Plus": {
+    "display_name": "𝙆 Размытие Маски Плюс",
+    "inputs": {
+      "invert_mask": {
+        "name": "инвертировать_маску"
+      },
+      "mask": {
+        "name": "маска"
+      },
+      "blur": {
+        "name": "размытие"
+      },
+      "expand": {
+        "name": "расширить"
+      }
+    }
+  },
+  "Mask_Filler": {
+    "display_name": "𝙆 Заполнитель Маски",
+    "inputs": {
+      "mask": {
+        "name": "маска"
+      }
+    }
+  },
+  "Preview_Mask_Plus": {
+    "display_name": "𝙆 Предварительный Просмотр Маски Плюс",
+    "inputs": {
+      "invert_mask": {
+        "name": "инвертировать_маску"
+      },
+      "Preview": {
+        "name": "Предварительный Просмотр"
+      },
+      "image": {
+        "name": "изображение"
+      },
+      "mask": {
+        "name": "маска"
+      }
+    }
+  },
+  "Preview_Mask": {
+    "display_name": "𝙆 Предварительный Просмотр Маски",
+    "inputs": {
+      "mask": {
+        "name": "маска"
+      }
+    }
+  },
+  "RemBG_Loader": {
+    "display_name": "𝙆 Загрузчик RemBG",
+    "inputs": {
+      "model": {
+        "name": "модель"
+      },
+      "providers": {
+        "name": "провайдеры"
+      }
+    }
+  },
+  "Remove_BG": {
+    "display_name": "𝙆 Удалить Фон",
+    "inputs": {
+      "remove_bg": {
+        "name": "удалить_фон"
+      },
+      "image": {
+        "name": "изображение"
+      },
+      "invert_mask": {
+        "name": "инвертировать_маску"
+      },
+      "Preview": {
+        "name": "Предварительный Просмотр"
+      },
+      "Blur": {
+        "name": "Размытие"
+      },
+      "Expand": {
+        "name": "Расширить"
+      }
+    }
+  },
+  "Slider_10": {
+    "display_name": "𝙆 Слайдер 10",
+    "inputs": {
+      "value": {
+        "name": "значение"
+      }
+    }
+  },
+  "Slider_100": {
+    "display_name": "𝙆 Слайдер 100",
+    "inputs": {
+      "value": {
+        "name": "значение"
+      }
+    }
+  },
+  "Slider_1000": {
+    "display_name": "𝙆 Слайдер 1000",
+    "inputs": {
+      "value": {
+        "name": "значение"
+      }
+    }
+  },
+  "Strong_Prompt": {
+    "display_name": "𝙆 Сильный Промпт",
+    "inputs": {
+      "positive": {
+        "name": "позитивный"
+      },
+      "negative": {
+        "name": "негативный"
+      },
+      "clip": {
+        "name": "clip"
+      },
+      "Negative_Out": {
+        "name": "Negative_Out"
+      },
+      "Strong_Prompt_1": {
+        "name": "Strong_Prompt_1"
+      },
+      "Strong_Prompt_2": {
+        "name": "Strong_Prompt_2"
+      },
+      "Strong_Prompt_3": {
+        "name": "Strong_Prompt_3"
+      },
+      "Strong_Prompt_4": {
+        "name": "Strong_Prompt_4"
+      },
+      "Strong_Prompt_5": {
+        "name": "Strong_Prompt_5"
+      },
+      "Strong_Prompt_6": {
+        "name": "Strong_Prompt_6"
+      },
+      "Strong_Prompt_Switch": {
+        "name": "Strong_Prompt_Switch"
+      },
+      "IDs": {
+        "name": "IDs"
+      },
+      "IDs_Switch": {
+        "name": "IDs_Switch"
+      }
+    }
+  },
+  "Tencent_Translater": {
+    "display_name": "𝙆 Tencent Переводчик",
+    "inputs": {
+      "Text_A": {
+        "name": "Text_A"
+      },
+      "Text_B": {
+        "name": "Text_B"
+      },
+      "Translate": {
+        "name": "Перевести"
+      },
+      "From": {
+        "name": "От"
+      },
+      "To": {
+        "name": "Кому"
+      }
+    }
+  },
+  "Text": {
+    "display_name": "𝙆 Текст",
+    "inputs": {
+      "text": {
+        "name": "текст"
+      }
+    }
+  },
+  "To_Int": {
+    "display_name": "𝙆 В Целое",
+    "inputs": {
+      "input": {
+        "name": "вход"
+      }
+    }
+  }
+}
