@@ -13,7 +13,7 @@
 
 ## [0.35.0] - 2025-03-23
 - 整理设置项
-- 增加右键`KayTool菜单` 
+- 增加右键`KayTool菜单`  
 - 增加KayTool菜单下的`workflow PNG`导出功能
 - 支持workflow在设置菜单中自定义边宽
 - 增加KayTool菜单下的自定义Logo的上传、删除功能
