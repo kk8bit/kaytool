@@ -9,10 +9,10 @@
       "name": "使用 'Shift+R' 快捷键在选中的节点上快速执行 '▶️ Run' "
     },
     "KayTool_ShowWorkflowPNG": {
-      "name": "在右键菜单菜单中显示 'Workflow PNG' 选项"
+      "name": "在KayTool菜单中显示 'Workflow PNG' 选项"
     },
     "KayTool_ShowStarToMe": {
-      "name": "在右键菜单菜单中显示 '⭐️ Star to me' 选项"
+      "name": "在KayTool菜单中显示 '⭐️ Star to me' 选项"
     },
     "KayTool_WorkflowPNG": {
       "name": "Workflow PNG 导出的边距大小"
