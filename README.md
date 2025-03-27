@@ -14,6 +14,14 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 **📌 所有 KayTool 节点包用到的资源都在 `ComfyUI/custom_nodes/kaytool` 文件夹内。| All KayTool node packages use resources in the `ComfyUI/custom_nodes/kaytool` folder.**
 ---
 
+### 节点排版工具栏 Node Align Toolbar
+- 支持节点多种对齐方式的工具栏
+  Supports node alignment tools.
+- 工具栏显示模式可以在设置菜单中（KayTool）进行配置。
+  The display mode of the toolbar can be configured in the settings menu (KayTool).
+- 工具栏所有元素均支持自定义颜色。
+  All elements of the toolbar support custom color.
+
 ### workflow PNG功能 Workflow Export to PNG
 - 支持在右键菜单中`KayTool-workflow PNG`将当前工作流节点地图保存为PNG格式并内嵌工作流信息。
   Supports saving the current workflow node map as a PNG format and embedding workflow information in the right-click menu.

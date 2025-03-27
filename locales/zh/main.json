@@ -1,15 +1,17 @@
 {
-  "settingsCategories": {
-    "▶️ Run": "▶️ Run 设置",
-    "🛜 Set/Get": "🛜 Set/Get 设置",
-    "KayTool Menu": "右键菜单",
-    "Custom Web Logo (BETA)": "自定义网页徽标"
-  },
-  "nodeCategories": {
-    "Image": "图像",
-    "Translate": "翻译器",
-    "Slider": "滑块控制器",
-    "Remove BG": "背景移除",
-    "Mask": "遮罩"
+    "settingsCategories": {
+      "▶️ Run": "▶️ Run 设置",
+      "🛜 Set/Get": "🛜 Set/Get",
+      "KayTool Menu": "右键菜单",
+      "Custom Web Logo (BETA)": "自定义网页徽标",
+      "Workflow PNG": "Workflow PNG",
+      "NodeAlignment": "节点对齐工具栏"
+    },
+    "nodeCategories": {
+      "Image": "图像",
+      "Translate": "翻译器",
+      "Slider": "滑块控制器",
+      "Remove BG": "背景移除",
+      "Mask": "遮罩"
+    }
   }
-}
