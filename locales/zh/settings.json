@@ -37,6 +37,9 @@
       },
       "tooltip": "切换模式后点击画布空白处或刷新页面即可"
     },
+    "KayTool_NodeAlignBackgroundOpacity": {
+      "name": "工具栏背景不透明度"
+    },
     "KayTool_NodeAlignBackgroundColor": {
       "name": "工具栏背景颜色"
     },

@@ -34,16 +34,17 @@ const KayNodeAlignmentManager = {
         const iconBgColor = app.ui.settings.getSettingValue("KayTool.NodeAlignIconBackgroundColor") || "2b2b2b";
         const iconColor = app.ui.settings.getSettingValue("KayTool.NodeAlignIconColor") || "666666";
 
+
         document.head.insertAdjacentHTML('beforeend', `<style>
             #kay-node-alignment-toolbar {
-                position: absolute;
+                position: fixed; /* 改为 fixed 以覆盖 ComfyUI 菜单栏 */
                 display: flex;
                 align-items: center;
                 gap: 4px;
                 background: #${bgColor};
                 padding: 4px;
                 border-radius: 4px;
-                z-index: 9999;
+                z-index: 10000; /* 提高 z-index 确保覆盖菜单栏 */
                 height: 32px;
                 white-space: nowrap;
                 user-select: none;
@@ -55,19 +56,19 @@ const KayNodeAlignmentManager = {
             .kay-align-button {
                 width: 25px;
                 height: 25px;
-                display: flex; /* 使用 flex 布局 */
-                justify-content: center; /* 水平居中 */
-                align-items: center; /* 垂直居中 */
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 background-color: #${iconBgColor};
                 border: none;
                 cursor: pointer;
-                padding: 0; /* 移除 padding，确保 SVG 占满 */
+                padding: 0;
                 border-radius: 4px;
                 transition: background-color .3s ease;
                 flex-shrink: 0;
             }
             .kay-align-button svg {
-                width: 70%; /* SVG 占满按钮 */
+                width: 70%;
                 height: 70%;
             }
             .kay-toolbar-divider {
@@ -90,7 +91,7 @@ const KayNodeAlignmentManager = {
                 padding: 5px 10px;
                 border-radius: 6px;
                 display: none;
-                z-index: 1001;
+                z-index: 10001;
                 white-space: nowrap;
                 font-size: 12px;
             }
@@ -98,7 +99,7 @@ const KayNodeAlignmentManager = {
 
         this.toolbarContainer = document.createElement('div');
         this.toolbarContainer.id = 'kay-node-alignment-toolbar';
-        this.canvas.parentElement.appendChild(this.toolbarContainer);
+        document.body.appendChild(this.toolbarContainer);  
 
         this.getAlignmentButtons().forEach(btn => {
             const el = document.createElement(btn.type === 'divider' ? 'div' : 'button');
@@ -137,7 +138,7 @@ const KayNodeAlignmentManager = {
         this.resizeObserver = new ResizeObserver(() => {
             this.updatePosition();
         });
-        this.resizeObserver.observe(this.canvas.parentElement);
+        this.resizeObserver.observe(document.body); 
 
         window.addEventListener('resize', () => {
             setTimeout(() => this.updatePosition(), 100);
@@ -163,11 +164,10 @@ const KayNodeAlignmentManager = {
         return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
     },
 
-    getCanvasRect() {
-        const containerRect = this.canvas.parentElement.getBoundingClientRect();
+    getWindowRect() {
         return {
-            width: containerRect.width,
-            height: containerRect.height
+            width: window.innerWidth,
+            height: window.innerHeight
         };
     },
 
@@ -218,20 +218,20 @@ const KayNodeAlignmentManager = {
     updatePosition() {
         if (!this.toolbarContainer || !this.isVisible) return;
 
-        const canvasRect = this.getCanvasRect();
+        const windowRect = this.getWindowRect();
         const toolbarRect = this.toolbarContainer.getBoundingClientRect();
 
-        let left = (this.position.leftPercentage / 100) * canvasRect.width - toolbarRect.width / 2;
-        let top = (this.position.topPercentage / 100) * canvasRect.height;
+        let left = (this.position.leftPercentage / 100) * windowRect.width - toolbarRect.width / 2;
+        let top = (this.position.topPercentage / 100) * windowRect.height;
 
-        const snapThreshold = 10;
+        const snapThreshold = 1; // 吸附边缘阈值
         if (left < snapThreshold) left = 0;
-        if (left + toolbarRect.width > canvasRect.width - snapThreshold) left = canvasRect.width - toolbarRect.width;
+        if (left + toolbarRect.width > windowRect.width - snapThreshold) left = windowRect.width - toolbarRect.width;
         if (top < snapThreshold) top = 0;
-        if (top + toolbarRect.height > canvasRect.height - snapThreshold) top = canvasRect.height - toolbarRect.height;
+        if (top + toolbarRect.height > windowRect.height - snapThreshold) top = windowRect.height - toolbarRect.height;
 
-        left = Math.max(0, Math.min(left, canvasRect.width - toolbarRect.width));
-        top = Math.max(0, Math.min(top, canvasRect.height - toolbarRect.height));
+        left = Math.max(0, Math.min(left, windowRect.width - toolbarRect.width));
+        top = Math.max(0, Math.min(top, windowRect.height - toolbarRect.height));
 
         this.toolbarContainer.style.left = `${left}px`;
         this.toolbarContainer.style.top = `${top}px`;
@@ -240,15 +240,15 @@ const KayNodeAlignmentManager = {
 
     onDragStart(e) {
         if (this.dragState.isDragging) return;
-        const canvasRect = this.getCanvasRect();
+        const windowRect = this.getWindowRect();
         this.dragState = {
             isDragging: true,
             initialX: e.clientX,
             initialY: e.clientY,
             startX: this.toolbarContainer.offsetLeft,
             startY: this.toolbarContainer.offsetTop,
-            canvasWidth: canvasRect.width,
-            canvasHeight: canvasRect.height
+            windowWidth: windowRect.width,
+            windowHeight: windowRect.height
         };
     },
 
@@ -259,8 +259,8 @@ const KayNodeAlignmentManager = {
         let left = this.dragState.startX + (e.clientX - this.dragState.initialX);
         let top = this.dragState.startY + (e.clientY - this.dragState.initialY);
 
-        left = Math.max(0, Math.min(left, this.dragState.canvasWidth - toolbarRect.width));
-        top = Math.max(0, Math.min(top, this.dragState.canvasHeight - toolbarRect.height));
+        left = Math.max(0, Math.min(left, this.dragState.windowWidth - toolbarRect.width));
+        top = Math.max(0, Math.min(top, this.dragState.windowHeight - toolbarRect.height));
 
         this.toolbarContainer.style.left = `${left}px`;
         this.toolbarContainer.style.top = `${top}px`;
@@ -270,11 +270,11 @@ const KayNodeAlignmentManager = {
         if (!this.dragState.isDragging) return;
         this.dragState.isDragging = false;
 
-        const canvasRect = this.getCanvasRect();
+        const windowRect = this.getWindowRect();
         const toolbarRect = this.toolbarContainer.getBoundingClientRect();
 
-        this.position.leftPercentage = ((parseFloat(this.toolbarContainer.style.left) + toolbarRect.width / 2) / canvasRect.width) * 100;
-        this.position.topPercentage = (parseFloat(this.toolbarContainer.style.top) / canvasRect.height) * 100;
+        this.position.leftPercentage = ((parseFloat(this.toolbarContainer.style.left) + toolbarRect.width / 2) / windowRect.width) * 100;
+        this.position.topPercentage = (parseFloat(this.toolbarContainer.style.top) / windowRect.height) * 100;
 
         localStorage.setItem('KayNodeAlignToolbarPosition', JSON.stringify(this.position));
         this.updatePosition();
@@ -299,9 +299,9 @@ const KayNodeAlignmentManager = {
         if (nodes.length > 0) {
             const avgX = nodes.reduce((sum, n) => sum + n.pos[0], 0) / nodes.length;
             const avgY = nodes.reduce((sum, n) => sum + n.pos[1], 0) / nodes.length;
-            const canvasRect = this.getCanvasRect();
-            this.position.leftPercentage = avgX > canvasRect.width / 2 ? 25 : 75;
-            this.position.topPercentage = avgY > canvasRect.height / 2 ? 5 : 25;
+            const windowRect = this.getWindowRect();
+            this.position.leftPercentage = avgX > windowRect.width / 2 ? 25 : 75;
+            this.position.topPercentage = avgY > windowRect.height / 2 ? 5 : 25;
         } else {
             this.position = { leftPercentage: 50, topPercentage: 5 };
         }

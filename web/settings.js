@@ -116,6 +116,25 @@ app.registerExtension({
             }
         });
 
+
+        app.ui.settings.addSetting({
+            id: "KayTool.NodeAlignBackgroundOpacity",
+            name: "Node Alignment Toolbar Background Opacity",
+            type: "slider",
+            defaultValue: 100,
+            attrs: { min: 0, max: 100, step: 1 },
+            category: ["KayTool", "NodeAlignment", "BackgroundOpacity"],
+            onChange: (newVal) => {
+                const toolbar = document.getElementById('kay-node-alignment-toolbar');
+                if (toolbar) {
+                    const bgColor = app.ui.settings.getSettingValue("KayTool.NodeAlignBackgroundColor");
+                    if (/^[0-9A-Fa-f]{6}$/.test(bgColor)) {
+                        const opacity = newVal / 100;
+                        toolbar.style.background = `rgba(${parseInt(bgColor.substr(0, 2), 16)}, ${parseInt(bgColor.substr(2, 2), 16)}, ${parseInt(bgColor.substr(4, 2), 16)}, ${opacity})`;
+                    }
+                }
+            }
+        });
         app.ui.settings.addSetting({
             id: "KayTool.NodeAlignBackgroundColor",
             name: "Node Alignment Toolbar Background Color",
@@ -125,7 +144,8 @@ app.registerExtension({
             onChange: (newVal) => {
                 const toolbar = document.getElementById('kay-node-alignment-toolbar');
                 if (toolbar && /^[0-9A-Fa-f]{6}$/.test(newVal)) {
-                    toolbar.style.background = `#${newVal}`;
+                    const opacity = app.ui.settings.getSettingValue("KayTool.NodeAlignBackgroundOpacity") / 100;
+                    toolbar.style.background = `rgba(${parseInt(newVal.substr(0, 2), 16)}, ${parseInt(newVal.substr(2, 2), 16)}, ${parseInt(newVal.substr(4, 2), 16)}, ${opacity})`;
                 }
             }
         });
