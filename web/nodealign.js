@@ -11,164 +11,252 @@ const kayAlignTopSvg = `<svg t="1725534367556" class="icon" viewBox="0 0 1170 10
 const kayEqualWidthSvg = `<svg t="1725606034670" class="icon" viewBox="0 0 1088 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7213" width="100%"><path d="M978.24 480a42.688 42.688 0 0 1-42.688 42.688H172.928a42.688 42.688 0 0 1-42.688-42.688V213.312c0-23.552 19.072-42.624 42.688-42.624h762.624c23.552 0 42.688 19.072 42.688 42.624V480z" fill="#666666" p-id="7214"></path><path d="M256.96 734.144c0-14.08 11.456-25.6 25.6-25.6h543.36a25.6 25.6 0 0 1 0 51.2h-543.36a25.6 25.6 0 0 1-25.6-25.6z" fill="#666666" p-id="7215"></path><path d="M136.64 745.216a12.8 12.8 0 0 1 0-22.144l184.192-106.368a12.8 12.8 0 0 1 19.2 11.072v212.736a12.8 12.8 0 0 1-19.2 11.072l-184.192-106.368zM971.84 745.216a12.8 12.8 0 0 0 0-22.144l-184.256-106.368a12.8 12.8 0 0 0-19.2 11.072v212.736a12.8 12.8 0 0 0 19.2 11.072l184.256-106.368z" fill="#666666" p-id="7216"></path></svg>`;
 const kayEqualHeightSvg = `<svg t="1725606224564" class="icon" viewBox="0 0 1088 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7790" width="100%"><path d="M572.16 936a42.688 42.688 0 0 1-42.688-42.688V130.688c0-23.616 19.136-42.688 42.688-42.688h266.688c23.552 0 42.624 19.072 42.624 42.688v762.624a42.688 42.688 0 0 1-42.624 42.688H572.16z" fill="#666666" p-id="7791"></path><path d="M318.016 214.72c14.08 0 25.6 11.456 25.6 25.6v543.36a25.6 25.6 0 1 1-51.2 0v-543.36c0-14.144 11.456-25.6 25.6-25.6z" fill="#666666" p-id="7792"></path><path d="M306.944 94.4a12.8 12.8 0 0 1 22.144 0l106.368 184.192a12.8 12.8 0 0 1-11.072 19.2H211.648a12.8 12.8 0 0 1-11.072-19.2l106.368-184.192zM306.944 929.6a12.8 12.8 0 0 0 22.144 0l106.368-184.192a12.8 12.8 0 0 0-11.072-19.2H211.648a12.8 12.8 0 0 0-11.072 19.2l106.368 184.192z" fill="#666666" p-id="7793"></path></svg>`;
 
+
 const KayNodeAlignmentManager = {
     isInitialized: false,
     toolbarContainer: null,
-    dragState: { isDragging: false, initialX: 0, initialY: 0, startX: 0, startY: 0 },
+    dragState: { isDragging: false, offsetX: 0, offsetY: 0 },
     hasShownTooltip: false,
     isVisible: true,
     isPermanent: true,
-    position: { leftPercentage: 50, topPercentage: 5 },
+    position: { leftPercentage: 50, topPercentage: 5, isAttached: false, insertIndex: 0 },
+    menuElement: null,
+    insertionIndicator: null,
 
     init() {
         if (this.isInitialized) return;
         this.isInitialized = true;
 
-        this.canvas = document.querySelector('#graph-canvas');
-        if (!this.canvas) {
-            setTimeout(() => this.init(), 100);
-            return;
+        try {
+            this.canvas = document.querySelector('#graph-canvas');
+            if (!this.canvas || !app.menu) {
+                console.log("Canvas or app.menu not ready, retrying...");
+                setTimeout(() => this.init(), 100);
+                return;
+            }
+
+            this.loadPosition();
+            this.waitForMenuElement(() => {
+                this.setupToolbar();
+                requestAnimationFrame(() => this.restorePosition());
+                const displayMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
+                console.log(`Initial display mode: ${displayMode}`);
+                this.updateDisplayMode(displayMode);
+            });
+        } catch (error) {
+            console.error("Error in KayNodeAlignmentManager.init:", error);
         }
+    },
 
-        const bgColor = app.ui.settings.getSettingValue("KayTool.NodeAlignBackgroundColor") || "000000";
-        const iconBgColor = app.ui.settings.getSettingValue("KayTool.NodeAlignIconBackgroundColor") || "2b2b2b";
-        const iconColor = app.ui.settings.getSettingValue("KayTool.NodeAlignIconColor") || "666666";
-
-
-        document.head.insertAdjacentHTML('beforeend', `<style>
-            #kay-node-alignment-toolbar {
-                position: fixed; /* 改为 fixed 以覆盖 ComfyUI 菜单栏 */
-                display: flex;
-                align-items: center;
-                gap: 4px;
-                background: #${bgColor};
-                padding: 4px;
-                border-radius: 4px;
-                z-index: 10000; /* 提高 z-index 确保覆盖菜单栏 */
-                height: 32px;
-                white-space: nowrap;
-                user-select: none;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                pointer-events: auto;
-            }
-            .kay-align-button {
-                width: 25px;
-                height: 25px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background-color: #${iconBgColor};
-                border: none;
-                cursor: pointer;
-                padding: 0;
-                border-radius: 4px;
-                transition: background-color .3s ease;
-                flex-shrink: 0;
-            }
-            .kay-align-button svg {
-                width: 70%;
-                height: 70%;
-            }
-            .kay-toolbar-divider {
-                width: 3.2px;
-                height: 15px;
-                background: #1e1e1e;
-                border-radius: 9px;
-                cursor: grab;
-                flex-shrink: 0;
-            }
-            .kay-toolbar-divider:active {
-                cursor: grabbing;
-            }
-            #kay-align-tooltip {
-                position: absolute;
-                bottom: -20px;
-                right: 0;
-                background: #333;
-                color: #fff;
-                padding: 5px 10px;
-                border-radius: 6px;
-                display: none;
-                z-index: 10001;
-                white-space: nowrap;
-                font-size: 12px;
-            }
-        </style>`);
-
-        this.toolbarContainer = document.createElement('div');
-        this.toolbarContainer.id = 'kay-node-alignment-toolbar';
-        document.body.appendChild(this.toolbarContainer);  
-
-        this.getAlignmentButtons().forEach(btn => {
-            const el = document.createElement(btn.type === 'divider' ? 'div' : 'button');
-            el.className = btn.type === 'divider' ? 'kay-toolbar-divider' : 'kay-align-button';
-            if (btn.type !== 'divider') {
-                el.id = btn.id;
-                el.innerHTML = btn.svg.replace(/fill="#666666"/g, `fill="#${iconColor}"`);
-                el.addEventListener('click', e => btn.action.call(this, e));
-                el.addEventListener('mouseover', () => {
-                    const baseColor = app.ui.settings.getSettingValue("KayTool.NodeAlignIconBackgroundColor") || "2b2b2b";
-                    el.style.backgroundColor = this.adjustColor(baseColor, 36);
-                });
-                el.addEventListener('mouseout', () => {
-                    el.style.backgroundColor = `#${app.ui.settings.getSettingValue("KayTool.NodeAlignIconBackgroundColor") || "2b2b2b"}`;
-                });
+    loadPosition() {
+        try {
+            const savedPosition = JSON.parse(localStorage.getItem('KayNodeAlignToolbarPosition'));
+            if (savedPosition && typeof savedPosition.leftPercentage === 'number' && typeof savedPosition.topPercentage === 'number') {
+                this.position = {
+                    leftPercentage: savedPosition.leftPercentage,
+                    topPercentage: savedPosition.topPercentage,
+                    isAttached: savedPosition.isAttached || false,
+                    insertIndex: savedPosition.insertIndex || 0
+                };
             } else {
-                el.addEventListener('mousedown', e => {
-                    e.preventDefault();
-                    this.onDragStart(e);
-                });
+                this.setDefaultPosition();
             }
-            this.toolbarContainer.appendChild(el);
-        });
+        } catch (error) {
+            console.error("Error loading position:", error);
+            this.setDefaultPosition();
+        }
+    },
 
-        document.addEventListener('mousemove', this.onDragging.bind(this));
-        document.addEventListener('mouseup', this.onDragEnd.bind(this));
-        document.addEventListener('selectstart', e => this.dragState.isDragging && e.preventDefault());
+    waitForMenuElement(callback) {
+        try {
+            this.menuElement = document.querySelector('.comfyui-menu');
+            if (this.menuElement) {
+                callback();
+            } else {
+                const observer = new MutationObserver(() => {
+                    this.menuElement = document.querySelector('.comfyui-menu');
+                    if (this.menuElement) {
+                        observer.disconnect();
+                        callback();
+                    }
+                });
+                observer.observe(document.body, { childList: true, subtree: true });
+            }
+        } catch (error) {
+            console.error("Error in waitForMenuElement:", error);
+        }
+    },
 
-        this.addTooltip();
-        const displayMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
-        this.updateDisplayMode(displayMode);
+    setupToolbar() {
+        try {
+            const bgColor = app.ui.settings.getSettingValue("KayTool.NodeAlignBackgroundColor");
+            const opacity = app.ui.settings.getSettingValue("KayTool.NodeAlignBackgroundOpacity") / 100;
+            const iconColor = app.ui.settings.getSettingValue("KayTool.NodeAlignIconColor");
+            const dividerColor = app.ui.settings.getSettingValue("KayTool.NodeAlignDividerColor");
 
-        this.restorePosition();
-        this.updatePosition();
+            document.head.insertAdjacentHTML('beforeend', `<style>
+                #kay-node-alignment-toolbar {
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    padding: 4px;
+                    border-radius: 4px;
+                    z-index: 10000;
+                    height: 32px;
+                    white-space: nowrap;
+                    user-select: none;
+                    pointer-events: auto;
+                }
+                #kay-node-alignment-toolbar.floating {
+                    position: fixed;
+                }
+                #kay-node-alignment-toolbar.attached {
+                    position: relative;
+                    margin-left: 10px;
+                }
+                .kay-align-button {
+                    width: 25px;
+                    height: 25px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: #${app.ui.settings.getSettingValue("KayTool.NodeAlignIconBackgroundColor")};
+                    border: none;
+                    cursor: pointer;
+                    padding: 0;
+                    border-radius: 4px;
+                    transition: background-color 0.3s ease-in-out, transform 0.1s ease;
+                    flex-shrink: 0;
+                }
+                .kay-align-button svg {
+                    width: 70%;
+                    height: 70%;
+                }
+                .kay-toolbar-divider {
+                    width: 3.2px;
+                    height: 15px;
+                    background: #${dividerColor};
+                    border-radius: 9px;
+                    cursor: grab;
+                    flex-shrink: 0;
+                }
+                .kay-toolbar-divider:active {
+                    cursor: grabbing;
+                }
+                #kay-align-tooltip {
+                    position: absolute;
+                    bottom: -20px;
+                    right: 0;
+                    background: #333;
+                    color: #fff;
+                    padding: 5px 10px;
+                    border-radius: 6px;
+                    display: none;
+                    z-index: 10001;
+                    white-space: nowrap;
+                    font-size: 12px;
+                }
+                #kay-insertion-indicator {
+                    position: absolute;
+                    width: 5px;
+                    height: 100%;
+                    background-color: #d0ff00;
+                    z-index: 10001;
+                    pointer-events: none;
+                    transition: left 0.1s ease;
+                    top: 0;
+                }
+                .comfyui-menu {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    transition: background-color 0.5s ease;
+                }
+            </style>`);
 
-        this.resizeObserver = new ResizeObserver(() => {
-            this.updatePosition();
-        });
-        this.resizeObserver.observe(document.body); 
+            this.toolbarContainer = document.createElement('div');
+            this.toolbarContainer.id = 'kay-node-alignment-toolbar';
+            this.toolbarContainer.classList.add(this.position.isAttached ? 'attached' : 'floating');
 
-        window.addEventListener('resize', () => {
-            setTimeout(() => this.updatePosition(), 100);
-        });
+            if (opacity > 0 && /^[0-9A-Fa-f]{6}$/.test(bgColor)) {
+                this.toolbarContainer.style.background = `rgba(${parseInt(bgColor.substr(0, 2), 16)}, ${parseInt(bgColor.substr(2, 2), 16)}, ${parseInt(bgColor.substr(4, 2), 16)}, ${opacity})`;
+            } else {
+                this.toolbarContainer.style.background = '';
+            }
+
+            if (this.position.isAttached) {
+                const menuChildren = Array.from(this.menuElement.children).filter(child => child !== this.insertionIndicator);
+                const insertIndex = Math.min(this.position.insertIndex, menuChildren.length);
+                const insertBeforeElement = menuChildren[insertIndex] || null;
+                if (insertBeforeElement) {
+                    this.menuElement.insertBefore(this.toolbarContainer, insertBeforeElement);
+                } else {
+                    this.menuElement.appendChild(this.toolbarContainer);
+                }
+            } else {
+                document.body.appendChild(this.toolbarContainer);
+            }
+
+            this.insertionIndicator = document.createElement('div');
+            this.insertionIndicator.id = 'kay-insertion-indicator';
+            this.insertionIndicator.style.display = 'none';
+            this.menuElement.appendChild(this.insertionIndicator);
+
+            this.getAlignmentButtons().forEach(btn => {
+                const el = document.createElement(btn.type === 'divider' ? 'div' : 'button');
+                el.className = btn.type === 'divider' ? 'kay-toolbar-divider' : 'kay-align-button';
+                if (btn.type !== 'divider') {
+                    el.id = btn.id;
+                    el.innerHTML = btn.svg.replace(/fill="#666666"/g, `fill="#${iconColor}"`);
+                    el.addEventListener('click', e => btn.action.call(this, e));
+                    el.addEventListener('mouseover', () => {
+                        const baseColor = app.ui.settings.getSettingValue("KayTool.NodeAlignIconBackgroundColor");
+                        el.style.backgroundColor = this.adjustColor(baseColor, 65);
+                    });
+                    el.addEventListener('mouseout', () => {
+                        const baseColor = app.ui.settings.getSettingValue("KayTool.NodeAlignIconBackgroundColor");
+                        el.style.backgroundColor = `#${baseColor}`;
+                    });
+                    el.addEventListener('mousedown', () => el.style.transform = 'scale(0.95)');
+                    el.addEventListener('mouseup', () => el.style.transform = '');
+                    el.addEventListener('mouseleave', () => el.style.transform = '');
+                } else {
+                    el.addEventListener('mousedown', e => {
+                        e.preventDefault();
+                        this.onDragStart(e);
+                    });
+                }
+                this.toolbarContainer.appendChild(el);
+            });
+
+            document.addEventListener('mousemove', this.onDragging.bind(this));
+            document.addEventListener('mouseup', this.onDragEnd.bind(this));
+            document.addEventListener('selectstart', e => this.dragState.isDragging && e.preventDefault());
+
+            this.addTooltip();
+        } catch (error) {
+            console.error("Error in setupToolbar:", error);
+        }
     },
 
     adjustColor(hex, amount) {
-        let color = hex.replace("#", "");
-        if (color.length === 3) {
-            color = color.split('').map(c => c + c).join('');
+        try {
+            let color = hex.replace("#", "");
+            if (color.length === 3) color = color.split('').map(c => c + c).join('');
+            const r = parseInt(color.substr(0, 2), 16);
+            const g = parseInt(color.substr(2, 2), 16);
+            const b = parseInt(color.substr(4, 2), 16);
+            const brightness = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+            const adjust = brightness > 127 ? -amount : amount;
+            return `#${[r, g, b].map(c => Math.max(0, Math.min(255, c + adjust)).toString(16).padStart(2, '0')).join('')}`;
+        } catch (error) {
+            console.error("Error in adjustColor:", error);
+            return `#${hex}`;
         }
-        const r = parseInt(color.substr(0, 2), 16);
-        const g = parseInt(color.substr(2, 2), 16);
-        const b = parseInt(color.substr(4, 2), 16);
-
-        const brightness = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-        const adjust = brightness > 127 ? -amount : amount;
-
-        const newR = Math.max(0, Math.min(255, r + adjust));
-        const newG = Math.max(0, Math.min(255, g + adjust));
-        const newB = Math.max(0, Math.min(255, b + adjust));
-
-        return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
     },
 
     getWindowRect() {
-        return {
-            width: window.innerWidth,
-            height: window.innerHeight
-        };
+        return { width: window.innerWidth, height: window.innerHeight };
     },
 
     getAlignmentButtons() {
@@ -187,124 +275,208 @@ const KayNodeAlignmentManager = {
     },
 
     addTooltip() {
-        const tooltip = document.createElement('div');
-        tooltip.id = 'kay-align-tooltip';
-        tooltip.textContent = 'Node alignment toolbar';
-        this.toolbarContainer.appendChild(tooltip);
-        if (!this.hasShownTooltip) {
-            this.toolbarContainer.addEventListener('mouseenter', () => {
-                if (!this.hasShownTooltip) {
-                    setTimeout(() => {
-                        tooltip.style.display = 'block';
-                        this.hasShownTooltip = true;
-                    }, 1000);
-                }
-            });
-            this.toolbarContainer.addEventListener('mouseleave', () => tooltip.remove());
+        try {
+            const tooltip = document.createElement('div');
+            tooltip.id = 'kay-align-tooltip';
+            tooltip.textContent = 'Node alignment toolbar';
+            this.toolbarContainer.appendChild(tooltip);
+            if (!this.hasShownTooltip) {
+                this.toolbarContainer.addEventListener('mouseenter', () => {
+                    if (!this.hasShownTooltip) {
+                        setTimeout(() => {
+                            tooltip.style.display = 'block';
+                            this.hasShownTooltip = true;
+                        }, 1000);
+                    }
+                });
+                this.toolbarContainer.addEventListener('mouseleave', () => tooltip.remove());
+            }
+        } catch (error) {
+            console.error("Error in addTooltip:", error);
         }
     },
 
     show() {
         this.isVisible = true;
-        this.toolbarContainer.style.display = 'flex';
-        this.updatePosition();
+        if (this.toolbarContainer) {
+            this.toolbarContainer.style.display = 'flex';
+            if (!this.position.isAttached) this.updatePosition();
+        }
     },
 
     hide() {
         this.isVisible = false;
-        this.toolbarContainer.style.display = 'none';
+        if (this.toolbarContainer) {
+            this.toolbarContainer.style.display = 'none';
+        }
     },
 
     updatePosition() {
-        if (!this.toolbarContainer || !this.isVisible) return;
+        if (!this.toolbarContainer || !this.isVisible || this.position.isAttached) return;
+        const windowRect = this.getWindowRect();
+        const toolbarRect = this.toolbarContainer.getBoundingClientRect();
+        let left = (this.position.leftPercentage / 100) * windowRect.width - toolbarRect.width / 2;
+        let top = (this.position.topPercentage / 100) * windowRect.height;
+        left = Math.max(0, Math.min(left, windowRect.width - toolbarRect.width));
+        top = Math.max(0, Math.min(top, windowRect.height - toolbarRect.height));
+        this.toolbarContainer.style.left = `${left}px`;
+        this.toolbarContainer.style.top = `${top}px`;
+    },
+
+    onDragStart(e) {
+        if (this.dragState.isDragging) return;
+        const rect = this.toolbarContainer.getBoundingClientRect();
+        this.dragState = {
+            isDragging: false,
+            offsetX: e.clientX - rect.left,
+            offsetY: e.clientY - rect.top
+        };
+    },
+
+    onDragging(e) {
+        if (!this.dragState.offsetX && !this.dragState.offsetY) return;
+
+        if (!this.dragState.isDragging) {
+            this.dragState.isDragging = true;
+            if (this.position.isAttached) {
+                this.detachFromMenu(true);
+            }
+            if (this.menuElement) this.menuElement.style.backgroundColor = '#d0ff00';
+        }
 
         const windowRect = this.getWindowRect();
         const toolbarRect = this.toolbarContainer.getBoundingClientRect();
-
-        let left = (this.position.leftPercentage / 100) * windowRect.width - toolbarRect.width / 2;
-        let top = (this.position.topPercentage / 100) * windowRect.height;
-
-        const snapThreshold = 1; // 吸附边缘阈值
-        if (left < snapThreshold) left = 0;
-        if (left + toolbarRect.width > windowRect.width - snapThreshold) left = windowRect.width - toolbarRect.width;
-        if (top < snapThreshold) top = 0;
-        if (top + toolbarRect.height > windowRect.height - snapThreshold) top = windowRect.height - toolbarRect.height;
+        let left = e.clientX - this.dragState.offsetX;
+        let top = e.clientY - this.dragState.offsetY;
 
         left = Math.max(0, Math.min(left, windowRect.width - toolbarRect.width));
         top = Math.max(0, Math.min(top, windowRect.height - toolbarRect.height));
 
         this.toolbarContainer.style.left = `${left}px`;
         this.toolbarContainer.style.top = `${top}px`;
-        this.toolbarContainer.style.transform = 'none';
-    },
 
-    onDragStart(e) {
-        if (this.dragState.isDragging) return;
-        const windowRect = this.getWindowRect();
-        this.dragState = {
-            isDragging: true,
-            initialX: e.clientX,
-            initialY: e.clientY,
-            startX: this.toolbarContainer.offsetLeft,
-            startY: this.toolbarContainer.offsetTop,
-            windowWidth: windowRect.width,
-            windowHeight: windowRect.height
-        };
-    },
+        if (this.menuElement) {
+            const menuRect = this.menuElement.getBoundingClientRect();
+            const attachThreshold = 0;
+            const toolbarBottom = toolbarRect.top + toolbarRect.height;
 
-    onDragging(e) {
-        if (!this.dragState.isDragging) return;
+            if (toolbarBottom > menuRect.top - attachThreshold && toolbarRect.top < menuRect.bottom + attachThreshold) {
+                this.menuElement.style.backgroundColor = '#000000';
+                this.insertionIndicator.style.display = 'block';
+                const menuChildren = Array.from(this.menuElement.children).filter(child => child !== this.insertionIndicator && child !== this.toolbarContainer);
+                const toolbarCenterX = toolbarRect.left + toolbarRect.width / 2;
 
-        const toolbarRect = this.toolbarContainer.getBoundingClientRect();
-        let left = this.dragState.startX + (e.clientX - this.dragState.initialX);
-        let top = this.dragState.startY + (e.clientY - this.dragState.initialY);
+                for (let i = 0; i < menuChildren.length; i++) {
+                    const childRect = menuChildren[i].getBoundingClientRect();
+                    if (toolbarCenterX < childRect.left + childRect.width / 2) {
+                        let indicatorLeft = childRect.left - menuRect.left;
+                        indicatorLeft = Math.max(0, Math.min(indicatorLeft, menuRect.width - this.insertionIndicator.offsetWidth));
+                        this.insertionIndicator.style.left = `${indicatorLeft}px`;
+                        break;
+                    }
+                }
 
-        left = Math.max(0, Math.min(left, this.dragState.windowWidth - toolbarRect.width));
-        top = Math.max(0, Math.min(top, this.dragState.windowHeight - toolbarRect.height));
-
-        this.toolbarContainer.style.left = `${left}px`;
-        this.toolbarContainer.style.top = `${top}px`;
+                if (toolbarCenterX > (menuChildren[menuChildren.length - 1]?.getBoundingClientRect().right || 0)) {
+                    const lastChildRect = menuChildren[menuChildren.length - 1].getBoundingClientRect();
+                    let indicatorLeft = lastChildRect.right - menuRect.left;
+                    indicatorLeft = Math.max(0, Math.min(indicatorLeft, menuRect.width - this.insertionIndicator.offsetWidth));
+                    this.insertionIndicator.style.left = `${indicatorLeft}px`;
+                }
+            } else {
+                this.menuElement.style.backgroundColor = '#d0ff00';
+                this.insertionIndicator.style.display = 'none';
+            }
+        }
     },
 
     onDragEnd() {
-        if (!this.dragState.isDragging) return;
+        if (!this.dragState.isDragging) {
+            this.dragState = { isDragging: false, offsetX: 0, offsetY: 0 };
+            if (this.menuElement) this.menuElement.style.backgroundColor = '';
+            if (this.insertionIndicator) this.insertionIndicator.style.display = 'none';
+            return;
+        }
+
         this.dragState.isDragging = false;
+        this.dragState.offsetX = 0;
+        this.dragState.offsetY = 0;
 
         const windowRect = this.getWindowRect();
         const toolbarRect = this.toolbarContainer.getBoundingClientRect();
+        const menuRect = this.menuElement.getBoundingClientRect();
 
-        this.position.leftPercentage = ((parseFloat(this.toolbarContainer.style.left) + toolbarRect.width / 2) / windowRect.width) * 100;
-        this.position.topPercentage = (parseFloat(this.toolbarContainer.style.top) / windowRect.height) * 100;
+        const attachThreshold = 0;
+        const toolbarBottom = toolbarRect.top + toolbarRect.height;
+        if (toolbarBottom > menuRect.top - attachThreshold && toolbarRect.top < menuRect.bottom + attachThreshold) {
+            const menuChildren = Array.from(this.menuElement.children).filter(child => child !== this.insertionIndicator && child !== this.toolbarContainer);
+            const toolbarCenterX = toolbarRect.left + toolbarRect.width / 2;
+            let insertIndex = 0;
+
+            for (let i = 0; i < menuChildren.length; i++) {
+                const childRect = menuChildren[i].getBoundingClientRect();
+                if (toolbarCenterX < childRect.left + childRect.width / 2) {
+                    insertIndex = i;
+                    break;
+                }
+                insertIndex = i + 1;
+            }
+
+            this.attachToMenu(menuChildren[insertIndex]);
+            this.position.isAttached = true;
+            this.position.insertIndex = insertIndex;
+        } else {
+            this.position.leftPercentage = ((toolbarRect.left + toolbarRect.width / 2) / windowRect.width) * 100;
+            this.position.topPercentage = (toolbarRect.top / windowRect.height) * 100;
+            this.position.isAttached = false;
+            this.position.insertIndex = 0;
+        }
 
         localStorage.setItem('KayNodeAlignToolbarPosition', JSON.stringify(this.position));
+        if (this.menuElement) this.menuElement.style.backgroundColor = '';
+        if (this.insertionIndicator) this.insertionIndicator.style.display = 'none';
+    },
+
+    attachToMenu(insertBeforeElement = null) {
+        if (this.position.isAttached) return;
+        this.position.isAttached = true;
+        this.toolbarContainer.classList.remove('floating');
+        this.toolbarContainer.classList.add('attached');
+        this.toolbarContainer.style.left = '';
+        this.toolbarContainer.style.top = '';
+        if (insertBeforeElement) {
+            this.menuElement.insertBefore(this.toolbarContainer, insertBeforeElement);
+        } else {
+            this.menuElement.appendChild(this.toolbarContainer);
+        }
+    },
+
+    detachFromMenu(isDragging = false) {
+        if (!this.position.isAttached || !isDragging) return;
+        this.position.isAttached = false;
+        this.toolbarContainer.classList.remove('attached');
+        this.toolbarContainer.classList.add('floating');
+        document.body.appendChild(this.toolbarContainer);
         this.updatePosition();
     },
 
     restorePosition() {
-        try {
-            const savedPosition = JSON.parse(localStorage.getItem('KayNodeAlignToolbarPosition'));
-            if (savedPosition && typeof savedPosition.leftPercentage === 'number' && typeof savedPosition.topPercentage === 'number') {
-                this.position = savedPosition;
-            } else {
-                this.setDefaultPosition();
+        if (this.position.isAttached && this.menuElement && this.toolbarContainer) {
+            const menuChildren = Array.from(this.menuElement.children).filter(child => child !== this.insertionIndicator && child !== this.toolbarContainer);
+            if (menuChildren.length === 0) {
+                setTimeout(() => this.restorePosition(), 500);
+                return;
             }
-        } catch {
-            this.setDefaultPosition();
+            const insertIndex = Math.min(this.position.insertIndex, menuChildren.length);
+            const insertBeforeElement = menuChildren[insertIndex] || null;
+            this.attachToMenu(insertBeforeElement);
+        } else {
+            this.position.isAttached = false;
+            this.updatePosition();
         }
-        this.updatePosition();
     },
 
     setDefaultPosition() {
-        const nodes = app.graph ? app.graph._nodes : [];
-        if (nodes.length > 0) {
-            const avgX = nodes.reduce((sum, n) => sum + n.pos[0], 0) / nodes.length;
-            const avgY = nodes.reduce((sum, n) => sum + n.pos[1], 0) / nodes.length;
-            const windowRect = this.getWindowRect();
-            this.position.leftPercentage = avgX > windowRect.width / 2 ? 25 : 75;
-            this.position.topPercentage = avgY > windowRect.height / 2 ? 5 : 25;
-        } else {
-            this.position = { leftPercentage: 50, topPercentage: 5 };
-        }
+        this.position = { leftPercentage: 50, topPercentage: 5, isAttached: false, insertIndex: 0 };
     },
 
     getSelectedNodes() {
@@ -378,54 +550,76 @@ const KayNodeAlignmentManager = {
     },
 
     updateDisplayMode(mode) {
-        if (mode === "disabled") {
-            this.hide();
-            return;
-        }
-        this.isPermanent = mode === "permanent";
-        if (this.isPermanent) {
-            this.show();
-        } else {
-            const selectedNodes = this.getSelectedNodes();
-            selectedNodes.length >= 2 ? this.show() : this.hide();
+        try {
+            const effectiveMode = mode || "permanent";
+            console.log(`Updating display mode to: ${effectiveMode}`);
+            if (effectiveMode === "disabled") {
+                this.hide();
+                return;
+            }
+            this.isPermanent = effectiveMode === "permanent";
+            if (this.isPermanent) {
+                this.show();
+            } else if (effectiveMode === "on-select") {
+                const selectedNodes = this.getSelectedNodes();
+                console.log(`Selected nodes count: ${selectedNodes.length}`);
+                if (selectedNodes.length >= 2) {
+                    this.show();
+                } else {
+                    this.hide();
+                }
+            }
+        } catch (error) {
+            console.error("Error in updateDisplayMode:", error);
         }
     },
 
     cleanup() {
-        if (this.resizeObserver) this.resizeObserver.disconnect();
-        document.removeEventListener('mousemove', this.onDragging.bind(this));
-        document.removeEventListener('mouseup', this.onDragEnd.bind(this));
+        document.removeEventListener('mousemove', this.onDragging);
+        document.removeEventListener('mouseup', this.onDragEnd);
         document.removeEventListener('selectstart', e => this.dragState.isDragging && e.preventDefault());
         if (this.toolbarContainer) this.toolbarContainer.remove();
+        if (this.insertionIndicator) this.insertionIndicator.remove();
         this.isInitialized = false;
     }
 };
 
 function initializeKayNodeAlignment() {
-    const displayMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
-    if (displayMode === "disabled") {
-        return;
-    }
+    try {
+        const displayMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
+        console.log(`Initializing with display mode: ${displayMode}`);
+        if (displayMode === "disabled") return;
 
-    const canvas = document.querySelector('canvas#graph-canvas');
-    if (canvas) {
-        KayNodeAlignmentManager.init();
-        canvas.addEventListener('click', () => {
-            const currentMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
-            if (currentMode !== "disabled") {
-                KayNodeAlignmentManager.updateDisplayMode(currentMode);
-            } else {
-                KayNodeAlignmentManager.hide();
-            }
-        });
-    } else {
-        setTimeout(initializeKayNodeAlignment, 1000);
+        const canvas = document.querySelector('canvas#graph-canvas');
+        if (canvas) {
+            KayNodeAlignmentManager.init();
+
+            canvas.addEventListener('click', () => {
+                const currentMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
+                if (currentMode === "on-select") {
+                    KayNodeAlignmentManager.updateDisplayMode(currentMode);
+                }
+            });
+        } else {
+            console.log("Canvas not found, retrying in 1s...");
+            setTimeout(initializeKayNodeAlignment, 1000);
+        }
+    } catch (error) {
+        console.error("Error in initializeKayNodeAlignment:", error);
+        throw error;
     }
 }
 
 app.registerExtension({
     name: "KayTool.NodeAlign",
     init() {
-        initializeKayNodeAlignment();
+        try {
+            console.log("Starting KayTool.NodeAlign init");
+            initializeKayNodeAlignment();
+            console.log("KayTool.NodeAlign init completed");
+        } catch (error) {
+            console.error("Error in extension init:", error);
+            throw error;
+        }
     }
 });

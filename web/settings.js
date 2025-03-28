@@ -116,7 +116,6 @@ app.registerExtension({
             }
         });
 
-
         app.ui.settings.addSetting({
             id: "KayTool.NodeAlignBackgroundOpacity",
             name: "Node Alignment Toolbar Background Opacity",
@@ -128,13 +127,16 @@ app.registerExtension({
                 const toolbar = document.getElementById('kay-node-alignment-toolbar');
                 if (toolbar) {
                     const bgColor = app.ui.settings.getSettingValue("KayTool.NodeAlignBackgroundColor");
-                    if (/^[0-9A-Fa-f]{6}$/.test(bgColor)) {
-                        const opacity = newVal / 100;
+                    const opacity = newVal / 100;
+                    if (opacity > 0 && /^[0-9A-Fa-f]{6}$/.test(bgColor)) {
                         toolbar.style.background = `rgba(${parseInt(bgColor.substr(0, 2), 16)}, ${parseInt(bgColor.substr(2, 2), 16)}, ${parseInt(bgColor.substr(4, 2), 16)}, ${opacity})`;
+                    } else {
+                        toolbar.style.background = '';
                     }
                 }
             }
         });
+
         app.ui.settings.addSetting({
             id: "KayTool.NodeAlignBackgroundColor",
             name: "Node Alignment Toolbar Background Color",
@@ -145,7 +147,11 @@ app.registerExtension({
                 const toolbar = document.getElementById('kay-node-alignment-toolbar');
                 if (toolbar && /^[0-9A-Fa-f]{6}$/.test(newVal)) {
                     const opacity = app.ui.settings.getSettingValue("KayTool.NodeAlignBackgroundOpacity") / 100;
-                    toolbar.style.background = `rgba(${parseInt(newVal.substr(0, 2), 16)}, ${parseInt(newVal.substr(2, 2), 16)}, ${parseInt(newVal.substr(4, 2), 16)}, ${opacity})`;
+                    if (opacity > 0) {
+                        toolbar.style.background = `rgba(${parseInt(newVal.substr(0, 2), 16)}, ${parseInt(newVal.substr(2, 2), 16)}, ${parseInt(newVal.substr(4, 2), 16)}, ${opacity})`;
+                    } else {
+                        toolbar.style.background = '';
+                    }
                 }
             }
         });
@@ -157,9 +163,11 @@ app.registerExtension({
             defaultValue: "2b2b2b",
             category: ["KayTool", "NodeAlignment", "IconBackgroundColor"],
             onChange: (newVal) => {
-                const buttons = document.querySelectorAll('.kay-align-button');
                 if (/^[0-9A-Fa-f]{6}$/.test(newVal)) {
-                    buttons.forEach(btn => btn.style.backgroundColor = `#${newVal}`);
+                    const buttons = document.querySelectorAll('.kay-align-button');
+                    buttons.forEach(btn => {
+                        btn.style.backgroundColor = `#${newVal}`;
+                    });
                 }
             }
         });
@@ -171,8 +179,8 @@ app.registerExtension({
             defaultValue: "666666",
             category: ["KayTool", "NodeAlignment", "IconColor"],
             onChange: (newVal) => {
-                const buttons = document.querySelectorAll('.kay-align-button');
                 if (/^[0-9A-Fa-f]{6}$/.test(newVal)) {
+                    const buttons = document.querySelectorAll('.kay-align-button');
                     buttons.forEach(btn => {
                         const svg = btn.querySelector('svg');
                         if (svg) svg.querySelectorAll('path').forEach(path => path.setAttribute('fill', `#${newVal}`));
@@ -188,8 +196,8 @@ app.registerExtension({
             defaultValue: "1e1e1e",
             category: ["KayTool", "NodeAlignment", "DividerColor"],
             onChange: (newVal) => {
-                const dividers = document.querySelectorAll('.kay-toolbar-divider');
                 if (/^[0-9A-Fa-f]{6}$/.test(newVal)) {
+                    const dividers = document.querySelectorAll('.kay-toolbar-divider');
                     dividers.forEach(divider => divider.style.background = `#${newVal}`);
                 }
             }
