@@ -93,7 +93,6 @@ app.registerExtension({
             ],
             defaultValue: "permanent",
             category: ["KayTool", "NodeAlignment", "DisplayMode"],
-            tooltip: "Controls when the node alignment toolbar is displayed.",
             onChange: (value) => {
                 const manager = window.KayNodeAlignmentManager;
                 const initFn = window.initializeKayNodeAlignment;
@@ -152,6 +151,7 @@ app.registerExtension({
             type: "color",
             defaultValue: "2b2b2b",
             category: ["KayTool", "NodeAlignment", "IconBackgroundColor"],
+            tooltip: "Use parameter “363636” to match ComfyUI menu bar color for an icon-free background effect",
             onChange: (newVal) => {
                 if (/^[0-9A-Fa-f]{6}$/.test(newVal)) {
                     const buttons = document.querySelectorAll('.kay-align-button');

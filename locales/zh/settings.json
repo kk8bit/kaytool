@@ -34,8 +34,7 @@
         "Permanent": "常驻",
         "Show on Node Selection": "在选中多个节点时",
         "Disabled": "禁用"
-      },
-      "tooltip": "切换模式后点击画布空白处或刷新页面即可"
+      }
     },
     "KayTool_NodeAlignBackgroundOpacity": {
       "name": "工具栏背景不透明度"
@@ -44,7 +43,8 @@
       "name": "工具栏背景颜色"
     },
     "KayTool_NodeAlignIconBackgroundColor": {
-      "name": "图标背景颜色"
+      "name": "图标背景颜色",
+      "tooltip": "数值“363636”接近ComfyUI菜单栏颜色，可模拟隐藏背景效果"
     },
     "KayTool_NodeAlignIconColor": {
       "name": "图标颜色"

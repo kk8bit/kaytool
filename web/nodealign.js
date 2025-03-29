@@ -1,7 +1,6 @@
 import { app } from "../../../scripts/app.js";
 
-// Based on /NodeAligner by Tenney95 GitHub:https://github.com/Tenney95/ComfyUI-NodeAligner
-
+// SVG 定义（已包含你的现有 SVG，新增参考代码中的两个）
 const kayAlignBottomSvg = `<svg t="1725534360155" class="icon" viewBox="0 0 1170 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1662" width="100%"><path d="M1170.285714 987.428571a36.571429 36.571429 0 0 0-36.571428-36.571428H36.571429a36.571429 36.571429 0 0 0 0 73.142857h1097.142857a36.571429 36.571429 0 0 0 36.571428-36.571429z m-219.428571-146.285714v-512a36.571429 36.571429 0 0 0-36.571429-36.571428h-219.428571a36.571429 36.571429 0 0 0-36.571429 36.571428v512a36.571429 36.571429 0 0 0 36.571429 36.571429h219.428571a36.571429 36.571429 0 0 0 36.571429-36.571429z m-438.857143 0V36.571429a36.571429 36.571429 0 0 0-36.571429-36.571429h-219.428571a36.571429 36.571429 0 0 0-36.571429 36.571429v804.571428a36.571429 36.571429 0 0 0 36.571429 36.571429h219.428571a36.571429 36.571429 0 0 0 36.571429-36.571429z" fill="#666666" p-id="1663"></path></svg>`;
 const kayAlignCenterHorizontallySvg = `<svg t="1725534379860" class="icon" viewBox="0 0 1243 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2250" width="100%"><path d="M548.571429 472.356571h146.285714V231.643429a36.571429 36.571429 0 0 1 36.571428-36.571429h219.428572a36.571429 36.571429 0 0 1 36.571428 36.571429v240.713142h179.785143a39.643429 39.643429 0 0 1 0 79.286858H987.428571v240.713142a36.571429 36.571429 0 0 1-36.571428 36.571429h-219.428572a36.571429 36.571429 0 0 1-36.571428-36.571429V551.64571h-146.285714V950.857143a36.571429 36.571429 0 0 1-36.571429 36.571428H292.571429a36.571429 36.571429 0 0 1-36.571429-36.571428V551.643429H76.214857a39.643429 39.643429 0 1 1 0-79.286858H256V73.142857A36.571429 36.571429 0 0 1 292.571429 36.571429h219.428571a36.571429 36.571429 0 0 1 36.571429 36.571428v399.213714z" fill="#666666" p-id="2251"></path></svg>`;
 const kayAlignCenterVerticallySvg = `<svg t="1725534363707" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1809" width="100%"><path d="M477.312 576V448H266.688a32 32 0 0 1-32-32v-192a32 32 0 0 1 32-32h210.624V34.688a34.688 34.688 0 0 1 69.376 0V192h210.624a32 32 0 0 1 32 32v192a32 32 0 0 1-32 32H546.688v128H896a32 32 0 0 1 32 32v192a32 32 0 0 1-32 32H546.688v157.312a34.688 34.688 0 0 1-69.376 0V832H128a32 32 0 0 1-32-32v-192A32 32 0 0 1 128 576h349.312z" fill="#666666" p-id="1810"></path></svg>`;
@@ -10,6 +9,8 @@ const kayAlignRightSvg = `<svg t="1725534384109" class="icon" viewBox="0 0 1024 
 const kayAlignTopSvg = `<svg t="1725534367556" class="icon" viewBox="0 0 1170 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1956" width="100%"><path d="M1170.285714 36.571429a36.571429 36.571429 0 0 1-36.571428 36.571428H36.571429a36.571429 36.571429 0 0 1 0-73.142857h1097.142857a36.571429 36.571429 0 0 1 36.571428 36.571429z m-219.428571 146.285714v512a36.571429 36.571429 0 0 1-36.571429 36.571428h-219.428571a36.571429 36.571429 0 0 1-36.571429-36.571428v-512a36.571429 36.571429 0 0 1 36.571429-36.571429h219.428571a36.571429 36.571429 0 0 1 36.571429 36.571429z m-438.857143 0v804.571428a36.571429 36.571429 0 0 1-36.571429 36.571429h-219.428571a36.571429 36.571429 0 0 1-36.571429-36.571429v-804.571428a36.571429 36.571429 0 0 1 36.571429-36.571429h219.428571a36.571429 36.571429 0 0 1 36.571429 36.571429z" fill="#666666" p-id="1957"></path></svg>`;
 const kayEqualWidthSvg = `<svg t="1725606034670" class="icon" viewBox="0 0 1088 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7213" width="100%"><path d="M978.24 480a42.688 42.688 0 0 1-42.688 42.688H172.928a42.688 42.688 0 0 1-42.688-42.688V213.312c0-23.552 19.072-42.624 42.688-42.624h762.624c23.552 0 42.688 19.072 42.688 42.624V480z" fill="#666666" p-id="7214"></path><path d="M256.96 734.144c0-14.08 11.456-25.6 25.6-25.6h543.36a25.6 25.6 0 0 1 0 51.2h-543.36a25.6 25.6 0 0 1-25.6-25.6z" fill="#666666" p-id="7215"></path><path d="M136.64 745.216a12.8 12.8 0 0 1 0-22.144l184.192-106.368a12.8 12.8 0 0 1 19.2 11.072v212.736a12.8 12.8 0 0 1-19.2 11.072l-184.192-106.368zM971.84 745.216a12.8 12.8 0 0 0 0-22.144l-184.256-106.368a12.8 12.8 0 0 0-19.2 11.072v212.736a12.8 12.8 0 0 0 19.2 11.072l184.256-106.368z" fill="#666666" p-id="7216"></path></svg>`;
 const kayEqualHeightSvg = `<svg t="1725606224564" class="icon" viewBox="0 0 1088 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7790" width="100%"><path d="M572.16 936a42.688 42.688 0 0 1-42.688-42.688V130.688c0-23.616 19.136-42.688 42.688-42.688h266.688c23.552 0 42.624 19.072 42.624 42.688v762.624a42.688 42.688 0 0 1-42.624 42.688H572.16z" fill="#666666" p-id="7791"></path><path d="M318.016 214.72c14.08 0 25.6 11.456 25.6 25.6v543.36a25.6 25.6 0 1 1-51.2 0v-543.36c0-14.144 11.456-25.6 25.6-25.6z" fill="#666666" p-id="7792"></path><path d="M306.944 94.4a12.8 12.8 0 0 1 22.144 0l106.368 184.192a12.8 12.8 0 0 1-11.072 19.2H211.648a12.8 12.8 0 0 1-11.072-19.2l106.368-184.192zM306.944 929.6a12.8 12.8 0 0 0 22.144 0l106.368-184.192a12.8 12.8 0 0 0-11.072-19.2H211.648a12.8 12.8 0 0 0-11.072 19.2l106.368 184.192z" fill="#666666" p-id="7793"></path></svg>`;
+const kayHorizontalDistributionSvg = `<svg t="1725534354023" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1515" width="100%"><path d="M96 0a32 32 0 0 1 32 32v960a32 32 0 0 1-64 0V32A32 32 0 0 1 96 0z m832 0a32 32 0 0 1 32 32v960a32 32 0 0 1-64 0V32a32 32 0 0 1 32-32zM384 800v-576a32 32 0 0 1 32-32h192a32 32 0 0 1 32 32v576a32 32 0 0 1-32 32h-192a32 32 0 0 1-32-32z" fill="#666666" p-id="1516"></path></svg>`;
+const kayVerticalDistributionSvg = `<svg t="1725534350231" class="icon" viewBox="0 0 1170 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1368" width="100%"><path d="M1170.285714 36.571429a36.571429 36.571429 0 0 1-36.571428 36.571428H36.571429a36.571429 36.571429 0 0 1 0-73.142857h1097.142857a36.571429 36.571429 0 0 1 36.571428 36.571429z m0 950.857142a36.571429 36.571429 0 0 1-36.571428 36.571429H36.571429a36.571429 36.571429 0 0 1 0-73.142857h1097.142857a36.571429 36.571429 0 0 1 36.571428 36.571428zM256 365.714286h658.285714a36.571429 36.571429 0 0 1 36.571429 36.571428v219.428572a36.571429 36.571429 0 0 1-36.571429 36.571428h-658.285714a36.571429 36.571429 0 0 1-36.571429-36.571428v-219.428572a36.571429 36.571429 0 0 1 36.571429-36.571428z" fill="#666666" p-id="1369"></path></svg>`;
 
 let stylesInjected = false;
 
@@ -87,7 +88,7 @@ const KayNodeAlignmentManager = {
                 transition: background-color 0.3s ease-in-out, transform 0.1s ease;
                 flex-shrink: 0;
             }
-            .kay-align-button svg { width: 70%; height: 70%; }
+            .kay-align-button svg { width: 66%; height: 66%; }
             .kay-toolbar-divider {
                 width: 3.2px;
                 height: 15px;
@@ -156,7 +157,7 @@ const KayNodeAlignmentManager = {
             const menuChildren = Array.from(this.menuElement.children).filter(child => child !== this.insertionIndicator);
             const insertIndex = Math.min(this.position.insertIndex, menuChildren.length);
             const insertBeforeElement = menuChildren[insertIndex] || null;
-            this.menuElement.insertBefore(this.toolbarContainer, insertBeforeElement);;
+            this.menuElement.insertBefore(this.toolbarContainer, insertBeforeElement);
         } else {
             document.body.appendChild(this.toolbarContainer);
         }
@@ -219,7 +220,10 @@ const KayNodeAlignmentManager = {
             { id: 'kay-align-bottom', svg: kayAlignBottomSvg, action: this.alignBottom },
             { type: 'divider' },
             { id: 'kay-equal-width', svg: kayEqualWidthSvg, action: this.equalWidth },
-            { id: 'kay-equal-height', svg: kayEqualHeightSvg, action: this.equalHeight }
+            { id: 'kay-equal-height', svg: kayEqualHeightSvg, action: this.equalHeight },
+            { type: 'divider' }, 
+            { id: 'kay-horizontal-distribution', svg: kayHorizontalDistributionSvg, action: this.horizontalDistribution },
+            { id: 'kay-vertical-distribution', svg: kayVerticalDistributionSvg, action: this.verticalDistribution }
         ];
     },
 
@@ -278,14 +282,23 @@ const KayNodeAlignmentManager = {
     onDragStart(e) {
         e.preventDefault();
         const { toolbarRect } = this.getRect();
-        this.dragState = { isDragging: true, offsetX: e.clientX - toolbarRect.left, offsetY: e.clientY - toolbarRect.top };
-        if (this.position.isAttached) this.detachFromMenu(true);
-        if (this.menuElement) this.menuElement.style.backgroundColor = '#d0ff00';
+        this.dragState = {
+            isDragging: true,
+            offsetX: e.clientX - toolbarRect.left,
+            offsetY: e.clientY - toolbarRect.top
+        };
     },
 
     onDragging(e) {
         if (!this.dragState.isDragging) return;
+
         const { windowRect, toolbarRect, menuRect } = this.getRect();
+
+        if (this.position.isAttached) {
+            this.detachFromMenu(true);
+            this.menuElement.style.backgroundColor = '#d0ff00';
+        }
+
         let left = e.clientX - this.dragState.offsetX;
         let top = e.clientY - this.dragState.offsetY;
         left = Math.max(0, Math.min(left, windowRect.width - toolbarRect.width));
@@ -317,6 +330,7 @@ const KayNodeAlignmentManager = {
 
     onDragEnd() {
         if (!this.dragState.isDragging) return;
+
         this.dragState.isDragging = false;
         this.dragState.offsetX = 0;
         this.dragState.offsetY = 0;
@@ -441,13 +455,85 @@ const KayNodeAlignmentManager = {
         this.redraw();
     },
 
+    horizontalDistribution() {
+        const nodes = this.getSelectedNodes();
+        const axis = 0;
+        if (nodes.length > 1) {
+            nodes.sort((a, b) => a.pos[axis] - b.pos[axis]);
+            const min = Math.min(...nodes.map(node => node.pos[axis]));
+            const max = Math.max(...nodes.map(node => node.pos[axis] + node.size[axis]));
+            const totalSize = nodes.reduce((sum, node) => sum + node.size[axis], 0);
+            const spacing = (max - min - totalSize) / (nodes.length - 1);
+            let current = min;
+            nodes.forEach(node => {
+                node.pos[axis] = current;
+                current += node.size[axis] + spacing;
+            });
+            this.redraw();
+        }
+    },
+
+    verticalDistribution() {
+        const nodes = this.getSelectedNodes();
+        if (nodes.length > 1) {
+            const axis = 1;
+            const otherAxis = 0;
+            const tolerance = 100;
+            const minSpacing = 20;
+
+            const columns = [];
+            nodes.forEach(node => {
+                let foundColumn = null;
+                for (let column of columns) {
+                    const columnX = column[0].pos[otherAxis];
+                    if (Math.abs(columnX - node.pos[otherAxis]) <= tolerance) {
+                        foundColumn = column;
+                        break;
+                    }
+                }
+                if (foundColumn) {
+                    foundColumn.push(node);
+                } else {
+                    columns.push([node]);
+                }
+            });
+
+            const columnHeights = columns.map(column => {
+                const minY = Math.min(...column.map(node => node.pos[axis]));
+                const maxY = Math.max(...column.map(node => node.pos[axis] + node.size[axis]));
+                return maxY - minY;
+            });
+            const maxColumnHeight = Math.max(...columnHeights);
+
+            columns.forEach(column => {
+                if (column.length > 1) {
+                    column.sort((a, b) => a.pos[axis] - b.pos[axis]);
+                    const minY = Math.min(...column.map(node => node.pos[axis]));
+                    const totalSize = column.reduce((sum, node) => sum + node.size[axis], 0);
+                    let spacing = (maxColumnHeight - totalSize) / (column.length - 1);
+                    spacing = Math.max(spacing, minSpacing);
+                    let currentY = column[0].pos[axis];
+                    column.forEach((node, idx) => {
+                        if (idx === 0) {
+                            currentY += node.size[axis] + spacing;
+                        } else {
+                            node.pos[axis] = currentY;
+                            currentY += node.size[axis] + spacing;
+                        }
+                        node.pos[otherAxis] = column[0].pos[otherAxis];
+                    });
+                }
+            });
+            this.redraw();
+        }
+    },
+
     redraw() {
         if (app.canvas) app.canvas.setDirty(true, true);
     },
 
     updateDisplayMode(mode) {
         const effectiveMode = mode || "permanent";
-
         if (effectiveMode === "disabled") {
             this.hide();
         } else if (effectiveMode === "permanent") {
