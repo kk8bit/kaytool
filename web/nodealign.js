@@ -11,7 +11,6 @@ const kayAlignTopSvg = `<svg t="1725534367556" class="icon" viewBox="0 0 1170 10
 const kayEqualWidthSvg = `<svg t="1725606034670" class="icon" viewBox="0 0 1088 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7213" width="100%"><path d="M978.24 480a42.688 42.688 0 0 1-42.688 42.688H172.928a42.688 42.688 0 0 1-42.688-42.688V213.312c0-23.552 19.072-42.624 42.688-42.624h762.624c23.552 0 42.688 19.072 42.688 42.624V480z" fill="#666666" p-id="7214"></path><path d="M256.96 734.144c0-14.08 11.456-25.6 25.6-25.6h543.36a25.6 25.6 0 0 1 0 51.2h-543.36a25.6 25.6 0 0 1-25.6-25.6z" fill="#666666" p-id="7215"></path><path d="M136.64 745.216a12.8 12.8 0 0 1 0-22.144l184.192-106.368a12.8 12.8 0 0 1 19.2 11.072v212.736a12.8 12.8 0 0 1-19.2 11.072l-184.192-106.368zM971.84 745.216a12.8 12.8 0 0 0 0-22.144l-184.256-106.368a12.8 12.8 0 0 0-19.2 11.072v212.736a12.8 12.8 0 0 0 19.2 11.072l184.256-106.368z" fill="#666666" p-id="7216"></path></svg>`;
 const kayEqualHeightSvg = `<svg t="1725606224564" class="icon" viewBox="0 0 1088 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7790" width="100%"><path d="M572.16 936a42.688 42.688 0 0 1-42.688-42.688V130.688c0-23.616 19.136-42.688 42.688-42.688h266.688c23.552 0 42.624 19.072 42.624 42.688v762.624a42.688 42.688 0 0 1-42.624 42.688H572.16z" fill="#666666" p-id="7791"></path><path d="M318.016 214.72c14.08 0 25.6 11.456 25.6 25.6v543.36a25.6 25.6 0 1 1-51.2 0v-543.36c0-14.144 11.456-25.6 25.6-25.6z" fill="#666666" p-id="7792"></path><path d="M306.944 94.4a12.8 12.8 0 0 1 22.144 0l106.368 184.192a12.8 12.8 0 0 1-11.072 19.2H211.648a12.8 12.8 0 0 1-11.072-19.2l106.368-184.192zM306.944 929.6a12.8 12.8 0 0 0 22.144 0l106.368-184.192a12.8 12.8 0 0 0-11.072-19.2H211.648a12.8 12.8 0 0 0-11.072 19.2l106.368 184.192z" fill="#666666" p-id="7793"></path></svg>`;
 
-
 const KayNodeAlignmentManager = {
     isInitialized: false,
     toolbarContainer: null,
@@ -40,8 +39,8 @@ const KayNodeAlignmentManager = {
                 this.setupToolbar();
                 requestAnimationFrame(() => this.restorePosition());
                 const displayMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
-                console.log(`Initial display mode: ${displayMode}`);
                 this.updateDisplayMode(displayMode);
+                this.bindCanvasEvents();  
             });
         } catch (error) {
             console.error("Error in KayNodeAlignmentManager.init:", error);
@@ -552,17 +551,14 @@ const KayNodeAlignmentManager = {
     updateDisplayMode(mode) {
         try {
             const effectiveMode = mode || "permanent";
-            console.log(`Updating display mode to: ${effectiveMode}`);
+            this.isPermanent = effectiveMode === "permanent";
+
             if (effectiveMode === "disabled") {
                 this.hide();
-                return;
-            }
-            this.isPermanent = effectiveMode === "permanent";
-            if (this.isPermanent) {
+            } else if (effectiveMode === "permanent") {
                 this.show();
             } else if (effectiveMode === "on-select") {
                 const selectedNodes = this.getSelectedNodes();
-                console.log(`Selected nodes count: ${selectedNodes.length}`);
                 if (selectedNodes.length >= 2) {
                     this.show();
                 } else {
@@ -574,10 +570,21 @@ const KayNodeAlignmentManager = {
         }
     },
 
+    bindCanvasEvents() {
+        if (!this.canvas) return;
+        this.canvas.removeEventListener('click', this.handleCanvasClick);
+        this.handleCanvasClick = () => {
+            const currentMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
+            this.updateDisplayMode(currentMode);
+        };
+        this.canvas.addEventListener('click', this.handleCanvasClick);
+    },
+
     cleanup() {
         document.removeEventListener('mousemove', this.onDragging);
         document.removeEventListener('mouseup', this.onDragEnd);
         document.removeEventListener('selectstart', e => this.dragState.isDragging && e.preventDefault());
+        if (this.canvas) this.canvas.removeEventListener('click', this.handleCanvasClick);
         if (this.toolbarContainer) this.toolbarContainer.remove();
         if (this.insertionIndicator) this.insertionIndicator.remove();
         this.isInitialized = false;
@@ -587,19 +594,11 @@ const KayNodeAlignmentManager = {
 function initializeKayNodeAlignment() {
     try {
         const displayMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
-        console.log(`Initializing with display mode: ${displayMode}`);
         if (displayMode === "disabled") return;
 
         const canvas = document.querySelector('canvas#graph-canvas');
         if (canvas) {
             KayNodeAlignmentManager.init();
-
-            canvas.addEventListener('click', () => {
-                const currentMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
-                if (currentMode === "on-select") {
-                    KayNodeAlignmentManager.updateDisplayMode(currentMode);
-                }
-            });
         } else {
             console.log("Canvas not found, retrying in 1s...");
             setTimeout(initializeKayNodeAlignment, 1000);
@@ -614,9 +613,10 @@ app.registerExtension({
     name: "KayTool.NodeAlign",
     init() {
         try {
-            console.log("Starting KayTool.NodeAlign init");
             initializeKayNodeAlignment();
-            console.log("KayTool.NodeAlign init completed");
+            // 将全局引用暴露给 settings.js
+            window.KayNodeAlignmentManager = KayNodeAlignmentManager;
+            window.initializeKayNodeAlignment = initializeKayNodeAlignment;
         } catch (error) {
             console.error("Error in extension init:", error);
             throw error;

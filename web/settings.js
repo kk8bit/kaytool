@@ -95,22 +95,20 @@ app.registerExtension({
             category: ["KayTool", "NodeAlignment", "DisplayMode"],
             tooltip: "Controls when the node alignment toolbar is displayed.",
             onChange: (value) => {
-                if (window.KayNodeAlignmentManager) {
-                    if (value === "disabled") {
-                        if (KayNodeAlignmentManager.isInitialized) {
-                            KayNodeAlignmentManager.cleanup();
-                        }
-                    } else if (!KayNodeAlignmentManager.isInitialized) {
-                        const initFn = window.initializeKayNodeAlignment;
-                        if (initFn) initFn();
+                const manager = window.KayNodeAlignmentManager;
+                const initFn = window.initializeKayNodeAlignment;
+                if (!manager || !initFn) return;
+
+                if (value === "disabled") {
+                    if (manager.isInitialized) {
+                        manager.cleanup();
+                    }
+                } else {
+                    if (!manager.isInitialized) {
+                        initFn();
                     } else {
-                        KayNodeAlignmentManager.updateDisplayMode(value);
-                        const selectedNodes = KayNodeAlignmentManager.getSelectedNodes();
-                        if (value === "on-select") {
-                            selectedNodes.length >= 2 ? KayNodeAlignmentManager.show() : KayNodeAlignmentManager.hide();
-                        } else {
-                            KayNodeAlignmentManager.show();
-                        }
+                        manager.updateDisplayMode(value);
+                        manager.bindCanvasEvents(); // 确保事件绑定
                     }
                 }
             }
