@@ -6,15 +6,17 @@
 
 This is a custom node utility package developed for ComfyUI. Initially created for personal convenience, I will continue adding features in the future.
 
-## 节点预览 Nodes Preview (不全 Not All):
+# 节点预览 Nodes Preview (不全 Not All):
 
 ![preview_custom_save_image_node](https://github.com/user-attachments/assets/92ef9b39-97f2-4076-903e-79ce7a7375ea)
 
-## 当前功能 Current Features
-**📌 所有 KayTool 节点包用到的资源都在 `ComfyUI/custom_nodes/kaytool` 文件夹内。| All KayTool node packages use resources in the `ComfyUI/custom_nodes/kaytool` folder.**
----
+# 当前功能 Current Features
 
-### 节点排版工具栏 Node Align Toolbar
+**📌 所有 KayTool 节点包用到的资源都在 `ComfyUI/custom_nodes/kaytool` 文件夹内。| All KayTool node packages use resources in the `ComfyUI/custom_nodes/kaytool` folder.**
+
+
+## 节点排版工具栏 Node Align Toolbar
+
 - 支持节点多种对齐方式的工具栏
   Supports node alignment tools.
 - 工具栏显示模式可以在设置菜单中（KayTool）进行配置。
@@ -22,27 +24,30 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - 工具栏所有元素均支持自定义颜色。
   All elements of the toolbar support custom color.
 
-### workflow PNG功能 Workflow Export to PNG
+## workflow PNG功能 Workflow Export to PNG
+
 - 支持在右键菜单中`KayTool-workflow PNG`将当前工作流节点地图保存为PNG格式并内嵌工作流信息。
   Supports saving the current workflow node map as a PNG format and embedding workflow information in the right-click menu.
 
----
 
-### 自定义ComfyUI Logo功能 Custom ComfyUI Logo
+
+## 自定义ComfyUI Logo功能 Custom ComfyUI Logo
+
 - 在设置菜单中（KayTool）自定义 ComfyUI 的 Logo，支持 PNG、JPG、JPEG 格式。
   Customize the ComfyUI Logo in the settings menu (KayTool), supporting PNG, JPG, and JPEG formats.
 
----
 
-### 快速 Run 功能 Quick Run Options (Run Group/Node)
+
+## 快速 Run 功能 Quick Run Options (Run Group/Node)
+
 - 右键点击节点组或节点，选择“Run Group/Node”，即可快速运行节点组或节点进行调试。  
 - Right-click on a node group or node, select "Run Group/Node," and quickly run the node group or node for debugging.
 - 使用快捷键`Shift+R`快速运行选中节点。
 - Use the shortcut key `Shift+R` to quickly run the selected node.
 
----
 
-### BiRefNet 背景移除处理节点 BiRefNet Background Removal Processing Node
+
+## BiRefNet 背景移除处理节点 BiRefNet Background Removal Processing Node
 
 [BiRefNet 仓库](https://github.com/zhengpeng7/birefnet)
 
@@ -53,9 +58,9 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - 兼容 `REMOVE_BG` 类型输出，供后续节点使用。  
   **Compatible with `REMOVE_BG` type output**, for use in subsequent nodes.
 
----
 
-### 背景移除加载器 & 处理节点 RemBGLoader & RemoveBG
+
+## 背景移除加载器 & 处理节点 RemBGLoader & RemoveBG
 
 [RemBG 仓库](https://github.com/danielgatis/rembg)
 
@@ -66,15 +71,17 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - **RemoveBG**: Processes images using the loaded background removal model to generate transparent or custom-colored backgrounds. Supports mask blurring and expansion for enhanced background removal effects. Offers multiple background preview options (black, white, red, green, blue) for quick result validation. Outputs the processed image and mask for subsequent compositing or editing needs.  
 - Combined Workflow: Load the model and configure hardware acceleration using **RemBGLoader**, then process images with **RemoveBG** for background removal, with flexible adjustments for mask effects and background styles.
 
----
 
-### 批量图片载入节点 Load Image Folder
+
+## 批量图片载入节点 Load Image Folder
+
 - 提供图片的批量载入及批处理。  
   Provide batch loading and batch processing of images.  
 - 支持 image 和 mask 的批量输出。  
   Support batch output of images and masks.
 
-### 无线数据传输节点 Set & Get
+## 无线数据传输节点 Set & Get
+
 - 提供 `Set` 和 `Get` 两种节点，通过唯一的 ID 实现**无线数据传输**，帮助建立干净整洁的工作流。  
 - **Set 节点**：允许用户定义唯一的 ID，并动态设置输入数据类型，支持实时验证和更新，确保数据的唯一性和一致性。  
 - **Get 节点**：通过匹配的 ID 无线获取对应的 Set 节点数据，自动同步数据类型，减少节点间的复杂连接。  
@@ -88,9 +95,10 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - Includes error notifications and debugging features to ensure correct data transmission between nodes, avoiding workflow interruptions caused by connection errors.  
 - **Key Advantage**: Simplifies node layouts through wireless data transfer, enabling users to build **cleaner, more organized, and efficient workflows**.
 
----
 
-### 数学表达式计算节点 AbcMath
+
+## 数学表达式计算节点 AbcMath
+
 - 支持动态解析数学表达式。  
 - 提供多种运算符和函数支持（加、减、乘、除、幂、取模等）。  
 - 支持变量 `a`、`b`、`c` 的灵活输入（数字或数组形状）。  
@@ -106,9 +114,10 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - Outputs results in both integer and float formats.  
 - Suitable for complex calculation scenarios.
 
----
 
-### 自动翻译节点 AIOTranslater
+
+## 自动翻译节点 AIOTranslater
+
 - 支持单文本输入的自动翻译。  
 - 内置高效 AI 翻译引擎，无需手动获取 API 密钥。  
 - 提供高质量翻译结果，适用于多种语言场景。  
@@ -122,9 +131,10 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - Automatically detects source language for simplified user experience.  
 - Efficient and stable, ideal for quick integration into workflows.
 
----
 
-### 大壮提示词生成节点 StrongPrompt
+
+## 大壮提示词生成节点 StrongPrompt
+
 - 基于 CLIP 模型生成高质量的正向和负向提示词嵌入。  
 - 支持灵活的预设样式选择，快速构建复杂提示词。  
 - 提供多种控制开关（启用/禁用负向输出、预设样式、ID 输入等）。  
@@ -140,9 +150,10 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - Can zero out negative prompt embeddings to meet specific scenario requirements.  
 - Suitable for diffusion model conditioning inputs to enhance generation results.
 
----
 
-### 图像色彩调整节点 ColorAdjustment
+
+## 图像色彩调整节点 ColorAdjustment
+
 - 提供全面的图像色彩调整功能，包括曝光、对比度、色温、色调和饱和度。  
 - 支持多种预设滤镜（基于 `pilgram` 库），快速应用流行风格。  
 - 可通过强度滑块精确控制滤镜效果。  
@@ -156,9 +167,10 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - Provides flexible switch options to enable all filter combinations with one click.  
 - Suitable for image post-processing and stylized generation.
 
----
 
-### 自定义图像保存节点 CustomSaveImage
+
+## 自定义图像保存节点 CustomSaveImage
+
 - 支持自定义文件名前缀和后缀，确保输出文件名的唯一性。  
 - 提供灵活的图像保存功能，支持多种格式（PNG、JPG）。  
 - 可选择色彩配置文件（sRGB IEC61966-2.1 或 Adobe RGB 1998），确保色彩准确性。  
@@ -174,18 +186,21 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - Automatically generates unique filenames to prevent overwriting existing files.  
 - Suitable for workflows requiring precise control over output images.
 
-#### 变量使用说明 Variable Usage Notes
+### 变量使用说明 Variable Usage Notes
+
 - 变量名大小写敏感，请确保正确输入。  
   Variable names are case-sensitive; please ensure correct input.
 
 在 `filename_prefix` 中，可以使用以下动态变量来自定义文件名：  
 In `filename_prefix`, you can use the following dynamic variables to customize the filename:
 
-##### 1. 日期和时间 Date and Time
+#### 1. 日期和时间 Date and Time
+
 - `%date:yyyy-MM-dd%`：当前日期，例如 `2023-10-05`  
 - `%time:HH-mm-ss%`：当前时间，例如 `14-30-45`
 
-##### 2. KSampler 参数 KSampler Parameters
+#### 2. KSampler 参数 KSampler Parameters
+
 支持以下变量，多个 `KSampler` 节点会自动编号（如 `_1`, `_2`）：  
 - `%KSampler.seed%`：随机种子值  
 - `%KSampler.steps%`：采样步数  
@@ -194,13 +209,15 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - `%KSampler.scheduler%`：调度器名称  
 - `%KSampler.denoise%`：去噪强度
 
-##### 3. 图像信息 Image Information
+#### 3. 图像信息 Image Information
+
 - `%width%`：图像宽度（像素）  
 - `%height%`：图像高度（像素）
 
----
 
-### 百度翻译节点 BaiduTranslater
+
+## 百度翻译节点 BaiduTranslater
+
 - 使用百度翻译 API 提供高质量的多语言翻译服务。  
 - 支持自动检测源语言及多种目标语言选择（中文简体、中文繁体、英语等）。  
 - 需要用户提供百度 API 的 App ID 和 App Key（可在 [百度翻译开放平台](https://fanyi-api.baidu.com/) 注册获取）。  
@@ -214,9 +231,10 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Provides a flexible switch to enable or disable the translation function.  
 - Suitable for multi-language workflows requiring precise translations.
 
----
 
-### 通用显示节点 DisplayAny
+
+## 通用显示节点 DisplayAny
+
 - 可接收任意类型的输入并将其转换为字符串显示。  
 - 提供灵活的调试和查看功能，适用于任何数据类型。  
 - 输出结果可直接用于后续节点或日志记录。  
@@ -226,9 +244,10 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - The output can be directly used in subsequent nodes or for logging.  
 - Simplifies data visualization needs in complex workflows.
 
----
 
-### 图像尺寸提取节点 ImageSizeExtractor
+
+## 图像尺寸提取节点 ImageSizeExtractor
+
 - 自动提取输入图像的宽度和高度。  
 - 支持批量图像（4D 张量）和单张图像（3D 张量）输入。  
 - 输出图像的宽度和高度，便于后续处理或计算。  
@@ -238,9 +257,10 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Outputs the width and height of the image for subsequent processing or calculations.  
 - Suitable for workflows requiring dynamic retrieval of image dimensions.
 
----
 
-### 高级遮罩处理节点 MaskBlurPlus
+
+## 高级遮罩处理节点 MaskBlurPlus
+
 - 提供遮罩的模糊和扩展功能，增强遮罩的灵活性。  
 - 支持动态调整模糊半径和扩展强度。  
 - 模糊功能使用高斯模糊算法，确保平滑过渡。  
@@ -252,9 +272,10 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Expansion supports both positive (enlarging the mask) and negative (shrinking the mask) adjustments.  
 - Suitable for advanced workflows such as image segmentation and mask optimization.
 
----
 
-### 遮罩预览增强节点 PreviewMaskPlus
+
+## 遮罩预览增强节点 PreviewMaskPlus
+
 - 提供多种遮罩预览模式，包括纯色背景（黑、白、红、绿、蓝）和原始遮罩视图。  
 - 支持动态调整预览样式，便于快速查看遮罩效果。  
 - 自动将遮罩与图像叠加，生成直观的可视化结果。  
@@ -266,9 +287,10 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Suitable for mask debugging, image compositing, and segmentation tasks.  
 - Outputs preview images to a temporary directory for easy access.
 
----
 
-### 遮罩预览节点 PreviewMask
+
+## 遮罩预览节点 PreviewMask
+
 - 提供遮罩的快速可视化功能，将单通道遮罩转换为 RGB 图像。  
 - 支持动态调整遮罩范围，确保兼容不同输入格式。  
 - 输出预览图像到临时目录，便于快速查看和调试。  
@@ -278,9 +300,10 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Outputs preview images to a temporary directory for easy viewing and debugging.  
 - Suitable for preliminary validation in mask generation and image segmentation tasks.
 
----
 
-### Slider 精度节点系列 (Slider10、Slider100、Slider1000)
+
+## Slider 精度节点系列 (Slider10、Slider100、Slider1000)
+
 - 提供三种不同精度的滑块输入节点，分别支持 0-10、0-100 和 0-1000 的整数范围。  
 - 每种精度滑块均支持动态调整，默认值居中，适用于不同精度需求的场景。  
 - 输出整数值，便于直接用于后续计算或参数控制。  
@@ -290,9 +313,10 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Outputs integer values for direct use in subsequent calculations or parameter control.  
 - The overall design is flexible, meeting workflow needs ranging from coarse to fine adjustments.
 
----
 
-### 文本处理节点 Text
+
+## 文本处理节点 Text
+
 - 提供一个多行文本输入框，支持动态输入和编辑。  
 - 输出原始文本内容，便于直接用于后续节点或日志记录。  
 - 适用于需要灵活处理文本的工作流场景。  
@@ -300,9 +324,10 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Outputs the original text content for direct use in subsequent nodes or logging.  
 - Suitable for workflow scenarios requiring flexible text handling.
 
----
 
-### 转换为整数节点 To Int
+
+## 转换为整数节点 To Int
+
 - 将任意类型的输入转换为整数，支持动态数据处理。  
 - 自动对浮点数进行四舍五入，并将无效输入默认为 0。  
 - 输出结果以文本形式显示，便于调试和验证。  
@@ -312,9 +337,10 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Outputs the result as text for easy debugging and verification.  
 - Suitable for workflow scenarios requiring data normalization to integers.
 
----
 
-### 图像合成节点 Image Composer
+
+## 图像合成节点 Image Composer
+
 - 支持两张图像的合成，提供灵活的位置选项（顶部、底部、左侧、右侧）。  
 - 输入图像 A 和 B，分别支持可选的遮罩输入，自动处理遮罩缺失情况。  
 - 输出合成后的图像、遮罩和位置数据，便于后续裁切或编辑。  
@@ -324,9 +350,10 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Outputs the composited image, mask, and positional data for subsequent cropping or editing.  
 - Suitable for workflows involving image stitching and layout design.
 
----
 
-### 图像裁切节点 Image Cropper
+
+## 图像裁切节点 Image Cropper
+
 - 根据 `Image Composer` 的位置数据裁切合成图像。  
 - 通过单一输入接收图像和遮罩数据，简化工作流连接。  
 - 支持选择裁切目标（图像 A 或 B），输出裁切后的图像和遮罩。  
@@ -336,13 +363,15 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Supports selecting the crop target (image A or B), outputting the cropped image and mask.  
 - Suitable for workflows extracting specific regions from composited images.
 
----
 
-### 图像遮罩合成节点 Image Mask Composer
+
+## 图像遮罩合成节点 Image Mask Composer
+
 - 支持图片和遮罩合成后填充背景
 - supports image and mask composition with background filling
 
-### 图像缩放节点 Image Resizer
+## 图像缩放节点 Image Resizer
+
 - 支持图像和遮罩的动态缩放，提供宽度、高度和比例保持选项。  
 - 若无遮罩输入，自动生成与图像同尺寸的全黑遮罩。  
 - 支持指定宽度或高度（0 表示保持原尺寸），并根据比例开关调整尺寸。  
@@ -352,9 +381,11 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Allows specifying width or height (0 retains original size), adjusting dimensions based on the aspect ratio switch.  
 - Suitable for workflows requiring image resizing or input standardization.
 
----
 
-### 遮罩填充节点 Mask Filler
+
+## 遮罩填充节点 Mask Filler
+
+
 - 自动填充遮罩中的闭合区域（如圆圈内部），优化遮罩效果。  
 - 输入单通道遮罩，输出填充后的遮罩，保留非闭合区域不变。  
 - 使用轮廓检测算法，确保精确填充所有闭合形状。  
@@ -364,9 +395,9 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Utilizes contour detection algorithms to ensure precise filling of all closed shapes.  
 - Suitable for workflows involving mask drawing and image segmentation that require refined masks.
 
----
 
-## 安装 Installation
+
+# 安装 Installation
 
 - 使用 ComfyUI Manager 搜索 `KayTool` 安装。  
 - 克隆项目到 `ComfyUI/custom_nodes` 目录下，并确保将色彩配置文件放在 resources 目录中。  

@@ -99,18 +99,10 @@ app.registerExtension({
                 const initFn = window.initializeKayNodeAlignment;
                 if (!manager || !initFn) return;
 
-                if (value === "disabled") {
-                    if (manager.isInitialized) {
-                        manager.cleanup();
-                    }
-                } else {
-                    if (!manager.isInitialized) {
-                        initFn();
-                    } else {
-                        manager.updateDisplayMode(value);
-                        manager.bindCanvasEvents(); // 确保事件绑定
-                    }
+                if (!manager.isInitialized) {
+                    initFn(); // 始终初始化，确保事件绑定
                 }
+                manager.updateDisplayMode(value); // 直接更新模式，“disabled”仅隐藏
             }
         });
 
@@ -163,9 +155,7 @@ app.registerExtension({
             onChange: (newVal) => {
                 if (/^[0-9A-Fa-f]{6}$/.test(newVal)) {
                     const buttons = document.querySelectorAll('.kay-align-button');
-                    buttons.forEach(btn => {
-                        btn.style.backgroundColor = `#${newVal}`;
-                    });
+                    buttons.forEach(btn => btn.style.backgroundColor = `#${newVal}`);
                 }
             }
         });
