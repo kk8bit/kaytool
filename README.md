@@ -24,6 +24,8 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - 工具栏所有元素均支持自定义颜色。
   All elements of the toolbar support custom color.
 
+https://github.com/user-attachments/assets/b8d1d3f0-04d1-46c5-968a-e433778b73e6
+
 ## workflow PNG功能 Workflow Export to PNG
 
 - 支持在右键菜单中`KayTool-workflow PNG`将当前工作流节点地图保存为PNG格式并内嵌工作流信息。
