@@ -85,10 +85,20 @@ const KayNodeAlignmentManager = {
                 cursor: pointer;
                 padding: 0;
                 border-radius: 4px;
-                transition: background-color 0.3s ease-in-out, transform 0.1s ease;
+                transition: background-color 0.3s ease-in-out;
                 flex-shrink: 0;
+                position: relative;
+                overflow: hidden;
             }
-            .kay-align-button svg { width: 66%; height: 66%; }
+            .kay-align-button svg {
+                width: 66%;
+                height: 66%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                transition: transform 0.1s ease;
+            }
             .kay-toolbar-divider {
                 width: 3.2px;
                 height: 15px;
