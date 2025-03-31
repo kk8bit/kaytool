@@ -99,10 +99,19 @@ app.registerExtension({
                 if (!manager || !initFn) return;
 
                 if (!manager.isInitialized) {
-                    initFn(); // 始终初始化，确保事件绑定
+                    initFn(); 
                 }
-                manager.updateDisplayMode(value); // 直接更新模式，“disabled”仅隐藏
+                manager.updateDisplayMode(value); // 
             }
+        });
+
+        app.ui.settings.addSetting({
+            id: "KayTool.EnableAlignmentShortcuts",
+            name: "Enable Shift+WASD for Quick Alignment (Up/Left/Down/Right)",
+            type: "boolean",
+            defaultValue: true,
+            category: ["KayTool", "NodeAlignment", "Shortcuts"],
+            tooltip: "Use Shift+W (Up), Shift+A (Left), Shift+S (Down), Shift+D (Right) to align selected nodes."
         });
 
         app.ui.settings.addSetting({
@@ -213,7 +222,7 @@ function updateSetGetNodeColors() {
             if (node.type === "KaySetNode" || node.type === "KayGetNode" || node.type === "KayGet多元Node") {
                 node.color = fgColor;
                 node.bgcolor = bgColor;
-                if (node.updateColors) node.updateColors();
+  node.updateColors();
             }
         });
         app.graph.setDirtyCanvas(true, true);

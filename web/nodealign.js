@@ -1,6 +1,7 @@
 import { app } from "../../../scripts/app.js";
 
-// SVG 定义（已包含你的现有 SVG，新增参考代码中的两个）
+// Based on NodeAligner by Tenney95 GitHub:https://github.com/Tenney95/ComfyUI-NodeAligner
+
 const kayAlignBottomSvg = `<svg t="1725534360155" class="icon" viewBox="0 0 1170 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1662" width="100%"><path d="M1170.285714 987.428571a36.571429 36.571429 0 0 0-36.571428-36.571428H36.571429a36.571429 36.571429 0 0 0 0 73.142857h1097.142857a36.571429 36.571429 0 0 0 36.571428-36.571429z m-219.428571-146.285714v-512a36.571429 36.571429 0 0 0-36.571429-36.571428h-219.428571a36.571429 36.571429 0 0 0-36.571429 36.571428v512a36.571429 36.571429 0 0 0 36.571429 36.571429h219.428571a36.571429 36.571429 0 0 0 36.571429-36.571429z m-438.857143 0V36.571429a36.571429 36.571429 0 0 0-36.571429-36.571429h-219.428571a36.571429 36.571429 0 0 0-36.571429 36.571429v804.571428a36.571429 36.571429 0 0 0 36.571429 36.571429h219.428571a36.571429 36.571429 0 0 0 36.571429-36.571429z" fill="#666666" p-id="1663"></path></svg>`;
 const kayAlignCenterHorizontallySvg = `<svg t="1725534379860" class="icon" viewBox="0 0 1243 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2250" width="100%"><path d="M548.571429 472.356571h146.285714V231.643429a36.571429 36.571429 0 0 1 36.571428-36.571429h219.428572a36.571429 36.571429 0 0 1 36.571428 36.571429v240.713142h179.785143a39.643429 39.643429 0 0 1 0 79.286858H987.428571v240.713142a36.571429 36.571429 0 0 1-36.571428 36.571429h-219.428572a36.571429 36.571429 0 0 1-36.571428-36.571429V551.64571h-146.285714V950.857143a36.571429 36.571429 0 0 1-36.571429 36.571428H292.571429a36.571429 36.571429 0 0 1-36.571429-36.571428V551.643429H76.214857a39.643429 39.643429 0 1 1 0-79.286858H256V73.142857A36.571429 36.571429 0 0 1 292.571429 36.571429h219.428571a36.571429 36.571429 0 0 1 36.571429 36.571428v399.213714z" fill="#666666" p-id="2251"></path></svg>`;
 const kayAlignCenterVerticallySvg = `<svg t="1725534363707" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1809" width="100%"><path d="M477.312 576V448H266.688a32 32 0 0 1-32-32v-192a32 32 0 0 1 32-32h210.624V34.688a34.688 34.688 0 0 1 69.376 0V192h210.624a32 32 0 0 1 32 32v192a32 32 0 0 1-32 32H546.688v128H896a32 32 0 0 1 32 32v192a32 32 0 0 1-32 32H546.688v157.312a34.688 34.688 0 0 1-69.376 0V832H128a32 32 0 0 1-32-32v-192A32 32 0 0 1 128 576h349.312z" fill="#666666" p-id="1810"></path></svg>`;
@@ -11,6 +12,7 @@ const kayEqualWidthSvg = `<svg t="1725606034670" class="icon" viewBox="0 0 1088 
 const kayEqualHeightSvg = `<svg t="1725606224564" class="icon" viewBox="0 0 1088 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7790" width="100%"><path d="M572.16 936a42.688 42.688 0 0 1-42.688-42.688V130.688c0-23.616 19.136-42.688 42.688-42.688h266.688c23.552 0 42.624 19.072 42.624 42.688v762.624a42.688 42.688 0 0 1-42.624 42.688H572.16z" fill="#666666" p-id="7791"></path><path d="M318.016 214.72c14.08 0 25.6 11.456 25.6 25.6v543.36a25.6 25.6 0 1 1-51.2 0v-543.36c0-14.144 11.456-25.6 25.6-25.6z" fill="#666666" p-id="7792"></path><path d="M306.944 94.4a12.8 12.8 0 0 1 22.144 0l106.368 184.192a12.8 12.8 0 0 1-11.072 19.2H211.648a12.8 12.8 0 0 1-11.072-19.2l106.368-184.192zM306.944 929.6a12.8 12.8 0 0 0 22.144 0l106.368-184.192a12.8 12.8 0 0 0-11.072-19.2H211.648a12.8 12.8 0 0 0-11.072 19.2l106.368 184.192z" fill="#666666" p-id="7793"></path></svg>`;
 const kayHorizontalDistributionSvg = `<svg t="1725534354023" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1515" width="100%"><path d="M96 0a32 32 0 0 1 32 32v960a32 32 0 0 1-64 0V32A32 32 0 0 1 96 0z m832 0a32 32 0 0 1 32 32v960a32 32 0 0 1-64 0V32a32 32 0 0 1 32-32zM384 800v-576a32 32 0 0 1 32-32h192a32 32 0 0 1 32 32v576a32 32 0 0 1-32 32h-192a32 32 0 0 1-32-32z" fill="#666666" p-id="1516"></path></svg>`;
 const kayVerticalDistributionSvg = `<svg t="1725534350231" class="icon" viewBox="0 0 1170 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1368" width="100%"><path d="M1170.285714 36.571429a36.571429 36.571429 0 0 1-36.571428 36.571428H36.571429a36.571429 36.571429 0 0 1 0-73.142857h1097.142857a36.571429 36.571429 0 0 1 36.571428 36.571429z m0 950.857142a36.571429 36.571429 0 0 1-36.571428 36.571429H36.571429a36.571429 36.571429 0 0 1 0-73.142857h1097.142857a36.571429 36.571429 0 0 1 36.571428 36.571428zM256 365.714286h658.285714a36.571429 36.571429 0 0 1 36.571429 36.571428v219.428572a36.571429 36.571429 0 0 1-36.571429 36.571428h-658.285714a36.571429 36.571429 0 0 1-36.571429-36.571428v-219.428572a36.571429 36.571429 0 0 1 36.571429-36.571428z" fill="#666666" p-id="1369"></path></svg>`;
+
 
 let stylesInjected = false;
 
@@ -34,8 +36,9 @@ const KayNodeAlignmentManager = {
         this.setupToolbar();
         this.restorePosition();
         this.bindCanvasEvents();
+        this.bindKeyboardShortcuts();
 
-        const displayMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
+        const displayMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode");
         this.updateDisplayMode(displayMode);
     },
 
@@ -204,7 +207,6 @@ const KayNodeAlignmentManager = {
         document.addEventListener('mousemove', this.onDragging.bind(this));
         document.addEventListener('mouseup', this.onDragEnd.bind(this));
         document.addEventListener('selectstart', e => this.dragState.isDragging && e.preventDefault());
-
         this.addTooltip();
     },
 
@@ -558,8 +560,37 @@ const KayNodeAlignmentManager = {
     bindCanvasEvents() {
         if (!this.canvas) return;
         this.canvas.addEventListener('click', () => {
-            const currentMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
+            const currentMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode");
             this.updateDisplayMode(currentMode);
+        });
+    },
+
+    bindKeyboardShortcuts() {
+        document.addEventListener('keydown', (e) => {
+            // 只在 Shift 键按下且没有其他修饰键（如 Ctrl、Alt）时检查 WASD
+            if (!e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+
+            const enableShortcuts = app.ui.settings.getSettingValue("KayTool.EnableAlignmentShortcuts");
+            if (!enableShortcuts || this.getSelectedNodes().length < 2) return;
+
+            switch (e.key.toLowerCase()) {
+                case 'w':
+                    e.preventDefault();
+                    this.alignTop();
+                    break;
+                case 'a':
+                    e.preventDefault();
+                    this.alignLeft();
+                    break;
+                case 's':
+                    e.preventDefault();
+                    this.alignBottom();
+                    break;
+                case 'd':
+                    e.preventDefault();
+                    this.alignRight();
+                    break;
+            }
         });
     }
 };
@@ -568,7 +599,7 @@ function initializeKayNodeAlignment() {
     if (!KayNodeAlignmentManager.isInitialized) {
         KayNodeAlignmentManager.init();
     } else {
-        const displayMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode") || "permanent";
+        const displayMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode");
         KayNodeAlignmentManager.updateDisplayMode(displayMode);
     }
 }

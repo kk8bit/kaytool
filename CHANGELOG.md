@@ -1,4 +1,8 @@
 # Changelog
+## [0.51.0] - 2025-03-31
+- node align 新增快捷键`Shift+WASD`
+
+# Changelog
 ## [0.50.5] - 2025-03-27
 - node align bar可吸附菜单栏
 - node align bar显示模式实时更新
