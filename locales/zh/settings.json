@@ -31,7 +31,7 @@
 
     "KayTool_EnableAlignmentShortcuts": {
       "name": "启用快捷键'Shift+W/A/S/D'",
-      "tooltip": "W/A/S/D对应上、左、下、右对齐"
+      "tooltip": "W/A/S/D 对应上、左、下、右对齐"
     },
 
     "KayTool_NodeAlignDisplayMode": {

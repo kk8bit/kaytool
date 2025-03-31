@@ -23,6 +23,8 @@ This is a custom node utility package developed for ComfyUI. Initially created f
   The display mode of the toolbar can be configured in the settings menu (KayTool).
 - 工具栏所有元素均支持自定义颜色。
   All elements of the toolbar support custom color.
+- 支持快捷键“Shift + wasd"进行节点对齐。
+  Supports shortcut key "Shift + wasd" for node alignment.
 
 https://github.com/user-attachments/assets/b8d1d3f0-04d1-46c5-968a-e433778b73e6
 

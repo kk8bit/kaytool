@@ -1,5 +1,5 @@
 import { app } from "../../../scripts/app.js";
-
+ 
 app.registerExtension({
     name: "KayTool.Settings",
     setup() {
