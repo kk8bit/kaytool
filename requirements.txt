@@ -1,2 +1,4 @@
 rembg
 timm
+opencv-python
+requests
