@@ -1,4 +1,8 @@
 # Changelog
+
+## [0.56.0] - 2025-04-3
+- 增加Resource monitor
+
 ## [0.51.0] - 2025-03-31
 - node align 新增快捷键`Shift+WASD`
 

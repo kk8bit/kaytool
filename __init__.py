@@ -1,6 +1,8 @@
 import os
 import json
 from aiohttp import web
+from .api import resources
+
 from .nodes.custom_save_image import CustomSaveImage
 from .nodes.color_adjustment import ColorAdjustment
 from .nodes.strong_prompt import StrongPrompt
@@ -90,28 +92,3 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 }
 
 WEB_DIRECTORY = "web"
-SETTINGS_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "settings.json")
-
-# async def load_settings(request):
-#     if os.path.exists(SETTINGS_FILE):
-#         with open(SETTINGS_FILE, "r") as f:
-#             return web.json_response(json.load(f))
-#     return web.json_response({"ShowRunOption": True, "ShowSetGetOptions": True})
-
-# async def save_settings(request):
-#     data = await request.json()
-#     settings = {}
-#     if os.path.exists(SETTINGS_FILE):
-#         with open(SETTINGS_FILE, "r") as f:
-#             settings = json.load(f)
-#     settings.update(data)
-#     with open(SETTINGS_FILE, "w") as f:
-#         json.dump(settings, f, indent=2)
-#     return web.Response(status=200)
-
-# import server
-# app = server.PromptServer.instance
-# app.app.add_routes([
-#     web.get("/kaytool/load_settings", load_settings),
-#     web.post("/kaytool/save_settings", save_settings),
-# ])

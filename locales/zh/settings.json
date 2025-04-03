@@ -18,11 +18,20 @@
       "name": "Workflow PNG 导出的边距大小",
       "tooltip": "建议设置 100"
     },
+    "KayTool_EnableResourceMonitor": {
+      "name": "启用资源监视器"
+    },
+    "KayTool_ResourceMonitorEdgeFade": {
+      "name": "统计表边缘渐隐"
+    },
+    "KayTool_ResourceMonitorBackgroundOpacity": {
+      "name": "资源监视器背景不透明度"
+    },
     "KayTool_SetGetForegroundColor": {
-      "name": " '🛜 Set/Get' 节点颜色"
+      "name": "节点颜色"
     },
     "KayTool_SetGetBackgroundColor": {
-      "name": " '🛜 Set/Get' 标题颜色"
+      "name": "标题颜色"
     },
     "KayTool_CustomWebLogo": {
       "name": "文件必须 < 1MB",

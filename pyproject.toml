@@ -1,9 +1,9 @@
 [project]
 name = "kaytool"
-description ="KayTool enhances ComfyUI workflow efficiency with practical tools, including: image processing (resize, color, blur, expand, merge, crop), background/mask tasks via BiRefNet/RemBG, wireless data transfer (Get & Out), AI translation (Tencent/Baidu), dynamic math operations, flexible text handling, precision sliders, metadata/color profile-supported image saving, batch processing via image folder loading, canvas workflow node map export as PNG with embedded metadata, quick Run options via right-click (Run Group/Node), node alignment toolbar with custom styled styles, and custom ComfyUI logo integration."
-version = "0.52.2"
+description ="KayTool enhances ComfyUI workflow efficiency with practical tools, including: image processing (resize, color, blur, expand, merge, crop), background/mask tasks via BiRefNet/RemBG, wireless data transfer (Get & Out), AI translation (Tencent/Baidu),Professional high-precision resource monitor and statistics table, dynamic math operations, flexible text handling, precision sliders, metadata/color profile-supported image saving, batch processing via image folder loading, canvas workflow node map export as PNG with embedded metadata, quick Run options via right-click (Run Group/Node), node alignment toolbar with custom styled styles, and custom ComfyUI logo integration."
+version = "0.56.0"
 license = {file = "LICENSE"}
-dependencies = ["rembg, timm, opencv-python, requests"]
+dependencies = ["rembg, timm, opencv-python, requests, py-cpuinfo, pynvml"]
 
 [project.urls]
 Repository = "https://github.com/kk8bit/KayTool"

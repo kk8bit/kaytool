@@ -14,7 +14,6 @@ class ABImages(PreviewImage):
                 "a": ("IMAGE",), 
             },
             "optional": {
-                
                 "b": ("IMAGE",),  
             },
             "hidden": {

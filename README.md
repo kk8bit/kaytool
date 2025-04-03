@@ -15,6 +15,15 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 **📌 所有 KayTool 节点包用到的资源都在 `ComfyUI/custom_nodes/kaytool` 文件夹内。| All KayTool node packages use resources in the `ComfyUI/custom_nodes/kaytool` folder.**
 
 
+## 资源监视器 Resource Monitor
+
+- 实时显示当前 ComfyUI 资源使用情况，包括内存占用、显存占用、CPU 占用等。
+  Displays real-time resource usage information, including memory usage, GPU memory usage, and CPU usage.
+- 支持曲线统计表以精确评估工作流资源消耗情况。
+  Supports curve statistics for accurate evaluation of workflow resource consumption.
+- 支持自定义颜色设置，可根据个人喜好调整显示效果。
+  Supports custom color settings, allowing personal preference adjustments.
+
 ## 节点排版工具栏 Node Align Toolbar
 
 - 支持节点多种对齐方式的工具栏
