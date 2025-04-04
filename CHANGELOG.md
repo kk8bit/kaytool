@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.57.0] - 2025-04-
+## [0.57.0] - 2025-04-4
 - 增加Resource monitor的温度表
 - 鼠标可穿透monitor容器
 
