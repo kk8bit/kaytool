@@ -6,46 +6,51 @@ const KayResourceMonitor = {
     dataDisplay: null,
     menuButton: null,
 
-    dataHistory: { cpu: [], ram: [], gpu: [], gpuMem: [] },
-    displayHistory: { cpu: [], ram: [], gpu: [], gpuMem: [] },
+    dataHistory: { cpu: [], ram: [], gpu: [], gpuMem: [], gpuTemp: [] },
+    displayHistory: { cpu: [], ram: [], gpu: [], gpuMem: [], gpuTemp: [] },
     current: { 
-        cpu: 0, ram: 0, gpu: 0, gpuMem: 0,
+        cpu: 0, ram: 0, gpu: 0, gpuMem: 0, gpuTemp: 0,
         ramUsed: 0, ramTotal: 0, gpuMemUsed: 0, gpuMemTotal: 0
     },
     target: {
-        cpu: 0, ram: 0, gpu: 0, gpuMem: 0,
+        cpu: 0, ram: 0, gpu: 0, gpuMem: 0, gpuTemp: 0,
         ramTotal: 0, ramUsed: 0, gpuMemTotal: 0, gpuMemUsed: 0,
         cpuName: "Unknown", gpuName: "Unknown"
     },
 
     cpuCores: 4,
     dragState: { isDragging: false, offsetX: 0, offsetY: 0 },
-    resizeState: { isResizing: false, direction: null, startX: 0, startY: 0, startWidth: 0, startHeight: 0 },
+    resizeState: { isResizing: false, startX: 0, startY: 0, startWidth: 0, startHeight: 0 },
     position: { left: 0, top: 0 },
-    size: { width: 250, height: 200 },
+    size: { width: 250, height: 210 },
     lastUpdate: 0, lastCurveUpdate: 0, lastDisplayUpdate: 0,
     maxPoints: 6000,
     fetchInterval: 500,
     curveInterval: 0,
     displayInterval: 0,
-    smoothFactor: 0.01,
+    smoothFactor: 0.02,
     minWidth: 150,
-    minHeight: 100,
-    maxHeight: 200,
+    minHeight: 90,
+    maxHeight: 210,
     edgeThreshold: 10,
+    resizeHandleSize: 10,
 
     colors: {
-        cpu: 'rgb(232, 166, 0)',
-        ram: 'rgb(88, 207, 3)',
-        gpu: 'rgb(224, 0, 153)',
-        gpuMem: 'rgb(0, 115, 255)'
+        cpu: 'rgba(253, 170, 4, 0.86)',
+        ram: 'rgba(10, 124, 254, 0.86)',
+        gpu: 'rgba(255, 38, 0, 0.86)',
+        gpuMem: 'rgba(97, 208, 12, 0.86)',
+        gpuTemp: 'rgba(167, 43, 255, 0.86)',
+        header: 'rgba(128, 128, 128, 0.5)'
     },
 
     styles: {
-        toolbar: `position: fixed; display: flex; flex-direction: column; color: rgba(186, 186, 186, 0.8); padding: 10px; border-radius: 5px; z-index: 10000; user-select: none; pointer-events: auto; max-height: 200px;`,
-        header: `cursor: grab; margin-bottom: 10px; font-weight: bold; font-size: 10px;`,
-        canvas: `margin-bottom: 10px; width: 100%; height: 100px;`,
-        display: `display: flex; flex-direction: column; font-size: 10px; flex-grow: 1; overflow: hidden;`,
+        toolbar: `position: fixed; display: flex; flex-direction: column; color: rgba(186, 186, 186, 0.8); padding: 10px; border-radius: 5px; z-index: 10000; user-select: none; pointer-events: none; max-height: 210px;`, 
+        header: `margin-bottom: 10px; font-weight: bold; font-size: 10px;`,
+        headerText: `cursor: grab; pointer-events: auto; display: inline-block;`, 
+        canvas: `margin-bottom: 10px; width: 100%; height: 100px; pointer-events: none;`,
+        display: `display: flex; flex-direction: column; font-size: 10px; flex-grow: 1; overflow: hidden; pointer-events: none;`,
+        resizeHandle: `position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; border-bottom: 1px solid; border-right: 1px solid; cursor: se-resize; pointer-events: auto;`, 
         dot: (color) => `display: inline-block; width: 3px; height: 3px; border-radius: 50%; background: ${color}; margin-right: 5px; flex-shrink: 0;`,
         bar: (width) => `display: inline-block; width: ${width}px; height: 3px; background: rgba(200, 200, 200, 0.3); margin-right: 5px; position: relative; flex-shrink: 0;`,
         fill: (color, percent) => `position: absolute; top: 0; left: 0; width: ${percent}%; height: 100%; background: ${color};`,
@@ -93,7 +98,10 @@ const KayResourceMonitor = {
 
         const header = document.createElement('div');
         header.style.cssText = this.styles.header;
-        header.textContent = "𝙆 Resource Monitor";
+        const headerText = document.createElement('span');
+        headerText.style.cssText = this.styles.headerText;
+        headerText.textContent = "𝙆 Resource Monitor";
+        header.appendChild(headerText);
         this.toolbar.appendChild(header);
 
         this.chartCanvas = document.createElement('canvas');
@@ -105,6 +113,10 @@ const KayResourceMonitor = {
         this.dataDisplay = document.createElement('div');
         this.dataDisplay.style.cssText = this.styles.display;
         this.toolbar.appendChild(this.dataDisplay);
+
+        this.resizeHandle = document.createElement('div');
+        this.resizeHandle.style.cssText = `${this.styles.resizeHandle} border-color: ${this.colors.header};`;
+        this.toolbar.appendChild(this.resizeHandle);
 
         document.body.appendChild(this.toolbar);
         this.loadPosition();
@@ -195,17 +207,21 @@ const KayResourceMonitor = {
             this.target.gpuMem = data.gpu[0].memory_percent || 0;
             this.target.gpuMemTotal = data.gpu[0].memory_total || 0;
             this.target.gpuMemUsed = data.gpu[0].memory_used || 0;
+            this.target.gpuTemp = data.gpu[0].temperature || 0;
             this.target.gpuName = data.gpu[0].name || "Unknown";
             this.dataHistory.gpu.push(this.target.gpu);
             this.dataHistory.gpuMem.push(this.target.gpuMem);
+            this.dataHistory.gpuTemp.push(this.target.gpuTemp);
         } else {
             this.target.gpu = 0;
             this.target.gpuMem = 0;
             this.target.gpuMemTotal = 0;
             this.target.gpuMemUsed = 0;
+            this.target.gpuTemp = 0;
             this.target.gpuName = "Unknown";
             this.dataHistory.gpu.push(0);
             this.dataHistory.gpuMem.push(0);
+            this.dataHistory.gpuTemp.push(0);
         }
 
         if (this.dataHistory.cpu.length > this.maxPoints) {
@@ -213,11 +229,12 @@ const KayResourceMonitor = {
             this.dataHistory.ram.shift();
             this.dataHistory.gpu.shift();
             this.dataHistory.gpuMem.shift();
+            this.dataHistory.gpuTemp.shift();
         }
     },
 
     updateDisplay() {
-        const { cpu, ram, gpu, gpuMem, ramUsed, ramTotal, gpuMemUsed, gpuMemTotal } = this.current;
+        const { cpu, ram, gpu, gpuMem, gpuTemp, ramUsed, ramTotal, gpuMemUsed, gpuMemTotal } = this.current;
         const { styles, colors } = this;
         this.dataDisplay.innerHTML = [
             this.renderRow('CPU', colors.cpu, cpu, `${cpu.toFixed(1)}% (${this.cpuCores} cores) - ${this.target.cpuName}`),
@@ -225,11 +242,13 @@ const KayResourceMonitor = {
             this.target.gpu || this.target.gpuMem
                 ? [
                     this.renderRow('GPU', colors.gpu, gpu, `${gpu.toFixed(1)}% - ${this.target.gpuName}`),
-                    this.renderRow('VRAM', colors.gpuMem, gpuMem, `${gpuMemUsed.toFixed(1)}/${gpuMemTotal.toFixed(1)}GB (${gpuMem.toFixed(1)}%)`)
+                    this.renderRow('VRAM', colors.gpuMem, gpuMem, `${gpuMemUsed.toFixed(1)}/${gpuMemTotal.toFixed(1)}GB (${gpuMem.toFixed(1)}%)`),
+                    this.renderRow('TEMP', colors.gpuTemp, gpuTemp, `${gpuTemp.toFixed(1)}°C (GPU)`)
                 ].join('')
                 : [
                     this.renderRow('GPU', colors.gpu, 0, 'N/A'),
-                    this.renderRow('VRAM', colors.gpuMem, 0, 'N/A')
+                    this.renderRow('VRAM', colors.gpuMem, 0, 'N/A'),
+                    this.renderRow('TEMP', colors.gpuTemp, 0, 'N/A (GPU)')
                 ].join('')
         ].join('');
     },
@@ -241,7 +260,7 @@ const KayResourceMonitor = {
         const maxBarWidth = 200;
         const fixedSpacing = 3 + 5 + 5;
         const availableWidth = containerWidth - fixedSpacing;
-        const barWidth = Math.min(maxBarWidth, Math.max(minBarWidth, availableWidth * 0.3));
+        const barWidth = Math.min(maxBarWidth, Math.max(minBarWidth, availableWidth * 0.18));
 
         const textAvailableWidth = containerWidth - fixedSpacing - barWidth;
         const canvas = document.createElement('canvas');
@@ -329,37 +348,58 @@ const KayResourceMonitor = {
         const ctx = this.chartCanvas.getContext('2d');
         const w = this.chartCanvas.width;
         const h = this.chartCanvas.height;
-
+    
         ctx.clearRect(0, 0, w, h);
+    
 
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'rgba(166, 166, 166, 0.5)';
+        ctx.lineWidth = 0.3;
         ctx.beginPath();
-        for (let y = 0; y <= h; y += h / 4) {
+        for (let i = 0; i < 4; i++) {
+            const y = h - (i * h / 4);
             ctx.moveTo(0, y);
             ctx.lineTo(w, y);
         }
         ctx.stroke();
+    
 
+        ctx.strokeStyle = 'rgba(166, 166, 166, 0.5)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(w, 0);
+        ctx.stroke();
+    
+ 
         const step = w / (this.maxPoints - 1);
         const { colors } = this;
+    
+
+        ctx.globalCompositeOperation = 'screen';
+        ctx.lineWidth = 0.8;
+    
         [
             { data: this.displayHistory.cpu, color: colors.cpu },
             { data: this.displayHistory.ram, color: colors.ram },
             { data: this.displayHistory.gpu, color: colors.gpu },
-            { data: this.displayHistory.gpuMem, color: colors.gpuMem }
+            { data: this.displayHistory.gpuMem, color: colors.gpuMem },
+            { data: this.displayHistory.gpuTemp, color: colors.gpuTemp }
         ].forEach(({ data, color }) => {
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = color.replace('1)', '1)'); 
             ctx.beginPath();
             data.forEach((v, i) => {
                 const x = i * step;
-                const y = h - (v / 100) * h;
+                const normalizedValue = Math.min(v, 100) / 100 * 100;
+                const y = h - (normalizedValue / 100) * h;
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             });
             ctx.stroke();
         });
+    
+
+        ctx.globalCompositeOperation = 'source-over';
+    
 
         if (this.edgeFadeEnabled) {
             const gradient = ctx.createLinearGradient(0, 0, w, 0);
@@ -367,7 +407,7 @@ const KayResourceMonitor = {
             gradient.addColorStop(0.1, 'rgba(255, 255, 255, 1)');
             gradient.addColorStop(0.9, 'rgba(255, 255, 255, 1)');
             gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
+    
             ctx.save();
             ctx.globalCompositeOperation = 'destination-in';
             ctx.fillStyle = gradient;
@@ -397,11 +437,10 @@ const KayResourceMonitor = {
 
     bindToolbarEvents() {
         if (this.toolbar) {
-            this.toolbar.addEventListener('mousemove', (e) => this.onMouseMove(e));
-            this.toolbar.addEventListener('mousedown', (e) => {
-                if (e.target.style.cursor === 'grab') this.startDrag(e);
-                else if (['e-resize', 's-resize', 'se-resize'].includes(e.target.style.cursor)) this.startResize(e, e.target.style.cursor.split('-')[0]);
-            });
+            const headerText = this.toolbar.querySelector('span');
+            headerText.addEventListener('mousedown', (e) => this.startDrag(e));
+            
+            this.resizeHandle.addEventListener('mousedown', (e) => this.startResize(e, 'se'));
         }
     },
 
@@ -416,7 +455,7 @@ const KayResourceMonitor = {
     loadSize() {
         const size = JSON.parse(localStorage.getItem('KayResourceMonitorSize')) || {};
         this.size.width = Math.max(size.width || 250, this.minWidth);
-        this.size.height = Math.max(size.height || 200, this.minHeight);
+        this.size.height = Math.max(size.height || 210, this.minHeight);
         this.toolbar.style.width = `${this.size.width}px`;
         this.toolbar.style.height = `${this.size.height}px`;
     },
@@ -453,22 +492,11 @@ const KayResourceMonitor = {
             return;
         }
 
-        const rect = this.toolbar.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const nearRight = x >= rect.width - this.edgeThreshold && x <= rect.width;
-        const nearBottom = y >= rect.height - this.edgeThreshold && y <= rect.height;
-
-        if (e.target.style.cursor === 'grab') {
-            this.toolbar.style.cursor = 'grab';
-        } else if (nearRight && nearBottom) {
-            this.toolbar.style.cursor = 'se-resize';
-        } else if (nearRight) {
-            this.toolbar.style.cursor = 'e-resize';
-        } else if (nearBottom) {
-            this.toolbar.style.cursor = 's-resize';
-        } else {
-            this.toolbar.style.cursor = 'default';
+        const headerText = this.toolbar.querySelector('span');
+        if (headerText.contains(e.target)) {
+            headerText.style.cursor = 'grab';
+        } else if (this.resizeHandle.contains(e.target)) {
+            this.resizeHandle.style.cursor = 'se-resize';
         }
     },
 
@@ -478,7 +506,7 @@ const KayResourceMonitor = {
         this.dragState.isDragging = true;
         this.dragState.offsetX = e.clientX - rect.left;
         this.dragState.offsetY = e.clientY - rect.top;
-        this.toolbar.style.cursor = 'grabbing';
+        this.toolbar.querySelector('span').style.cursor = 'grabbing';
     },
 
     onDrag(e) {
@@ -494,19 +522,18 @@ const KayResourceMonitor = {
     endDrag() {
         if (!this.dragState.isDragging) return;
         this.dragState.isDragging = false;
-        this.toolbar.style.cursor = 'default';
+        this.toolbar.querySelector('span').style.cursor = 'grab';
         this.savePositionAndSize();
     },
 
     startResize(e, direction) {
         e.preventDefault();
         this.resizeState.isResizing = true;
-        this.resizeState.direction = direction;
         this.resizeState.startX = e.clientX;
         this.resizeState.startY = e.clientY;
         this.resizeState.startWidth = this.toolbar.clientWidth;
         this.resizeState.startHeight = this.toolbar.clientHeight;
-        this.toolbar.style.cursor = `${direction}-resize`;
+        this.resizeHandle.style.cursor = 'se-resize';
     },
 
     onResizeDrag(e) {
@@ -514,22 +541,17 @@ const KayResourceMonitor = {
         const dx = e.clientX - this.resizeState.startX;
         const dy = e.clientY - this.resizeState.startY;
 
-        if (this.resizeState.direction === 'e' || this.resizeState.direction === 'se') {
-            this.size.width = Math.max(this.minWidth, this.resizeState.startWidth + dx);
-            this.toolbar.style.width = `${this.size.width}px`;
-        }
-        if (this.resizeState.direction === 's' || this.resizeState.direction === 'se') {
-            this.size.height = Math.min(this.maxHeight, Math.max(this.minHeight, this.resizeState.startHeight + dy));
-            this.toolbar.style.height = `${this.size.height}px`;
-        }
+        this.size.width = Math.max(this.minWidth, this.resizeState.startWidth + dx);
+        this.size.height = Math.min(this.maxHeight, Math.max(this.minHeight, this.resizeState.startHeight + dy));
+        this.toolbar.style.width = `${this.size.width}px`;
+        this.toolbar.style.height = `${this.size.height}px`;
         this.onResize();
     },
 
     endResize() {
         if (!this.resizeState.isResizing) return;
         this.resizeState.isResizing = false;
-        this.resizeState.direction = null;
-        this.toolbar.style.cursor = 'default';
+        this.resizeHandle.style.cursor = 'se-resize';
         this.savePositionAndSize();
     }
 };

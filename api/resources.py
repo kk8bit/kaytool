@@ -48,7 +48,8 @@ async def get_gpu_info():
                         "load": float(util.gpu),
                         "memory_used": float(mem_info.used) / (1024 ** 3),
                         "memory_total": float(mem_info.total) / (1024 ** 3),
-                        "memory_percent": (float(mem_info.used) / float(mem_info.total)) * 100
+                        "memory_percent": (float(mem_info.used) / float(mem_info.total)) * 100,
+                        "temperature": float(pynvml.nvmlDeviceGetTemperature(handle, pynvml.NVML_TEMPERATURE_GPU)) 
                     })
                 GPU_INFO_CACHE = gpu_info
             except Exception:

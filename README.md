@@ -24,6 +24,8 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - 支持自定义颜色设置，可根据个人喜好调整显示效果。
   Supports custom color settings, allowing personal preference adjustments.
 
+https://github.com/user-attachments/assets/2cd4179c-57fa-42dc-ae50-2feae9708e42
+
 ## 节点排版工具栏 Node Align Toolbar
 
 - 支持节点多种对齐方式的工具栏
