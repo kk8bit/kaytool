@@ -3,45 +3,33 @@ import psutil
 import asyncio
 import json
 from aiohttp import web
-from cpuinfo import get_cpu_info
-import pynvml
 import platform
+
+cpuinfo = None
+pynvml = None
 
 PLATFORM = platform.system()
 IS_MACOS = PLATFORM == "Darwin"
 IS_LINUX = PLATFORM == "Linux"
 IS_WINDOWS = PLATFORM == "Windows"
 
-PYNVML_AVAILABLE = False
-if IS_LINUX or IS_WINDOWS:
-    try:
-        pynvml.nvmlInit()
-        PYNVML_AVAILABLE = True
-    except pynvml.NVMLError:
-        PYNVML_AVAILABLE = False
-
-CPU_NAME = get_cpu_info().get('brand_raw', "Unknown")
-GPU_INFO_CACHE = None
-LAST_GPU_UPDATE = 0
-GPU_CACHE_INTERVAL = 0.5
-
-async def get_gpu_info():
+async def get_gpu_info(pynvml_available, pynvml_instance):
     global GPU_INFO_CACHE, LAST_GPU_UPDATE
     current_time = asyncio.get_event_loop().time()
-    if GPU_INFO_CACHE is None or (current_time - LAST_GPU_UPDATE) >= GPU_CACHE_INTERVAL:
+    if GPU_INFO_CACHE is None or (current_time - LAST_GPU_UPDATE) >= 0.5:
         if IS_MACOS:
             GPU_INFO_CACHE = "GPU monitoring not supported on macOS"
-        elif PYNVML_AVAILABLE:
+        elif pynvml_available:
             try:
-                device_count = pynvml.nvmlDeviceGetCount()
+                device_count = pynvml_instance.nvmlDeviceGetCount()
                 gpu_info = []
                 for i in range(device_count):
-                    handle = pynvml.nvmlDeviceGetHandleByIndex(i)
-                    name = pynvml.nvmlDeviceGetName(handle)
+                    handle = pynvml_instance.nvmlDeviceGetHandleByIndex(i)
+                    name = pynvml_instance.nvmlDeviceGetName(handle)
                     if isinstance(name, bytes):
                         name = name.decode('utf-8')
-                    util = pynvml.nvmlDeviceGetUtilizationRates(handle)
-                    mem_info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+                    util = pynvml_instance.nvmlDeviceGetUtilizationRates(handle)
+                    mem_info = pynvml_instance.nvmlDeviceGetMemoryInfo(handle)
                     gpu_info.append({
                         "index": i,
                         "name": name,
@@ -49,7 +37,7 @@ async def get_gpu_info():
                         "memory_used": float(mem_info.used) / (1024 ** 3),
                         "memory_total": float(mem_info.total) / (1024 ** 3),
                         "memory_percent": (float(mem_info.used) / float(mem_info.total)) * 100,
-                        "temperature": float(pynvml.nvmlDeviceGetTemperature(handle, pynvml.NVML_TEMPERATURE_GPU)) 
+                        "temperature": float(pynvml_instance.nvmlDeviceGetTemperature(handle, pynvml_instance.NVML_TEMPERATURE_GPU))
                     })
                 GPU_INFO_CACHE = gpu_info
             except Exception:
@@ -61,7 +49,29 @@ async def get_gpu_info():
 
 @PromptServer.instance.routes.get("/kaytool/resources")
 async def fetch_resources(request):
+    global cpuinfo, pynvml
     try:
+        if cpuinfo is None:
+            import cpuinfo
+            CPU_NAME = cpuinfo.get_cpu_info().get('brand_raw', "Unknown")
+        else:
+            CPU_NAME = cpuinfo.get_cpu_info().get('brand_raw', "Unknown")
+
+        pynvml_available = False
+        pynvml_instance = None
+        if (IS_LINUX or IS_WINDOWS) and pynvml is None:
+            try:
+                import pynvml
+                pynvml_instance = pynvml
+                pynvml_instance.nvmlInit()
+                pynvml_available = True
+            except pynvml.NVMLError:
+                pynvml_available = False
+        elif pynvml is not None:
+            pynvml_available = True
+            pynvml_instance = pynvml
+
+        # 获取实时数据
         cpu_percent = psutil.cpu_percent(interval=0.1)
         cpu_count = psutil.cpu_count()
         ram = psutil.virtual_memory()
@@ -69,7 +79,7 @@ async def fetch_resources(request):
         ram_used = round(ram.used / (1024 ** 3), 1)
         ram_percent = ram.percent
 
-        gpu_info = await get_gpu_info()
+        gpu_info = await get_gpu_info(pynvml_available, pynvml_instance)
 
         data = {
             "cpu_percent": cpu_percent,
@@ -83,3 +93,6 @@ async def fetch_resources(request):
         return web.Response(text=json.dumps(data), content_type='application/json')
     except Exception as e:
         return web.Response(text=json.dumps({"error": str(e)}), status=500)
+
+GPU_INFO_CACHE = None
+LAST_GPU_UPDATE = 0
