@@ -1,6 +1,7 @@
 import { app } from "../../../scripts/app.js";
 import { api } from "../../scripts/api.js"; 
-class PromptExecution {
+
+class KayPromptExecution {   
     constructor(id) {
         this.promptApi = null;
         this.executedNodeIds = [];
@@ -312,7 +313,7 @@ const KayResourceMonitor = {
     getOrMakePrompt(id) {
         let prompt = this.promptsMap.get(id);
         if (!prompt) {
-            prompt = new PromptExecution(id);
+            prompt = new KayPromptExecution(id);  
             this.promptsMap.set(id, prompt);
         }
         return prompt;
@@ -373,7 +374,7 @@ const KayResourceMonitor = {
         if (currentNode === "Idle") {
             displayText = "Workflow: Idle";             barPercentage = 0;
         } else {
-            displayPercentage = isProgressUnknown ? "??%" : `${Math.min(Math.max(this.currentWorkflow.percentage, 0), 100).toFixed(1)}%`;
+            displayPercentage = isProgressUnknown ? "Loading" : `${Math.min(Math.max(this.currentWorkflow.percentage, 0), 100).toFixed(1)}%`;
             barPercentage = isProgressUnknown ? 0 : Math.min(Math.max(this.currentWorkflow.percentage, 0), 100);
             if (queueCount > 1) {                 displayPercentage += ` (${queueCount})`;
             }
