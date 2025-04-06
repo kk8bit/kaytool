@@ -17,6 +17,10 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 ## 资源监视器 Resource Monitor
 
+- 强大且专业的ComfyUI资源监控工具
+  A powerful and professional ComfyUI resource monitoring tool.
+- 实时显示工作流运行状态，包括当前节点、当前节点组、当前节点组运行时间等。
+  Displays real-time workflow status, including the current node, current node, and current workflow running time.
 - 实时显示当前 ComfyUI 资源使用情况，包括内存占用、显存占用、CPU 占用等。
   Displays real-time resource usage information, including memory usage, GPU memory usage, and CPU usage.
 - 支持曲线统计表以精确评估工作流资源消耗情况。
