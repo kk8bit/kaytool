@@ -41,6 +41,13 @@ app.registerExtension({
                 category: ["KayTool", "Menu", "ShowStarToMe"],
             },
             {
+                id: "KayTool.ShowCleanVRAM", 
+                name: "Show '🧹 Clean VRAM' option in KayTool menu",
+                type: "boolean",
+                defaultValue: true,
+                category: ["KayTool", "Menu", "ShowCleanVRAM"],
+            },
+            {
                 id: "KayTool.WorkflowPNG",
                 name: "Margin size for Workflow PNG export",
                 type: "slider",
@@ -229,14 +236,8 @@ app.registerExtension({
             }
         ];
 
-
         for (const setting of settings) {
             app.ui.settings.addSetting(setting);
-
-            const currentValue = app.ui.settings.getSettingValue(setting.id);
-            if (currentValue === undefined) {
-                await app.ui.settings.setSettingValue(setting.id, setting.defaultValue);
-            }
         }
     },
     init() {

@@ -2,6 +2,7 @@ import os
 import json
 from aiohttp import web
 from .api import resources
+from .api import clean_vram 
 
 from .nodes.custom_save_image import CustomSaveImage
 from .nodes.color_adjustment import ColorAdjustment

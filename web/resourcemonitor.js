@@ -63,7 +63,6 @@ const KayResourceMonitor = {
     dataDisplay: null,
     menuButton: null,
     workflowProgressEl: null,
-
     dataHistory: { cpu: [], ram: [], gpu: [], gpuMem: [], gpuTemp: [] },
     displayHistory: { cpu: [], ram: [], gpu: [], gpuMem: [], gpuTemp: [] },
     current: { 
@@ -78,37 +77,36 @@ const KayResourceMonitor = {
     workflowProgress: {
         percentage: 0,
         nodePercentage: 0,
-        currentNodePercentage: 0,         startTime: null,
+        currentNodePercentage: 0,
+        startTime: null,
         totalDuration: null,
         currentNode: "Idle",
-        currentNodeLabel: "Idle",         easeOutStartTime: null,
+        currentNodeLabel: "Idle",
+        easeOutStartTime: null,
         isInterrupted: false,
-        isProgressUnknown: false,         queueCount: 0,     },
-    currentWorkflow: {
-        percentage: 0,
+        isProgressUnknown: false,
+        queueCount: 0,
     },
+    currentWorkflow: { percentage: 0 },
     promptsMap: new Map(),
     currentExecution: null,
     lastQueueRemaining: 0,
-
     cpuCores: 4,
     dragState: { isDragging: false, offsetX: 0, offsetY: 0 },
     resizeState: { isResizing: false, startX: 0, startY: 0, startWidth: 0, startHeight: 0 },
     position: { left: 0, top: 0 },
     size: { width: 250, height: 219 },
     lastUpdate: 0, lastCurveUpdate: 0, lastDisplayUpdate: 0,
-    maxPoints: 6000,
-    fetchInterval: 500,
+    maxPoints: 120,
     curveInterval: 0,
     displayInterval: 0,
-    smoothFactor: 0.02,
+    smoothFactor: 0.1,
     easeOutDuration: 500,
     minWidth: 150,
     minHeight: 90,
     maxHeight: 219,
     edgeThreshold: 10,
     resizeHandleSize: 10,
-
     colors: {
         cpu: 'rgba(253, 170, 4, 0.86)',
         ram: 'rgba(10, 124, 254, 0.86)',
@@ -118,35 +116,30 @@ const KayResourceMonitor = {
         header: 'rgba(128, 128, 128, 0.5)',
         workflow: 'rgba(208, 255, 0, 0.86)',
     },
-
     styles: {
-        toolbar: `position: fixed; display: flex; flex-direction: column; color: rgba(186, 186, 186, 0.8); padding: 10px; border-radius: 5px; z-index: 10000; user-select: none; pointer-events: none; max-height: 219px;`, 
+        toolbar: `position: fixed; display: flex; flex-direction: column; color: rgba(186, 186, 186, 0.8); padding: 10px; border-radius: 5px; z-index: 10000; user-select: none; pointer-events: none; max-height: 219px;`,
         header: `margin-bottom: 5px; font-weight: bold; font-size: 10px;`,
-        headerText: `cursor: grab; pointer-events: auto; display: inline-block;`, 
+        headerText: `cursor: grab; pointer-events: auto; display: inline-block;`,
         canvas: `margin-top: 5px; margin-bottom: 10px; width: 100%; height: 100px; pointer-events: none;`,
         display: `display: flex; flex-direction: column; font-size: 10px; flex-grow: 1; overflow: hidden; pointer-events: none;`,
-        resizeHandle: `position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; border-bottom: 1px solid; border-right: 1px solid; cursor: se-resize; pointer-events: auto;`, 
+        resizeHandle: `position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; border-bottom: 1px solid; border-right: 1px solid; cursor: se-resize; pointer-events: auto;`,
         dot: (color) => `display: inline-block; width: 3px; height: 3px; border-radius: 50%; background: ${color}; margin-right: 5px; flex-shrink: 0; transition: background 0.5s ease;`,
         bar: (width) => `display: inline-block; width: ${width}px; height: 3px; background: rgba(200, 200, 200, 0.3); margin-right: 5px; position: relative; flex-shrink: 0;`,
         fill: (color, percent) => `position: absolute; top: 0; left: 0; width: ${percent}%; height: 100%; background: ${color};`,
-        row: `display: flex; align-items: center; height: 11px; line-height: 11px;  white-space: nowrap;`,
+        row: `display: flex; align-items: center; height: 11px; line-height: 11px; white-space: nowrap;`,
         text: `overflow: hidden; text-overflow: ellipsis; font-size: 10px;`
     },
-
     isVisible: true,
     animationFrameId: null,
     isEnabled: true,
     isInitialized: false,
     edgeFadeEnabled: true,
-
     easeOutQuad(t) {
         return t * (2 - t);
     },
-
     async init() {
         if (this.isInitialized) return;
         this.isInitialized = true;
-
         this.currentWorkflow.percentage = 0;
         this.workflowProgress.currentNodePercentage = 0;
         this.loadVisibility();
@@ -155,53 +148,55 @@ const KayResourceMonitor = {
         await this.loadSettings();
         this.setupUI();
         this.setupWorkflowListener();
+        this.setupWebSocketListener();
+        if (this.isEnabled && this.isVisible) {
+            this.startAnimation();
+        }
     },
-
     async loadSettings() {
         this.isEnabled = app.ui.settings.getSettingValue("KayTool.EnableResourceMonitor");
         this.edgeFadeEnabled = app.ui.settings.getSettingValue("KayTool.ResourceMonitorEdgeFade");
     },
-
     loadVisibility() {
         const visible = localStorage.getItem('KayResourceMonitorVisible');
         this.isVisible = visible === null ? true : visible === 'true';
     },
-
     saveVisibility() {
         localStorage.setItem('KayResourceMonitorVisible', this.isVisible.toString());
     },
-
     setupUI() {
         this.toolbar = document.createElement('div');
         this.toolbar.id = 'kay-resource-monitor';
         const opacity = app.ui.settings.getSettingValue("KayTool.ResourceMonitorBackgroundOpacity") / 100;
-        this.toolbar.style.cssText = `${this.styles.toolbar} width: ${this.size.width}px; height: ${this.size.height}px; left: ${this.position.left}px; top: ${this.position.top}px; display: ${this.isVisible && this.isEnabled ? 'flex' : 'none'}; background: rgba(0, 0, 0, ${opacity});`;
+        Object.assign(this.toolbar.style, {
+            cssText: `${this.styles.toolbar} width: ${this.size.width}px; height: ${this.size.height}px; left: ${this.position.left}px; top: ${this.position.top}px; display: ${this.isVisible && this.isEnabled ? 'flex' : 'none'}; background: rgba(0, 0, 0, ${opacity});`
+        });
 
         const header = document.createElement('div');
-        header.style.cssText = this.styles.header;
+        Object.assign(header.style, { cssText: this.styles.header });
         const headerText = document.createElement('span');
-        headerText.style.cssText = this.styles.headerText;
+        Object.assign(headerText.style, { cssText: this.styles.headerText });
         headerText.textContent = "𝙆 Resource Monitor";
         header.appendChild(headerText);
         this.toolbar.appendChild(header);
 
         this.workflowProgressEl = document.createElement('div');
-        this.workflowProgressEl.style.cssText = this.styles.row;
+        Object.assign(this.workflowProgressEl.style, { cssText: this.styles.row });
         this.updateWorkflowProgress();
         this.toolbar.appendChild(this.workflowProgressEl);
 
         this.chartCanvas = document.createElement('canvas');
-        this.chartCanvas.style.cssText = this.styles.canvas;
+        Object.assign(this.chartCanvas.style, { cssText: this.styles.canvas });
         this.chartCanvas.width = this.size.width - 20;
         this.chartCanvas.height = 100;
         this.toolbar.appendChild(this.chartCanvas);
 
         this.dataDisplay = document.createElement('div');
-        this.dataDisplay.style.cssText = this.styles.display;
+        Object.assign(this.dataDisplay.style, { cssText: this.styles.display });
         this.toolbar.appendChild(this.dataDisplay);
 
         this.resizeHandle = document.createElement('div');
-        this.resizeHandle.style.cssText = `${this.styles.resizeHandle} border-color: ${this.colors.header};`;
+        Object.assign(this.resizeHandle.style, { cssText: `${this.styles.resizeHandle} border-color: ${this.colors.header};` });
         this.toolbar.appendChild(this.resizeHandle);
 
         document.body.appendChild(this.toolbar);
@@ -214,7 +209,14 @@ const KayResourceMonitor = {
             this.startAnimation();
         }
     },
-
+    setupWebSocketListener() {
+        api.addEventListener("kaytool.resources", (event) => {
+            const data = event.detail;
+            this.updateTarget(data);
+            this.updateDisplay();
+            this.drawCurves();
+        });
+    },
     setupWorkflowListener() {
         const that = this;
         const queuePrompt = api.queuePrompt;
@@ -232,13 +234,11 @@ const KayResourceMonitor = {
             that.promptsMap.set(response.prompt_id, promptExecution);
             return response;
         };
-
         api.addEventListener("status", (e) => {
             if (!e.detail?.exec_info) return;
             this.lastQueueRemaining = e.detail.exec_info.queue_remaining;
             this.dispatchProgressUpdate();
         });
-
         api.addEventListener("execution_start", (e) => {
             const prompt = this.getOrMakePrompt(e.detail.prompt_id);
             this.currentExecution = prompt;
@@ -253,7 +253,6 @@ const KayResourceMonitor = {
             this.workflowProgress.isProgressUnknown = false;
             this.dispatchProgressUpdate();
         });
-
         api.addEventListener("executing", (e) => {
             if (!this.currentExecution) {
                 this.currentExecution = this.getOrMakePrompt("unknown");
@@ -268,7 +267,6 @@ const KayResourceMonitor = {
             }
             this.dispatchProgressUpdate();
         });
-
         api.addEventListener("progress", (e) => {
             if (!this.currentExecution) {
                 this.currentExecution = this.getOrMakePrompt(e.detail.prompt_id);
@@ -276,7 +274,6 @@ const KayResourceMonitor = {
             this.currentExecution.executing(e.detail.node, e.detail.value, e.detail.max);
             this.dispatchProgressUpdate();
         });
-
         api.addEventListener("execution_cached", (e) => {
             if (!this.currentExecution) {
                 this.currentExecution = this.getOrMakePrompt(e.detail.prompt_id);
@@ -288,7 +285,6 @@ const KayResourceMonitor = {
             }
             this.dispatchProgressUpdate();
         });
-
         api.addEventListener("execution_error", (e) => {
             if (!this.currentExecution) {
                 this.currentExecution = this.getOrMakePrompt(e.detail.prompt_id);
@@ -296,7 +292,6 @@ const KayResourceMonitor = {
             this.currentExecution?.error(e.detail);
             this.dispatchProgressUpdate();
         });
-
         api.addEventListener("execution_interrupted", (e) => {
             if (this.currentExecution) {
                 if (this.workflowProgress.startTime) {
@@ -309,20 +304,19 @@ const KayResourceMonitor = {
             }
         });
     },
-
     getOrMakePrompt(id) {
         let prompt = this.promptsMap.get(id);
         if (!prompt) {
-            prompt = new KayPromptExecution(id);  
+            prompt = new KayPromptExecution(id);
             this.promptsMap.set(id, prompt);
         }
         return prompt;
     },
-
     dispatchProgressUpdate() {
         const prompt = this.currentExecution;
-        this.workflowProgress.queueCount = this.lastQueueRemaining;         if (prompt?.currentlyExecuting) {
-                        if (!prompt.promptApi || prompt.totalNodes <= 0) {
+        this.workflowProgress.queueCount = this.lastQueueRemaining;
+        if (prompt?.currentlyExecuting) {
+            if (!prompt.promptApi || prompt.totalNodes <= 0) {
                 this.workflowProgress.isProgressUnknown = true;
                 this.workflowProgress.percentage = 0;
                 this.workflowProgress.currentNodeLabel = prompt.currentlyExecuting.nodeLabel || "Unknown";
@@ -354,36 +348,33 @@ const KayResourceMonitor = {
             }
             this.workflowProgress.nodePercentage = 0;
         } else {
-            this.workflowProgress.isProgressUnknown = false;             this.workflowProgress.percentage = 0;
+            this.workflowProgress.isProgressUnknown = false;
+            this.workflowProgress.percentage = 0;
             this.workflowProgress.nodePercentage = 0;
             this.workflowProgress.currentNode = "Idle";
             this.workflowProgress.currentNodeLabel = "Idle";
         }
     },
-
     updateWorkflowProgress() {
         if (!this.workflowProgressEl) return;
-    
         const { percentage, currentNode, isProgressUnknown, queueCount } = this.workflowProgress;
         const { styles, colors } = this;
-    
         const containerWidth = this.toolbar.clientWidth - 20;
         const barWidth = Math.min(200, Math.max(50, (containerWidth - 15) * 0.18));
         let displayPercentage, barPercentage, displayText;
-    
         if (currentNode === "Idle") {
-            displayText = "Workflow: Idle";             barPercentage = 0;
+            displayText = "Workflow: Idle";
+            barPercentage = 0;
         } else {
             displayPercentage = isProgressUnknown ? "Loading" : `${Math.min(Math.max(this.currentWorkflow.percentage, 0), 100).toFixed(1)}%`;
             barPercentage = isProgressUnknown ? 0 : Math.min(Math.max(this.currentWorkflow.percentage, 0), 100);
-            if (queueCount > 1) {                 displayPercentage += ` (${queueCount})`;
+            if (queueCount > 1) {
+                displayPercentage += ` (${queueCount})`;
             }
             displayText = `Workflow: ${displayPercentage} - ${currentNode}`;
         }
-    
-                const dotColor = (this.currentExecution?.currentlyExecuting) ? 'rgba(208, 255, 0, 0.86)' : 'rgba(200, 200, 200, 0.3)';
-    
-                if (!this.workflowProgressEl.querySelector('.workflow-dot')) {
+        const dotColor = (this.currentExecution?.currentlyExecuting) ? 'rgba(208, 255, 0, 0.86)' : 'rgba(200, 200, 200, 0.3)';
+        if (!this.workflowProgressEl.querySelector('.workflow-dot')) {
             this.workflowProgressEl.innerHTML = `
                 <span class="workflow-dot" style="${styles.dot(dotColor)}"></span>
                 <span class="workflow-bar" style="${styles.bar(barWidth)}">
@@ -392,21 +383,18 @@ const KayResourceMonitor = {
                 <span style="${styles.text}">${displayText}</span>
             `;
         } else {
-                        const dotElement = this.workflowProgressEl.querySelector('.workflow-dot');
-            if (dotElement) {
-                dotElement.style.background = dotColor;             }
+            const dotElement = this.workflowProgressEl.querySelector('.workflow-dot');
+            if (dotElement) dotElement.style.background = dotColor;
             const barElement = this.workflowProgressEl.querySelector('.workflow-bar');
             if (barElement) {
-                barElement.style.width = `${barWidth}px`;                 const barFill = barElement.querySelector('span');
-                if (barFill) {
-                    barFill.style.width = `${barPercentage}%`;                 }
+                barElement.style.width = `${barWidth}px`;
+                const barFill = barElement.querySelector('span');
+                if (barFill) barFill.style.width = `${barPercentage}%`;
             }
             const textElement = this.workflowProgressEl.querySelector('span:nth-child(3)');
-            if (textElement) {
-                textElement.textContent = displayText;             }
+            if (textElement) textElement.textContent = displayText;
         }
     },
-
     show() {
         this.isVisible = true;
         if (this.toolbar && this.isEnabled) {
@@ -416,7 +404,6 @@ const KayResourceMonitor = {
         }
         this.saveVisibility();
     },
-
     hide() {
         this.isVisible = false;
         if (this.toolbar) {
@@ -425,12 +412,9 @@ const KayResourceMonitor = {
         }
         this.saveVisibility();
     },
-
     updateEnabledState(enabled) {
         this.isEnabled = enabled;
-        if (this.menuButton) {
-            this.menuButton.style.display = enabled ? '' : 'none';
-        }
+        if (this.menuButton) this.menuButton.style.display = enabled ? '' : 'none';
         if (this.toolbar) {
             this.toolbar.style.display = enabled && this.isVisible ? 'flex' : 'none';
             if (enabled && this.isVisible) {
@@ -441,7 +425,6 @@ const KayResourceMonitor = {
             }
         }
     },
-
     refreshCanvas() {
         if (this.chartCanvas) {
             const headerHeight = this.toolbar.firstChild.getBoundingClientRect().height + 10;
@@ -451,26 +434,6 @@ const KayResourceMonitor = {
             this.chartCanvas.height = this.toolbar.clientHeight - headerHeight - workflowHeight - dataHeight - 10;
         }
     },
-
-    async fetchResources() {
-        try {
-            const response = await fetch('/kaytool/resources', { timeout: 5000 });
-            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-            const data = await response.json();
-            this.updateTarget(data);
-        } catch (error) {
-            this.updateTarget({
-                cpu_percent: 0,
-                cpu_count: this.cpuCores,
-                cpu_name: "Unknown",
-                ram_total: 0,
-                ram_used: 0,
-                ram_percent: 0,
-                gpu: "Fetch failed"
-            });
-        }
-    },
-
     updateTarget(data) {
         this.target.cpu = data.cpu_percent || 0;
         this.cpuCores = data.cpu_count || 4;
@@ -480,7 +443,6 @@ const KayResourceMonitor = {
         this.target.cpuName = data.cpu_name || "Unknown";
         this.dataHistory.cpu.push(this.target.cpu);
         this.dataHistory.ram.push(this.target.ram);
-
         if (data.gpu && typeof data.gpu !== 'string' && data.gpu.length > 0) {
             this.target.gpu = data.gpu[0].load || 0;
             this.target.gpuMem = data.gpu[0].memory_percent || 0;
@@ -502,7 +464,6 @@ const KayResourceMonitor = {
             this.dataHistory.gpuMem.push(0);
             this.dataHistory.gpuTemp.push(0);
         }
-
         if (this.dataHistory.cpu.length > this.maxPoints) {
             this.dataHistory.cpu.shift();
             this.dataHistory.ram.shift();
@@ -511,7 +472,6 @@ const KayResourceMonitor = {
             this.dataHistory.gpuTemp.shift();
         }
     },
-
     updateDisplay() {
         const { cpu, ram, gpu, gpuMem, gpuTemp, ramUsed, ramTotal, gpuMemUsed, gpuMemTotal } = this.current;
         const { styles, colors } = this;
@@ -531,16 +491,14 @@ const KayResourceMonitor = {
                 ].join('')
         ].join('');
     },
-
     renderRow(label, color, value, text) {
         const { styles } = this;
         const containerWidth = this.toolbar.clientWidth - 20;
         const minBarWidth = 50;
         const maxBarWidth = 200;
-        const fixedSpacing = 3 + 5 + 5;
+        const fixedSpacing = 13;
         const availableWidth = containerWidth - fixedSpacing;
         const barWidth = Math.min(maxBarWidth, Math.max(minBarWidth, availableWidth * 0.18));
-
         const textAvailableWidth = containerWidth - fixedSpacing - barWidth;
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -568,25 +526,18 @@ const KayResourceMonitor = {
             <span style="${styles.text}">${displayText}</span>
         </div>`;
     },
-
     animate() {
         if (!this.isVisible || !this.isEnabled || !this.toolbar) return;
-
         const now = performance.now();
-
-        if (now - this.lastUpdate >= this.fetchInterval) {
-            this.fetchResources();
-            this.lastUpdate = now;
-        }
-
+        const deltaTime = (now - this.lastUpdate) / 1000;
+        this.lastUpdate = now;
         for (const key in this.current) {
             if (this.current[key] === 0 && this.target[key] !== 0) {
                 this.current[key] = this.target[key];
             } else {
-                this.current[key] += (this.target[key] - this.current[key]) * this.smoothFactor;
+                this.current[key] += (this.target[key] - this.current[key]) * Math.min(this.smoothFactor * deltaTime * 60, 1);
             }
         }
-
         if (this.workflowProgress.easeOutStartTime !== null) {
             const elapsed = now - this.workflowProgress.easeOutStartTime;
             const t = Math.min(elapsed / this.easeOutDuration, 1);
@@ -596,43 +547,33 @@ const KayResourceMonitor = {
             const targetNodePercentage = this.workflowProgress.nodePercentage;
             this.currentWorkflow.percentage = startPercentage + (targetPercentage - startPercentage) * this.easeOutQuad(t);
             this.workflowProgress.currentNodePercentage = startNodePercentage + (targetNodePercentage - startNodePercentage) * this.easeOutQuad(t);
-            if (t >= 1) {
-                this.workflowProgress.easeOutStartTime = null;
-            }
+            if (t >= 1) this.workflowProgress.easeOutStartTime = null;
         } else if (!this.workflowProgress.isProgressUnknown && this.workflowProgress.currentNode !== "Idle") {
-                        this.currentWorkflow.percentage += (this.workflowProgress.percentage - this.currentWorkflow.percentage) * this.smoothFactor;
+            this.currentWorkflow.percentage += (this.workflowProgress.percentage - this.currentWorkflow.percentage) * this.smoothFactor;
             this.workflowProgress.currentNodePercentage += (this.workflowProgress.nodePercentage - this.workflowProgress.currentNodePercentage) * this.smoothFactor;
         }
-
-                if (this.currentExecution?.currentlyExecuting) {
+        if (this.currentExecution?.currentlyExecuting) {
             if (this.workflowProgress.nodePercentage > 0) {
                 this.workflowProgress.currentNode = `${this.workflowProgress.currentNodeLabel} (${this.workflowProgress.currentNodePercentage.toFixed(1)}%)`;
             } else {
                 this.workflowProgress.currentNode = this.workflowProgress.currentNodeLabel;
             }
         }
-
-        if (now - this.lastCurveUpdate >= this.curveInterval) {
+        if (now - this.lastCurveUpdate >= 500) {
             for (const key in this.displayHistory) {
                 this.displayHistory[key].push(this.current[key]);
                 if (this.displayHistory[key].length > this.maxPoints) this.displayHistory[key].shift();
             }
             this.lastCurveUpdate = now;
         }
-
         if (now - this.lastDisplayUpdate >= this.displayInterval) {
             this.updateDisplay();
             this.updateWorkflowProgress();
             this.lastDisplayUpdate = now;
         }
-
-        if (typeof this.drawCurves === 'function') {
-            this.drawCurves();
-        }
-        
+        this.drawCurves();
         this.animationFrameId = requestAnimationFrame(() => this.animate());
     },
-
     startAnimation() {
         if (!this.animationFrameId && this.isEnabled && this.isVisible && this.toolbar) {
             this.lastUpdate = performance.now();
@@ -641,21 +582,17 @@ const KayResourceMonitor = {
             this.animationFrameId = requestAnimationFrame(() => this.animate());
         }
     },
-
     stopAnimation() {
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
         }
     },
-
     drawCurves() {
         const ctx = this.chartCanvas.getContext('2d');
         const w = this.chartCanvas.width;
         const h = this.chartCanvas.height;
-    
         ctx.clearRect(0, 0, w, h);
-    
         ctx.strokeStyle = 'rgba(166, 166, 166, 0.5)';
         ctx.lineWidth = 0.3;
         ctx.beginPath();
@@ -665,48 +602,90 @@ const KayResourceMonitor = {
             ctx.lineTo(w, y);
         }
         ctx.stroke();
-    
         ctx.strokeStyle = 'rgba(166, 166, 166, 0.5)';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(0, 0);
         ctx.lineTo(w, 0);
         ctx.stroke();
-    
         const step = w / (this.maxPoints - 1);
         const { colors } = this;
-    
         ctx.globalCompositeOperation = 'screen';
         ctx.lineWidth = 0.8;
-    
+        const now = performance.now();
+        const timeSinceLastUpdate = Math.min((now - this.lastCurveUpdate) / 500, 1);
         [
-            { data: this.displayHistory.cpu, color: colors.cpu },
-            { data: this.displayHistory.ram, color: colors.ram },
-            { data: this.displayHistory.gpu, color: colors.gpu },
-            { data: this.displayHistory.gpuMem, color: colors.gpuMem },
-            { data: this.displayHistory.gpuTemp, color: colors.gpuTemp }
-        ].forEach(({ data, color }) => {
+            { data: this.displayHistory.cpu, color: colors.cpu, key: 'cpu' },
+            { data: this.displayHistory.ram, color: colors.ram, key: 'ram' },
+            { data: this.displayHistory.gpu, color: colors.gpu, key: 'gpu' },
+            { data: this.displayHistory.gpuMem, color: colors.gpuMem, key: 'gpuMem' },
+            { data: this.displayHistory.gpuTemp, color: colors.gpuTemp, key: 'gpuTemp' }
+        ].forEach(({ data, color, key }) => {
             ctx.strokeStyle = color;
             ctx.beginPath();
-            data.forEach((v, i) => {
-                const x = i * step;
-                const normalizedValue = Math.min(v, 100) / 100 * 100;
-                const y = h - (normalizedValue / 100) * h;
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            });
+            const offset = step * timeSinceLastUpdate;
+            let firstVisiblePointDrawn = false;
+            for (let i = 0; i < data.length; i++) {
+                const x = i * step - offset;
+                const y = h - (Math.min(data[i], 100) / 100) * h;
+                if (x > w) continue;
+                if (i === 0 || (x < 0 && i === data.length - 1)) {
+                    ctx.moveTo(Math.max(x, 0), y);
+                    firstVisiblePointDrawn = x >= 0;
+                } else {
+                    const prevX = (i - 1) * step - offset;
+                    const prevY = h - (Math.min(data[i - 1], 100) / 100) * h;
+                    if (prevX < 0 && x >= 0) {
+                        const edgeX = 0;
+                        const t = (edgeX - prevX) / (x - prevX);
+                        const edgeY = prevY + (y - prevY) * t;
+                        ctx.moveTo(edgeX, edgeY);
+                        const midX = (edgeX + x) / 2;
+                        ctx.quadraticCurveTo(edgeX, edgeY, midX, (edgeY + y) / 2);
+                        ctx.quadraticCurveTo(x, y, x, y);
+                        firstVisiblePointDrawn = true;
+                    } else if (prevX >= 0 && x >= 0) {
+                        const midX = (prevX + x) / 2;
+                        ctx.quadraticCurveTo(prevX, prevY, midX, (prevY + y) / 2);
+                        ctx.quadraticCurveTo(x, y, x, y);
+                        firstVisiblePointDrawn = true;
+                    } else if (prevX < 0 && x < 0 && !firstVisiblePointDrawn) {
+                        ctx.moveTo(Math.max(x, 0), y);
+                    }
+                }
+            }
+            const lastIndex = data.length - 1;
+            if (lastIndex >= 0) {
+                const lastX = lastIndex * step - offset;
+                const lastValue = data[lastIndex];
+                const currentValue = this.current[key];
+                const lastY = h - (Math.min(lastValue, 100) / 100) * h;
+                const nextX = Math.min(w, lastX + step * timeSinceLastUpdate);
+                const interpolatedValue = lastValue + (currentValue - lastValue) * timeSinceLastUpdate;
+                const nextY = h - (Math.min(interpolatedValue, 100) / 100) * h;
+                if (lastX >= 0 && nextX >= 0) {
+                    ctx.quadraticCurveTo(lastX, lastY, (lastX + nextX) / 2, (lastY + nextY) / 2);
+                    ctx.lineTo(nextX, nextY);
+                } else if (lastX < 0 && nextX >= 0) {
+                    const edgeX = 0;
+                    const t = (edgeX - lastX) / (nextX - lastX);
+                    const edgeY = lastY + (nextY - lastY) * t;
+                    ctx.moveTo(edgeX, edgeY);
+                    ctx.quadraticCurveTo(edgeX, edgeY, (edgeX + nextX) / 2, (edgeY + nextY) / 2);
+                    ctx.lineTo(nextX, nextY);
+                } else if (nextX < 0) {
+                    ctx.moveTo(0, nextY);
+                }
+            }
             ctx.stroke();
         });
-    
         ctx.globalCompositeOperation = 'source-over';
-    
         if (this.edgeFadeEnabled) {
             const gradient = ctx.createLinearGradient(0, 0, w, 0);
             gradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
             gradient.addColorStop(0.1, 'rgba(255, 255, 255, 1)');
             gradient.addColorStop(0.9, 'rgba(255, 255, 255, 1)');
             gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-    
             ctx.save();
             ctx.globalCompositeOperation = 'destination-in';
             ctx.fillStyle = gradient;
@@ -714,13 +693,11 @@ const KayResourceMonitor = {
             ctx.restore();
         }
     },
-
     startMonitoring() {
         for (const key in this.displayHistory) {
             this.displayHistory[key] = Array(this.maxPoints).fill(0);
         }
     },
-
     bindEvents() {
         document.addEventListener('mousemove', (e) => {
             if (this.dragState.isDragging) this.onDrag(e);
@@ -733,7 +710,6 @@ const KayResourceMonitor = {
         document.addEventListener('selectstart', (e) => (this.dragState.isDragging || this.resizeState.isResizing) && e.preventDefault());
         window.addEventListener('resize', () => this.onResize());
     },
-
     bindToolbarEvents() {
         if (this.toolbar) {
             const headerText = this.toolbar.querySelector('span');
@@ -741,7 +717,6 @@ const KayResourceMonitor = {
             this.resizeHandle.addEventListener('mousedown', (e) => this.startResize(e, 'se'));
         }
     },
-
     loadPosition() {
         const pos = JSON.parse(localStorage.getItem('KayResourceMonitorPosition')) || {};
         this.position.left = pos.left || 0;
@@ -749,7 +724,6 @@ const KayResourceMonitor = {
         this.toolbar.style.left = `${this.position.left}px`;
         this.toolbar.style.top = `${this.position.top}px`;
     },
-
     loadSize() {
         const size = JSON.parse(localStorage.getItem('KayResourceMonitorSize')) || {};
         this.size.width = Math.max(size.width || 250, this.minWidth);
@@ -757,12 +731,10 @@ const KayResourceMonitor = {
         this.toolbar.style.width = `${this.size.width}px`;
         this.toolbar.style.height = `${this.size.height}px`;
     },
-
     savePositionAndSize() {
         localStorage.setItem('KayResourceMonitorPosition', JSON.stringify(this.position));
         localStorage.setItem('KayResourceMonitorSize', JSON.stringify(this.size));
     },
-
     onResize() {
         if (!this.toolbar) return;
         const winW = window.innerWidth;
@@ -778,7 +750,6 @@ const KayResourceMonitor = {
         this.chartCanvas.height = this.toolbar.clientHeight - headerHeight - workflowHeight - dataHeight - 10;
         this.updateDisplay();
     },
-
     startDrag(e) {
         e.preventDefault();
         const rect = this.toolbar.getBoundingClientRect();
@@ -787,7 +758,6 @@ const KayResourceMonitor = {
         this.dragState.offsetY = e.clientY - rect.top;
         this.toolbar.querySelector('span').style.cursor = 'grabbing';
     },
-
     onDrag(e) {
         if (!this.dragState.isDragging) return;
         const winW = window.innerWidth;
@@ -797,14 +767,12 @@ const KayResourceMonitor = {
         this.toolbar.style.left = `${this.position.left}px`;
         this.toolbar.style.top = `${this.position.top}px`;
     },
-
     endDrag() {
         if (!this.dragState.isDragging) return;
         this.dragState.isDragging = false;
         this.toolbar.querySelector('span').style.cursor = 'grab';
         this.savePositionAndSize();
     },
-
     startResize(e, direction) {
         e.preventDefault();
         this.resizeState.isResizing = true;
@@ -814,19 +782,16 @@ const KayResourceMonitor = {
         this.resizeState.startHeight = this.toolbar.clientHeight;
         this.resizeHandle.style.cursor = 'se-resize';
     },
-
     onResizeDrag(e) {
         if (!this.resizeState.isResizing) return;
         const dx = e.clientX - this.resizeState.startX;
         const dy = e.clientY - this.resizeState.startY;
-
         this.size.width = Math.max(this.minWidth, this.resizeState.startWidth + dx);
         this.size.height = Math.min(this.maxHeight, Math.max(this.minHeight, this.resizeState.startHeight + dy));
         this.toolbar.style.width = `${this.size.width}px`;
         this.toolbar.style.height = `${this.size.height}px`;
         this.onResize();
     },
-
     endResize() {
         if (!this.resizeState.isResizing) return;
         this.resizeState.isResizing = false;
@@ -839,7 +804,7 @@ app.registerExtension({
     name: "KayTool.ResourceMonitor",
     async setup() {
         await KayResourceMonitor.init();
-
+        api.fetchApi("/kaytool/start_monitor", { method: "POST" });
         const showMenuButton = new (await import("/scripts/ui/components/button.js")).ComfyButton({
             content: "𝙆 Monitor",
             action: () => {
@@ -853,7 +818,6 @@ app.registerExtension({
             },
             tooltip: KayResourceMonitor.isVisible ? "Hide Monitor" : "Show Monitor"
         });
-
         KayResourceMonitor.menuButton = showMenuButton.element;
         if (app.menu?.settingsGroup) {
             app.menu.settingsGroup.append(showMenuButton);

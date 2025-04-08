@@ -1,98 +1,149 @@
-from server import PromptServer
-import psutil
 import asyncio
-import json
-from aiohttp import web
+import threading
 import platform
-
-cpuinfo = None
-pynvml = None
+import psutil
+from server import PromptServer
+from aiohttp import web
 
 PLATFORM = platform.system()
 IS_MACOS = PLATFORM == "Darwin"
 IS_LINUX = PLATFORM == "Linux"
 IS_WINDOWS = PLATFORM == "Windows"
 
-async def get_gpu_info(pynvml_available, pynvml_instance):
-    global GPU_INFO_CACHE, LAST_GPU_UPDATE
-    current_time = asyncio.get_event_loop().time()
-    if GPU_INFO_CACHE is None or (current_time - LAST_GPU_UPDATE) >= 0.5:
-        if IS_MACOS:
-            GPU_INFO_CACHE = "GPU monitoring not supported on macOS"
-        elif pynvml_available:
+pynvml_instance = None
+pynvml_available = False
+CPU_NAME = None
+
+class KayResourceCollector:
+    def __init__(self):
+        self.cpu_count = psutil.cpu_count()
+        self._initialize_hardware()
+
+    def _initialize_hardware(self):
+        global pynvml_instance, pynvml_available, CPU_NAME
+        if CPU_NAME is None:
             try:
-                device_count = pynvml_instance.nvmlDeviceGetCount()
-                gpu_info = []
-                for i in range(device_count):
-                    handle = pynvml_instance.nvmlDeviceGetHandleByIndex(i)
-                    name = pynvml_instance.nvmlDeviceGetName(handle)
-                    if isinstance(name, bytes):
-                        name = name.decode('utf-8')
-                    util = pynvml_instance.nvmlDeviceGetUtilizationRates(handle)
-                    mem_info = pynvml_instance.nvmlDeviceGetMemoryInfo(handle)
-                    gpu_info.append({
-                        "index": i,
-                        "name": name,
-                        "load": float(util.gpu),
-                        "memory_used": float(mem_info.used) / (1024 ** 3),
-                        "memory_total": float(mem_info.total) / (1024 ** 3),
-                        "memory_percent": (float(mem_info.used) / float(mem_info.total)) * 100,
-                        "temperature": float(pynvml_instance.nvmlDeviceGetTemperature(handle, pynvml_instance.NVML_TEMPERATURE_GPU))
-                    })
-                GPU_INFO_CACHE = gpu_info
+                import cpuinfo
+                CPU_NAME = cpuinfo.get_cpu_info().get('brand_raw', "Unknown")
             except Exception:
-                GPU_INFO_CACHE = "GPU information unavailable"
-        else:
-            GPU_INFO_CACHE = "GPU information unavailable"
-        LAST_GPU_UPDATE = current_time
-    return GPU_INFO_CACHE
+                CPU_NAME = "Unknown"
 
-@PromptServer.instance.routes.get("/kaytool/resources")
-async def fetch_resources(request):
-    global cpuinfo, pynvml
-    try:
-        if cpuinfo is None:
-            import cpuinfo
-            CPU_NAME = cpuinfo.get_cpu_info().get('brand_raw', "Unknown")
-        else:
-            CPU_NAME = cpuinfo.get_cpu_info().get('brand_raw', "Unknown")
-
-        pynvml_available = False
-        pynvml_instance = None
-        if (IS_LINUX or IS_WINDOWS) and pynvml is None:
+        if pynvml_instance is None and (IS_LINUX or IS_WINDOWS):
             try:
                 import pynvml
                 pynvml_instance = pynvml
                 pynvml_instance.nvmlInit()
                 pynvml_available = True
-            except pynvml.NVMLError:
+            except (ImportError, pynvml.NVMLError):
                 pynvml_available = False
-        elif pynvml is not None:
-            pynvml_available = True
-            pynvml_instance = pynvml
 
-        # 获取实时数据
-        cpu_percent = psutil.cpu_percent(interval=0.1)
-        cpu_count = psutil.cpu_count()
-        ram = psutil.virtual_memory()
-        ram_total = round(ram.total / (1024 ** 3), 1)
-        ram_used = round(ram.used / (1024 ** 3), 1)
-        ram_percent = ram.percent
+    def get_status(self):
+        try:
+            cpu_percent = psutil.cpu_percent(interval=None)
+            ram = psutil.virtual_memory()
+            ram_total = round(ram.total / (1024 ** 3), 1)
+            ram_used = round(ram.used / (1024 ** 3), 1)
+            ram_percent = ram.percent
+            gpu_info = self.get_gpu_info() if not IS_MACOS and pynvml_available else []
+            return {
+                "cpu_percent": cpu_percent,
+                "cpu_count": self.cpu_count,
+                "cpu_name": CPU_NAME or "Unknown",
+                "ram_total": ram_total,
+                "ram_used": ram_used,
+                "ram_percent": ram_percent,
+                "gpu": gpu_info
+            }
+        except Exception:
+            return {
+                "cpu_percent": 0,
+                "cpu_count": self.cpu_count,
+                "cpu_name": CPU_NAME or "Unknown",
+                "ram_total": 0,
+                "ram_used": 0,
+                "ram_percent": 0,
+                "gpu": "Error"
+            }
 
-        gpu_info = await get_gpu_info(pynvml_available, pynvml_instance)
+    def get_gpu_info(self):
+        try:
+            device_count = pynvml_instance.nvmlDeviceGetCount()
+            gpu_info = []
+            for i in range(device_count):
+                handle = pynvml_instance.nvmlDeviceGetHandleByIndex(i)
+                name = pynvml_instance.nvmlDeviceGetName(handle)
+                if isinstance(name, bytes):
+                    name = name.decode('utf-8')
+                util = pynvml_instance.nvmlDeviceGetUtilizationRates(handle)
+                mem_info = pynvml_instance.nvmlDeviceGetMemoryInfo(handle)
+                gpu_info.append({
+                    "index": i,
+                    "name": name,
+                    "load": float(util.gpu),
+                    "memory_used": float(mem_info.used) / (1024 ** 3),
+                    "memory_total": float(mem_info.total) / (1024 ** 3),
+                    "memory_percent": (float(mem_info.used) / float(mem_info.total)) * 100,
+                    "temperature": float(pynvml_instance.nvmlDeviceGetTemperature(handle, pynvml_instance.NVML_TEMPERATURE_GPU))
+                })
+            return gpu_info
+        except Exception:
+            return "GPU information unavailable"
 
-        data = {
-            "cpu_percent": cpu_percent,
-            "cpu_count": cpu_count,
-            "cpu_name": CPU_NAME,
-            "ram_total": ram_total,
-            "ram_used": ram_used,
-            "ram_percent": ram_percent,
-            "gpu": gpu_info
-        }
-        return web.Response(text=json.dumps(data), content_type='application/json')
-    except Exception as e:
-        return web.Response(text=json.dumps({"error": str(e)}), status=500)
+class KayResourceMonitor:
+    def __init__(self, initial_rate=1.0):
+        self.rate = initial_rate
+        self.collector = None
+        self.monitor_thread = None
+        self.thread_controller = threading.Event()
+        self.loop = None
 
-GPU_INFO_CACHE = None
-LAST_GPU_UPDATE = 0
+    def adjust_rate(self, cpu_percent):
+        if cpu_percent > 80:
+            return 2
+        elif cpu_percent > 50:
+            return 1
+        return 0.5
+
+    async def send_message(self, data):
+        try:
+            PromptServer.instance.send_sync("kaytool.resources", data)
+        except Exception:
+            pass
+
+    async def monitor_loop(self):
+        if self.collector is None:
+            self.collector = KayResourceCollector()
+        while not self.thread_controller.is_set():
+            data = self.collector.get_status()
+            self.rate = self.adjust_rate(data["cpu_percent"])
+            await self.send_message(data)
+            await asyncio.sleep(self.rate)
+
+    def start_monitor_loop(self):
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
+        self.loop.run_until_complete(self.monitor_loop())
+
+    def start(self):
+        if self.monitor_thread is not None and self.monitor_thread.is_alive():
+            self.stop()
+        if self.rate <= 0:
+            return
+        self.thread_controller.clear()
+        self.monitor_thread = threading.Thread(target=self.start_monitor_loop, daemon=True)
+        self.monitor_thread.start()
+
+    def stop(self):
+        self.thread_controller.set()
+        if self.monitor_thread is not None:
+            self.monitor_thread.join(timeout=2)
+        if self.loop is not None:
+            self.loop.stop()
+
+monitor = KayResourceMonitor(initial_rate=1.0)
+routes = PromptServer.instance.routes
+
+@routes.post("/kaytool/start_monitor")
+async def start_monitor_endpoint(request):
+    monitor.start()
+    return web.Response(text="Monitor started")

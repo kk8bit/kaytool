@@ -1,6 +1,5 @@
 rembg
 timm
 opencv-python
-requests
 py-cpuinfo
 pynvml

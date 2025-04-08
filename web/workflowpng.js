@@ -1,11 +1,8 @@
 import { app } from "../../../scripts/app.js";
 import { ComfyWidgets } from "../../../scripts/widgets.js";
-
-let getDrawTextConfig = null;
-let fileInput;
+import { showNotification, hideNotification } from "./notification.js";
 
 class KayWorkflowImage {
-    static accept = ".png,image/png";
     extension = "png";
 
     getBounds() {
@@ -46,7 +43,7 @@ class KayWorkflowImage {
         app.canvas.canvas.height = this.state.height;
         app.canvas.ds.offset = this.state.offset;
         app.canvas.canvas.getContext("2d").setTransform(this.state.transform);
-        app.canvas.draw(true, true);  
+        app.canvas.draw(true, true);
     }
 
     updateView(bounds) {
@@ -60,18 +57,17 @@ class KayWorkflowImage {
 
     getDrawTextConfig(_, widget) {
         return {
-            x: parseInt(widget.inputEl.style.left) || 10, 
+            x: parseInt(widget.inputEl.style.left) || 10,
             y: parseInt(widget.inputEl.style.top) || widget.last_y + 10,
-            resetTransform: true, 
+            resetTransform: true,
         };
     }
 
     async export(includeWorkflow) {
         this.saveState();
         this.updateView(this.getBounds());
-        getDrawTextConfig = this.getDrawTextConfig;
+        const getDrawTextConfig = this.getDrawTextConfig;
         app.canvas.draw(true, true);
-        getDrawTextConfig = null;
         const blob = await this.getBlob(includeWorkflow ? JSON.stringify(app.graph.serialize()) : undefined);
         this.restoreState();
         if (blob) this.download(blob);
@@ -91,22 +87,6 @@ class KayWorkflowImage {
             a.remove();
             window.URL.revokeObjectURL(url);
         }, 0);
-    }
-
-    static import() {
-        if (!fileInput) {
-            fileInput = document.createElement("input");
-            Object.assign(fileInput, {
-                type: "file",
-                style: "display: none",
-                onchange: () => {
-                    app.handleFile(fileInput.files[0]);
-                },
-            });
-            document.body.append(fileInput);
-        }
-        fileInput.accept = KayWorkflowImage.accept;
-        fileInput.click();
     }
 
     numberToBytes(num) {
@@ -209,7 +189,7 @@ app.registerExtension({
                 }
             }
             context.fillText(line, x, currentY);
-            return currentY + lineHeight; 
+            return currentY + lineHeight;
         }
 
         const stringWidget = ComfyWidgets.STRING;
@@ -258,53 +238,43 @@ app.registerExtension({
         const originalGetCanvasMenuOptions = LGraphCanvas.prototype.getCanvasMenuOptions;
         LGraphCanvas.prototype.getCanvasMenuOptions = function () {
             const options = originalGetCanvasMenuOptions.apply(this, arguments) || [];
+            const newOptions = [...options];
             const showWorkflowPNG = app.ui.settings.getSettingValue("KayTool.ShowWorkflowPNG");
+
             if (showWorkflowPNG) {
-                const newOptions = [...options];
                 let kaytoolMenu = newOptions.find(opt => opt && opt.content === "KayTool");
                 if (!kaytoolMenu) {
                     kaytoolMenu = {
                         content: "KayTool",
-                        submenu: {
-                            options: []
-                        }
+                        submenu: { options: [] }
                     };
                     newOptions.push(null, kaytoolMenu);
                 }
+
                 kaytoolMenu.submenu.options = kaytoolMenu.submenu.options || [];
-                const workflowOptionExists = kaytoolMenu.submenu.options.some(
-                    opt => opt && opt.content === "workflow PNG"
+                const exportOptionExists = kaytoolMenu.submenu.options.some(
+                    opt => opt && opt.content === "📦 Workflow PNG"
                 );
-                if (!workflowOptionExists) {
+                if (!exportOptionExists) {
                     kaytoolMenu.submenu.options.push({
-                        content: "workflow PNG",
-                        submenu: {
-                            options: [
-                                {
-                                    content: "Import",
-                                    callback: () => {
-                                        KayWorkflowImage.import();
-                                    },
-                                },
-                                {
-                                    content: "Export PNG",
-                                    callback: () => {
-                                        new KayWorkflowImage().export(true);
-                                    },
-                                },
-                                {
-                                    content: "Export PNG (no workflow)",
-                                    callback: () => {
-                                        new KayWorkflowImage().export();
-                                    },
-                                },
-                            ],
-                        },
+                        content: "📦 Workflow PNG",
+                        callback: () => {
+                            showNotification({
+                                message: `
+𝙆:你需要把工作流信息嵌入到**PNG**中吗？*Do you need to embed Workflow information into **PNG**?*
+`,
+                                bgColor: "#fff3cd",
+                                size: "medium",
+                                onYes: () => new KayWorkflowImage().export(true),
+                                onNo: () => new KayWorkflowImage().export(false)
+                            });
+                        }
                     });
                 }
-                return newOptions;
             }
-            return options;
+            return newOptions;
         };
-    },
+    }
 });
+
+let getDrawTextConfig = null;

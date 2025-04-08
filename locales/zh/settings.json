@@ -11,6 +11,9 @@
     "KayTool_ShowWorkflowPNG": {
       "name": "在KayTool菜单中显示 'Workflow PNG' 选项"
     },
+    "KayTool_ShowCleanVRAM": {
+      "name": "在KayTool菜单中显示 '🧹 Clean VRAM' 选项"
+    },
     "KayTool_ShowStarToMe": {
       "name": "在KayTool菜单中显示 '⭐️ Star to me' 选项"
     },
