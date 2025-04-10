@@ -260,9 +260,7 @@ app.registerExtension({
                         content: "📦 Workflow PNG",
                         callback: () => {
                             showNotification({
-                                message: `
-𝙆:你需要把工作流信息嵌入到**PNG**中吗？*Do you need to embed Workflow information into **PNG**?*
-`,
+                                message: `𝙆:你需要把工作流信息嵌入到PNG中吗？Do you need to embed Workflow information into PNG?`,
                                 bgColor: "#fff3cd",
                                 size: "medium",
                                 onYes: () => new KayWorkflowImage().export(true),

@@ -13,27 +13,17 @@ except (ImportError, pynvml.NVMLError):
 
 async def clean_vram(request):
     try:
-        if torch.backends.mps.is_available():
-            torch.mps.empty_cache()
-            gc.collect()
-            from comfy.model_management import unload_all_models
-            unload_all_models()
-            torch.mps.empty_cache()
-            memory_used_before = torch.cuda.memory_allocated() if torch.cuda.is_available() else 0
-            memory_used_after = torch.cuda.memory_allocated() if torch.cuda.is_available() else 0
-            freed_memory = memory_used_before - memory_used_after
-            return web.Response(text=f"MPS VRAM Cleaned: Freed {freed_memory / (1024 ** 3):.2f} GB (Approximate)")
+        if torch.backends.mps.is_available() or not torch.cuda.is_available():
+            return web.Response(text="你的硬件不支持该功能哟 ≧﹏≦！Sorry! Your hardware doesn't support this feature!")
 
-        elif not torch.cuda.is_available():
-            return web.Response(text="No GPU available to clean", status=400)
-
-        memory_used_before = torch.cuda.memory_allocated() / (1024 ** 3)
+        memory_used_before = torch.cuda.memory_reserved() / (1024 ** 3)
         gc.collect()
         torch.cuda.empty_cache()
         from comfy.model_management import unload_all_models
         unload_all_models()
         torch.cuda.empty_cache()
-        memory_used_after = torch.cuda.memory_allocated() / (1024 ** 3)
+        torch.cuda.synchronize()
+        memory_used_after = torch.cuda.memory_reserved() / (1024 ** 3)
         freed_memory = memory_used_before - memory_used_after
 
         total_used_before = 0
@@ -45,7 +35,7 @@ async def clean_vram(request):
             mem_info_after = pynvml.nvmlDeviceGetMemoryInfo(handle)
             total_used_after = mem_info_after.used / (1024 ** 3)
 
-        message = f"VRAM Cleaned: Freed {freed_memory:.2f} GB (Total: {total_used_before:.2f} GB -> {total_used_after:.2f} GB)"
+        message = f"VRAM Cleaned: Freed {freed_memory:.2f} GB (Allocated: {memory_used_before:.2f} GB -> {memory_used_after:.2f} GB, Total: {total_used_before:.2f} GB -> {total_used_after:.2f} GB)"
         if freed_memory == 0 and total_used_before == total_used_after and total_used_before > 0:
             message += " (No additional VRAM freed, restart may be required)"
         return web.Response(text=message)

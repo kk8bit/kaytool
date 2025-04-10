@@ -1,7 +1,7 @@
 [project]
 name = "kaytool"
 description ="KayTool boosts ComfyUI workflow efficiency with powerful tools like: image processing (resize, color, blur, expand, merge, crop), background/mask tasks via BiRefNet/RemBG, wireless data transfer (Get & Out), AI translation (Tencent/Baidu), Professional high-precision resource monitoring, dynamic math operations, flexible text handling, precision sliders, metadata/color profile-supported image saving, batch processing via folder loading, canvas node map export as PNG with metadata, quick Run options via right-click, node alignment toolbar with custom styles, and custom ComfyUI logo integration."
-version = "0.65.0"
+version = "0.65.1"
 license = {file = "LICENSE"}
 dependencies = ["rembg, timm, opencv-python, py-cpuinfo, pynvml"]
 

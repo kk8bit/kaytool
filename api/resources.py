@@ -1,5 +1,4 @@
 import asyncio
-import threading
 import platform
 import psutil
 from server import PromptServer
@@ -93,9 +92,8 @@ class KayResourceMonitor:
     def __init__(self, initial_rate=1.0):
         self.rate = initial_rate
         self.collector = None
-        self.monitor_thread = None
-        self.thread_controller = threading.Event()
-        self.loop = None
+        self.running = False
+        self.task = None
 
     def adjust_rate(self, cpu_percent):
         if cpu_percent > 80:
@@ -106,39 +104,33 @@ class KayResourceMonitor:
 
     async def send_message(self, data):
         try:
-            PromptServer.instance.send_sync("kaytool.resources", data)
+            await PromptServer.instance.send("kaytool.resources", data)
         except Exception:
             pass
 
     async def monitor_loop(self):
         if self.collector is None:
             self.collector = KayResourceCollector()
-        while not self.thread_controller.is_set():
+        self.running = True
+        while self.running:
             data = self.collector.get_status()
             self.rate = self.adjust_rate(data["cpu_percent"])
             await self.send_message(data)
             await asyncio.sleep(self.rate)
 
-    def start_monitor_loop(self):
-        self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.loop)
-        self.loop.run_until_complete(self.monitor_loop())
-
     def start(self):
-        if self.monitor_thread is not None and self.monitor_thread.is_alive():
+        if self.running:
             self.stop()
         if self.rate <= 0:
             return
-        self.thread_controller.clear()
-        self.monitor_thread = threading.Thread(target=self.start_monitor_loop, daemon=True)
-        self.monitor_thread.start()
+        # 在主事件循环中创建任务
+        self.task = asyncio.create_task(self.monitor_loop())
 
     def stop(self):
-        self.thread_controller.set()
-        if self.monitor_thread is not None:
-            self.monitor_thread.join(timeout=2)
-        if self.loop is not None:
-            self.loop.stop()
+        self.running = False
+        if self.task is not None:
+            self.task.cancel()
+            self.task = None
 
 monitor = KayResourceMonitor(initial_rate=1.0)
 routes = PromptServer.instance.routes
@@ -147,3 +139,8 @@ routes = PromptServer.instance.routes
 async def start_monitor_endpoint(request):
     monitor.start()
     return web.Response(text="Monitor started")
+
+@routes.post("/kaytool/stop_monitor")
+async def stop_monitor_endpoint(request):
+    monitor.stop()
+    return web.Response(text="Monitor stopped")

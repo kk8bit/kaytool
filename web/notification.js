@@ -26,7 +26,7 @@ export function showNotification({
         color: "#333",
         fontFamily: "'Courier New', monospace",
         fontSize: "14px",
-        lineHeight: "1.4",
+        // lineHeight: "1.4",
         wordWrap: "break-word",
         zIndex: "10000",
         border: "2px solid #000",
@@ -106,8 +106,7 @@ export function showNotification({
         boxSizing: "border-box",
         wordBreak: "break-word",
         fontFamily: "'Courier New', monospace",
-        scrollbarWidth: "thin",
-        scrollbarColor: "#999 #333"
+        whiteSpace: "pre-wrap" // 保留换行和空格
     });
     contentDiv.style.cssText += `
         ::-webkit-scrollbar { width: 8px; }
@@ -195,91 +194,64 @@ export function showNotification({
         div.style.maxHeight = `calc(${selectedSize.maxHeight} + ${totalExtraHeight}px)`;
         contentDiv.style.maxHeight = `calc(${selectedSize.maxHeight} - ${totalExtraHeight}px)`;
     };
-
     updateHeights();
 
-    let processedMessage = message;
-    if (processedMessage.includes("<iframe")) {
-        processedMessage = processedMessage.replace(/<iframe/g, "\n<iframe").replace(/<\/iframe>/g, "</iframe>\n");
-    }
-
+    // 打字机效果：基于 Markdown 原始文本，仅双换行触发解析
     try {
-        marked.setOptions({ breaks: false, gfm: true });
-        const paragraphs = processedMessage.split(/\n\n+/).filter(p => p.trim());
-        let currentParaIndex = 0;
+        marked.setOptions({ breaks: true, gfm: true });
 
-        function processParagraph() {
-            if (currentParaIndex >= paragraphs.length) {
+        if (!message || typeof message !== "string" || message.trim() === "") {
+            contentDiv.textContent = "No message to display";
+            updateHeights();
+            return div;
+        }
+
+        // 分割 Markdown 原始文本为字符数组
+        const chars = message.split('');
+        let charIndex = 0;
+        let currentMarkdown = ''; // 当前累积的 Markdown 文本
+        let renderedHtml = ''; // 已渲染的 HTML
+
+        function typeWriter() {
+            if (charIndex >= chars.length) {
+                // 所有字符打完，解析剩余的 Markdown
+                if (currentMarkdown.trim()) {
+                    renderedHtml += marked.parse(currentMarkdown);
+                }
+                contentDiv.innerHTML = renderedHtml;
                 updateHeights();
                 return;
             }
 
-            const paraDiv = document.createElement("div");
-            paraDiv.style.marginBottom = "16px";
-            contentDiv.appendChild(paraDiv);
+            // 逐字符追加到 currentMarkdown
+            currentMarkdown += chars[charIndex];
+            const isNewline = chars[charIndex] === '\n';
+            const isDoubleNewline = isNewline && charIndex > 0 && chars[charIndex - 1] === '\n';
 
-            const paraText = paragraphs[currentParaIndex];
-            const htmlContent = marked.parse(paraText);
-            const tempDiv = document.createElement("div");
-            tempDiv.innerHTML = htmlContent;
-            const textContent = tempDiv.textContent;
-            let charIndex = 0;
-
-            function typeWriter() {
-                if (charIndex < textContent.length) {
-                    paraDiv.textContent += textContent.charAt(charIndex);
-                    charIndex++;
-                    setTimeout(typeWriter, 50);
-                } else {
-                    paraDiv.innerHTML = htmlContent;
-                    applyStyles(paraDiv);
-                    currentParaIndex++;
-                    setTimeout(processParagraph, 300);
+            if (isDoubleNewline) {
+                // 遇到双换行，解析当前累积的 Markdown
+                if (currentMarkdown.trim()) {
+                    renderedHtml += marked.parse(currentMarkdown);
+                    currentMarkdown = ''; // 重置当前 Markdown
                 }
+                contentDiv.innerHTML = renderedHtml;
+            } else {
+                // 显示已渲染的 HTML + 当前未解析的 Markdown
+                contentDiv.innerHTML = renderedHtml + `<div>${currentMarkdown}</div>`;
             }
 
-            setTimeout(typeWriter, 300);
+            charIndex++;
+            setTimeout(typeWriter, 50); // 字符间间隔 100ms
         }
 
-        function applyStyles(paraDiv) {
-            const blockElements = paraDiv.querySelectorAll("p, h1, h2, h3, h4, h5, h6, ul, ol, li");
-            blockElements.forEach(el => {
-                Object.assign(el.style, { margin: "0", padding: "0", lineHeight: "1.4" });
-            });
-
-            const images = paraDiv.getElementsByTagName("img");
-            for (let img of images) {
-                Object.assign(img.style, { maxWidth: "100%", height: "auto", display: "block" });
-            }
-
-            const videos = paraDiv.getElementsByTagName("video");
-            for (let video of videos) {
-                Object.assign(video.style, { maxWidth: "100%", height: "auto", display: "block" });
-                if (!video.hasAttribute("controls")) video.setAttribute("controls", "");
-            }
-
-            const iframes = paraDiv.getElementsByTagName("iframe");
-            for (let iframe of iframes) {
-                Object.assign(iframe.style, {
-                    maxWidth: "100%",
-                    width: "100%",
-                    height: "auto",
-                    aspectRatio: "16 / 9",
-                    display: "block",
-                    border: "none",
-                    margin: "0"
-                });
-            }
-        }
-
-        processParagraph();
+        setTimeout(typeWriter, 300);
     } catch (e) {
-        contentDiv.textContent = processedMessage;
+        console.error("Error in typewriter effect:", e);
+        contentDiv.textContent = message || "Error displaying message";
         updateHeights();
     }
 
     setTimeout(() => div.style.opacity = "1", 10);
-
     if (timeout > 0) {
         setTimeout(() => hideNotification(div), timeout);
     }
