@@ -1,12 +1,16 @@
 import { app } from "../../../scripts/app.js";
 import { ComfyWidgets } from "../../../scripts/widgets.js";
-import { showNotification, hideNotification } from "./notification.js";
+import { showNotification, hideNotification } from "./gululu.js";
+
+// 全局动作注册表
+const KayToolActions = window.KayToolActions || {};
+window.KayToolActions = KayToolActions;
 
 class KayWorkflowImage {
     extension = "png";
 
     getBounds() {
-        const marginSize = app.ui.settings.getSettingValue("KayTool.WorkflowPNG");
+        const marginSize = app.ui.settings.getSettingValue("KayTool.WorkflowPNG") || 50;
         const bounds = app.graph._nodes.reduce(
             (p, node) => {
                 if (node.pos[0] < p[0]) p[0] = node.pos[0];
@@ -33,7 +37,7 @@ class KayWorkflowImage {
             width: app.canvas.canvas.width,
             height: app.canvas.canvas.height,
             offset: app.canvas.ds.offset,
-            transform: app.canvas.canvas.getContext('2d').getTransform(),
+            transform: app.canvas.canvas.getContext("2d").getTransform(),
         };
     }
 
@@ -157,6 +161,19 @@ class KayWorkflowImage {
     }
 }
 
+function exportWorkflowPNG() {
+    showNotification({
+        message: `GuLuLu: 你需要把工作流信息嵌入到PNG中吗？啊？Do you need to embed Workflow information into PNG? *GuLuLu~Gulu*`,
+        bgColor: "#fff3cd",
+        size: "medium",
+        onYes: () => new KayWorkflowImage().export(true),
+        onNo: () => new KayWorkflowImage().export(false)
+    });
+}
+
+// 注册 Export Workflow PNG 动作
+KayToolActions.exportWorkflowPNG = exportWorkflowPNG;
+
 app.registerExtension({
     name: "KayTool.WorkflowPNG",
     init() {
@@ -236,37 +253,25 @@ app.registerExtension({
     },
     setup() {
         const originalGetCanvasMenuOptions = LGraphCanvas.prototype.getCanvasMenuOptions;
-        LGraphCanvas.prototype.getCanvasMenuOptions = function () {
-            const options = originalGetCanvasMenuOptions.apply(this, arguments) || [];
+        LGraphCanvas.prototype.getCanvasMenuOptions = function (...args) {
+            const options = originalGetCanvasMenuOptions.apply(this, args) || [];
             const newOptions = [...options];
-            const showWorkflowPNG = app.ui.settings.getSettingValue("KayTool.ShowWorkflowPNG");
+            const showWorkflowPNG = app.ui.settings.getSettingValue("KayTool.ShowWorkflowPNG") ?? true;
 
             if (showWorkflowPNG) {
-                let kaytoolMenu = newOptions.find(opt => opt && opt.content === "KayTool");
-                if (!kaytoolMenu) {
-                    kaytoolMenu = {
-                        content: "KayTool",
-                        submenu: { options: [] }
-                    };
+                let kaytoolMenu = newOptions.find(opt => opt?.content === "KayTool") || {
+                    content: "KayTool",
+                    submenu: { options: [] }
+                };
+
+                if (!newOptions.includes(kaytoolMenu)) {
                     newOptions.push(null, kaytoolMenu);
                 }
 
-                kaytoolMenu.submenu.options = kaytoolMenu.submenu.options || [];
-                const exportOptionExists = kaytoolMenu.submenu.options.some(
-                    opt => opt && opt.content === "📦 Workflow PNG"
-                );
-                if (!exportOptionExists) {
+                if (!kaytoolMenu.submenu.options.some(opt => opt?.content === "📦 Workflow PNG")) {
                     kaytoolMenu.submenu.options.push({
                         content: "📦 Workflow PNG",
-                        callback: () => {
-                            showNotification({
-                                message: `𝙆:你需要把工作流信息嵌入到PNG中吗？Do you need to embed Workflow information into PNG?`,
-                                bgColor: "#fff3cd",
-                                size: "medium",
-                                onYes: () => new KayWorkflowImage().export(true),
-                                onNo: () => new KayWorkflowImage().export(false)
-                            });
-                        }
+                        callback: exportWorkflowPNG
                     });
                 }
             }

@@ -14,6 +14,8 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 **📌 所有 KayTool 节点包用到的资源都在 `ComfyUI/custom_nodes/kaytool` 文件夹内。| All KayTool node packages use resources in the `ComfyUI/custom_nodes/kaytool` folder.**
 
+**⚙️ 在ComfyUI左下角的设置菜单里，所有 KayTool 的相关功能都支持自定义设置。| All KayTool features support custom settings in the ComfyUI settings menu.**
+
 
 ## 资源监视器 Resource Monitor
 
@@ -42,6 +44,15 @@ https://github.com/user-attachments/assets/2cd4179c-57fa-42dc-ae50-2feae9708e42
   Supports shortcut key "Shift + wasd" for node alignment.
 
 https://github.com/user-attachments/assets/b8d1d3f0-04d1-46c5-968a-e433778b73e6
+
+## 咕噜噜 GuLuLu
+
+- 主打陪伴的咕噜噜，支持调整KayTool的通知位置
+  GuLuLu, featuring companionship, supports adjusting KayTool notification positions.
+- 继承KayTool的通知为流式输出
+  Inherits KayTool notifications as streaming output.
+- 提供强大的右键菜单项目，快速调用KayTool的进阶功能
+  Provides powerful right-click menu items, quickly calling KayTool's advanced features. 
 
 ## workflow PNG功能 Workflow Export to PNG
 

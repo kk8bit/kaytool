@@ -40,7 +40,13 @@
       "name": "文件必须 < 1MB",
       "tooltip": "这是一个测试功能，文件最好 <1MB ，否则可能无法显示"
     },
-
+    "KayTool_GuLuLuSize": {
+      "name": "你要一个多大的咕噜噜~啊？"
+    },
+    "KayTool_EnableGuLuLu": {
+      "name": "让咕噜噜陪着你吧~！",
+      "tooltip": "咕噜噜会继承KayTool的通知项为流式输出，并支持通知框位置调整，以及强大的右键菜单项"
+    },
     "KayTool_EnableAlignmentShortcuts": {
       "name": "启用快捷键'Shift+W/A/S/D'",
       "tooltip": "W/A/S/D 对应上、左、下、右对齐"

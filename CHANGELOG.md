@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.70.0] - 2025-04-14
+- 设置菜单对UI完全自定义
+- 整合notification到gululu统一控制
+- 新增GuLuLu
+- 新增GuLuLu右键菜单
+- 新增GuLuLu设置项
+- 新增GuLuLu继承KayTool通知为流式输出
+- 修复Settings中设置项的bug
+- 修复Monitor的初始位置问题
+- 增强Clean VRAM兼容性
+- 修复setget颜色设置问题
+- 新增KayToolActions适配GuLuLu右键菜单
+- UI初始配色调整
+
 ## [0.65.0] - 2025-04-9
 - 大幅度提升Monitor性能
 - 增加Clean VRAM

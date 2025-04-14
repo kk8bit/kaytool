@@ -134,6 +134,11 @@ const KayResourceMonitor = {
     isEnabled: true,
     isInitialized: false,
     edgeFadeEnabled: true,
+    // 硬编码菜单边界
+    menuOffsets: {
+        left: 0,  // 左侧菜单宽度
+        top: 0    // 顶部菜单高度
+    },
     easeOutQuad(t) {
         return t * (2 - t);
     },
@@ -142,10 +147,11 @@ const KayResourceMonitor = {
         this.isInitialized = true;
         this.currentWorkflow.percentage = 0;
         this.workflowProgress.currentNodePercentage = 0;
+        this.isEnabled = app.ui.settings.getSettingValue("KayTool.EnableResourceMonitor");
+        this.edgeFadeEnabled = app.ui.settings.getSettingValue("KayTool.ResourceMonitorEdgeFade");
         this.loadVisibility();
         this.startMonitoring();
         this.bindEvents();
-        await this.loadSettings();
         this.setupUI();
         this.setupWorkflowListener();
         this.setupWebSocketListener();
@@ -719,8 +725,10 @@ const KayResourceMonitor = {
     },
     loadPosition() {
         const pos = JSON.parse(localStorage.getItem('KayResourceMonitorPosition')) || {};
-        this.position.left = pos.left || 0;
-        this.position.top = pos.top || 0;
+        const leftOffset = this.menuOffsets.left + 32; // 左侧菜单 + 20px
+        const topOffset = window.innerHeight - this.size.height - 20; // 底部 20px
+        this.position.left = pos.left != null ? pos.left : leftOffset;
+        this.position.top = pos.top != null ? pos.top : topOffset;
         this.toolbar.style.left = `${this.position.left}px`;
         this.toolbar.style.top = `${this.position.top}px`;
     },
@@ -739,8 +747,8 @@ const KayResourceMonitor = {
         if (!this.toolbar) return;
         const winW = window.innerWidth;
         const winH = window.innerHeight;
-        this.position.left = Math.max(0, Math.min(this.position.left, winW - this.size.width));
-        this.position.top = Math.max(0, Math.min(this.position.top, winH - this.size.height));
+        this.position.left = Math.max(this.menuOffsets.left, Math.min(this.position.left, winW - this.size.width));
+        this.position.top = Math.max(this.menuOffsets.top, Math.min(this.position.top, winH - this.size.height));
         this.toolbar.style.left = `${this.position.left}px`;
         this.toolbar.style.top = `${this.position.top}px`;
         this.chartCanvas.width = this.toolbar.clientWidth - 20;
@@ -762,8 +770,8 @@ const KayResourceMonitor = {
         if (!this.dragState.isDragging) return;
         const winW = window.innerWidth;
         const winH = window.innerHeight;
-        this.position.left = Math.max(0, Math.min(e.clientX - this.dragState.offsetX, winW - this.size.width));
-        this.position.top = Math.max(0, Math.min(e.clientY - this.dragState.offsetY, winH - this.size.height));
+        this.position.left = Math.max(this.menuOffsets.left, Math.min(e.clientX - this.dragState.offsetX, winW - this.size.width));
+        this.position.top = Math.max(this.menuOffsets.top, Math.min(e.clientY - this.dragState.offsetY, winH - this.size.height));
         this.toolbar.style.left = `${this.position.left}px`;
         this.toolbar.style.top = `${this.position.top}px`;
     },
@@ -822,7 +830,6 @@ app.registerExtension({
         if (app.menu?.settingsGroup) {
             app.menu.settingsGroup.append(showMenuButton);
         }
-        KayResourceMonitor.updateEnabledState(KayResourceMonitor.isEnabled);
         window.KayResourceMonitor = KayResourceMonitor;
     }
 });

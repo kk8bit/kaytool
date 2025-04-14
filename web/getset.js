@@ -18,7 +18,6 @@ function showAlert(message) {
 app.registerExtension({
     name: "KayTool.SetGet",
     registerCustomNodes() {
-
         class KaySetNode extends LGraphNode {
             defaultVisibility = true;
             serialize_widgets = true;
@@ -27,7 +26,6 @@ app.registerExtension({
             constructor(title) {
                 super(title);
 
-                // 从 settings 获取当前前景色和背景色
                 const fgColor = app.ui.settings.getSettingValue("KayTool.SetGetForegroundColor");
                 const bgColor = app.ui.settings.getSettingValue("KayTool.SetGetBackgroundColor");
                 this.color = "#" + fgColor;
@@ -182,7 +180,6 @@ app.registerExtension({
             constructor(title) {
                 super(title);
 
-                // 从 settings 获取当前颜色，默认为 "#000000"
                 const fgColor = app.ui.settings.getSettingValue("KayTool.SetGetForegroundColor");
                 const bgColor = app.ui.settings.getSettingValue("KayTool.SetGetBackgroundColor");
                 this.color = "#" + fgColor;
@@ -289,5 +286,5 @@ app.registerExtension({
             title: "𝙆 🛜Get"
         }));
         KayGetNode.category = "KayTool";
-    },
+    }
 });
