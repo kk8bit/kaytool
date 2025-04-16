@@ -389,7 +389,7 @@ const KayResourceMonitor = {
             }
             displayText = `Workflow: ${displayPercentage} - ${currentNode}`;
         }
-        const dotColor = (this.currentExecution?.currentlyExecuting || this.workflowProgress.resetAnimationStartTime !== null) ? 'rgba(208, 255, 0, 0.86)' : 'rgba(200, 200, 200, 0.3)';
+        const dotColor = this.currentExecution?.currentlyExecuting ? 'rgba(208, 255, 0, 0.86)' : 'rgba(200, 200, 200, 0.3)';
         if (!this.workflowProgressEl.querySelector('.workflow-dot')) {
             this.workflowProgressEl.innerHTML = `
                 <span class="workflow-dot" style="${styles.dot(dotColor)}"></span>
