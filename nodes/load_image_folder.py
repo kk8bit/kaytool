@@ -1,4 +1,3 @@
-# kaytool/nodes/load_image_folder.py
 import os
 import torch
 import numpy as np

@@ -86,6 +86,9 @@ const KayResourceMonitor = {
         isInterrupted: false,
         isProgressUnknown: false,
         queueCount: 0,
+        completionTime: null,
+        resetAnimationStartTime: null,
+
     },
     currentWorkflow: { percentage: 0 },
     promptsMap: new Map(),
@@ -353,12 +356,14 @@ const KayResourceMonitor = {
                 this.workflowProgress.currentNodeLabel = "Completed";
             }
             this.workflowProgress.nodePercentage = 0;
+            this.workflowProgress.completionTime = performance.now(); // 新增：设置完成时间
         } else {
             this.workflowProgress.isProgressUnknown = false;
             this.workflowProgress.percentage = 0;
             this.workflowProgress.nodePercentage = 0;
             this.workflowProgress.currentNode = "Idle";
             this.workflowProgress.currentNodeLabel = "Idle";
+            this.workflowProgress.completionTime = null; // 新增：闲置时清空完成时间
         }
     },
     updateWorkflowProgress() {
@@ -371,6 +376,11 @@ const KayResourceMonitor = {
         if (currentNode === "Idle") {
             displayText = "Workflow: Idle";
             barPercentage = 0;
+        } else if (this.workflowProgress.resetAnimationStartTime !== null) {
+            // 重置动画期间，使用当前动画的百分比
+            displayPercentage = `${Math.min(Math.max(this.currentWorkflow.percentage, 0), 100).toFixed(1)}%`;
+            barPercentage = Math.min(Math.max(this.currentWorkflow.percentage, 0), 100);
+            displayText = `Workflow: ${displayPercentage} - ${currentNode}`;
         } else {
             displayPercentage = isProgressUnknown ? "Loading" : `${Math.min(Math.max(this.currentWorkflow.percentage, 0), 100).toFixed(1)}%`;
             barPercentage = isProgressUnknown ? 0 : Math.min(Math.max(this.currentWorkflow.percentage, 0), 100);
@@ -379,7 +389,7 @@ const KayResourceMonitor = {
             }
             displayText = `Workflow: ${displayPercentage} - ${currentNode}`;
         }
-        const dotColor = (this.currentExecution?.currentlyExecuting) ? 'rgba(208, 255, 0, 0.86)' : 'rgba(200, 200, 200, 0.3)';
+        const dotColor = (this.currentExecution?.currentlyExecuting || this.workflowProgress.resetAnimationStartTime !== null) ? 'rgba(208, 255, 0, 0.86)' : 'rgba(200, 200, 200, 0.3)';
         if (!this.workflowProgressEl.querySelector('.workflow-dot')) {
             this.workflowProgressEl.innerHTML = `
                 <span class="workflow-dot" style="${styles.dot(dotColor)}"></span>
@@ -554,9 +564,43 @@ const KayResourceMonitor = {
             this.currentWorkflow.percentage = startPercentage + (targetPercentage - startPercentage) * this.easeOutQuad(t);
             this.workflowProgress.currentNodePercentage = startNodePercentage + (targetNodePercentage - startNodePercentage) * this.easeOutQuad(t);
             if (t >= 1) this.workflowProgress.easeOutStartTime = null;
-        } else if (!this.workflowProgress.isProgressUnknown && this.workflowProgress.currentNode !== "Idle") {
+        } else if (!this.workflowProgress.isProgressUnknown && this.workflowProgress.currentNode !== "Idle" && this.workflowProgress.resetAnimationStartTime === null) {
             this.currentWorkflow.percentage += (this.workflowProgress.percentage - this.currentWorkflow.percentage) * this.smoothFactor;
             this.workflowProgress.currentNodePercentage += (this.workflowProgress.nodePercentage - this.workflowProgress.currentNodePercentage) * this.smoothFactor;
+        }
+        // 修改：处理 2 分钟后的重置动画
+        if (this.workflowProgress.completionTime !== null && this.workflowProgress.resetAnimationStartTime === null) {
+            const elapsedSinceCompletion = now - this.workflowProgress.completionTime;
+            if (elapsedSinceCompletion >= 12000) { // 2 分钟 = 120000 毫秒
+                this.workflowProgress.resetAnimationStartTime = now; // 开始重置动画
+                this.workflowProgress.percentage = this.currentWorkflow.percentage; // 锁定当前进度作为动画起点
+                this.workflowProgress.nodePercentage = this.workflowProgress.currentNodePercentage;
+            }
+        }
+        // 新增：执行重置动画
+        if (this.workflowProgress.resetAnimationStartTime !== null) {
+            const resetDuration = 1000; // 重置动画持续 1 秒
+            const elapsed = now - this.workflowProgress.resetAnimationStartTime;
+            const t = Math.min(elapsed / resetDuration, 1);
+            const easedT = this.easeOutQuad(t); // 使用现有的缓动函数
+            // 从当前值渐变到 0
+            this.currentWorkflow.percentage = this.workflowProgress.percentage * (1 - easedT);
+            this.workflowProgress.currentNodePercentage = this.workflowProgress.nodePercentage * (1 - easedT);
+            // 更新显示文本，保持平滑过渡
+            this.workflowProgress.currentNode = `Resetting... (${(this.currentWorkflow.percentage).toFixed(1)}%)`;
+            this.workflowProgress.currentNodeLabel = "Resetting";
+            if (t >= 1) {
+                // 动画结束，重置为 Idle
+                this.workflowProgress.percentage = 0;
+                this.workflowProgress.nodePercentage = 0;
+                this.workflowProgress.currentNodePercentage = 0;
+                this.workflowProgress.currentNode = "Idle";
+                this.workflowProgress.currentNodeLabel = "Idle";
+                this.workflowProgress.totalDuration = null;
+                this.workflowProgress.completionTime = null;
+                this.workflowProgress.resetAnimationStartTime = null;
+                this.currentWorkflow.percentage = 0;
+            }
         }
         if (this.currentExecution?.currentlyExecuting) {
             if (this.workflowProgress.nodePercentage > 0) {
