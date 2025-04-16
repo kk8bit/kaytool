@@ -571,7 +571,7 @@ const KayResourceMonitor = {
         // 修改：处理 2 分钟后的重置动画
         if (this.workflowProgress.completionTime !== null && this.workflowProgress.resetAnimationStartTime === null) {
             const elapsedSinceCompletion = now - this.workflowProgress.completionTime;
-            if (elapsedSinceCompletion >= 12000) { // 2 分钟 = 120000 毫秒
+            if (elapsedSinceCompletion >= 120000) { // 2 分钟 = 120000 毫秒
                 this.workflowProgress.resetAnimationStartTime = now; // 开始重置动画
                 this.workflowProgress.percentage = this.currentWorkflow.percentage; // 锁定当前进度作为动画起点
                 this.workflowProgress.nodePercentage = this.workflowProgress.currentNodePercentage;
