@@ -8,7 +8,7 @@ function imageDataToUrl(data) {
 }
 
 app.registerExtension({
-    name: "kaytool.ABImages",
+    name: "KayTool.ABImages",
     async beforeRegisterNodeDef(nodeType, nodeData) {
         if (nodeData.name !== "AB_Images") return;
 

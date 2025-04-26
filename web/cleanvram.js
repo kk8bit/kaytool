@@ -13,7 +13,7 @@ async function cleanVRAM() {
     });
 
     try {
-        const response = await fetch("/kaytool/clean_vram", { method: "POST" });
+        const response = await fetch("/KayTool/clean_vram", { method: "POST" });
         const message = await response.text();
 
         hideNotification(notifyElement);
@@ -72,17 +72,17 @@ app.registerExtension({
             const showCleanVRAM = app.ui.settings.getSettingValue("KayTool.ShowCleanVRAM") ?? true;
 
             if (showCleanVRAM) {
-                let kaytoolMenu = newOptions.find(opt => opt?.content === "KayTool") || {
+                let KayToolMenu = newOptions.find(opt => opt?.content === "KayTool") || {
                     content: "KayTool",
                     submenu: { options: [] }
                 };
 
-                if (!newOptions.includes(kaytoolMenu)) {
-                    newOptions.push(null, kaytoolMenu);
+                if (!newOptions.includes(KayToolMenu)) {
+                    newOptions.push(null, KayToolMenu);
                 }
 
-                if (!kaytoolMenu.submenu.options.some(opt => opt?.content === "🧹 Clean VRAM")) {
-                    kaytoolMenu.submenu.options.push({
+                if (!KayToolMenu.submenu.options.some(opt => opt?.content === "🧹 Clean VRAM")) {
+                    KayToolMenu.submenu.options.push({
                         content: "🧹 Clean VRAM",
                         callback: cleanVRAM
                     });

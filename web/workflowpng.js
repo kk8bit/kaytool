@@ -259,17 +259,17 @@ app.registerExtension({
             const showWorkflowPNG = app.ui.settings.getSettingValue("KayTool.ShowWorkflowPNG") ?? true;
 
             if (showWorkflowPNG) {
-                let kaytoolMenu = newOptions.find(opt => opt?.content === "KayTool") || {
+                let KayToolMenu = newOptions.find(opt => opt?.content === "KayTool") || {
                     content: "KayTool",
                     submenu: { options: [] }
                 };
 
-                if (!newOptions.includes(kaytoolMenu)) {
-                    newOptions.push(null, kaytoolMenu);
+                if (!newOptions.includes(KayToolMenu)) {
+                    newOptions.push(null, KayToolMenu);
                 }
 
-                if (!kaytoolMenu.submenu.options.some(opt => opt?.content === "📦 Workflow PNG")) {
-                    kaytoolMenu.submenu.options.push({
+                if (!KayToolMenu.submenu.options.some(opt => opt?.content === "📦 Workflow PNG")) {
+                    KayToolMenu.submenu.options.push({
                         content: "📦 Workflow PNG",
                         callback: exportWorkflowPNG
                     });

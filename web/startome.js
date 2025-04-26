@@ -5,7 +5,7 @@ const KayToolActions = window.KayToolActions || {};
 window.KayToolActions = KayToolActions;
 
 function starToMe() {
-    window.open("https://github.com/kk8bit/kaytool", "_blank");
+    window.open("https://github.com/kk8bit/KayTool", "_blank");
 }
 
 // 注册 StarToMe 动作
@@ -21,17 +21,17 @@ app.registerExtension({
             const showStarToMe = app.ui.settings.getSettingValue("KayTool.ShowStarToMe") ?? true;
 
             if (showStarToMe) {
-                let kaytoolMenu = newOptions.find(opt => opt?.content === "KayTool") || {
+                let KayToolMenu = newOptions.find(opt => opt?.content === "KayTool") || {
                     content: "KayTool",
                     submenu: { options: [] }
                 };
 
-                if (!newOptions.includes(kaytoolMenu)) {
-                    newOptions.push(null, kaytoolMenu);
+                if (!newOptions.includes(KayToolMenu)) {
+                    newOptions.push(null, KayToolMenu);
                 }
 
-                if (!kaytoolMenu.submenu.options.some(opt => opt?.content === "⭐ Star to me")) {
-                    kaytoolMenu.submenu.options.push({
+                if (!KayToolMenu.submenu.options.some(opt => opt?.content === "⭐ Star to me")) {
+                    KayToolMenu.submenu.options.push({
                         content: "⭐ Star to me",
                         callback: starToMe
                     });

@@ -25,7 +25,7 @@ class ABImages(PreviewImage):
     def compare_images(self,
                       a=None, 
                       b=None,  
-                      filename_prefix="kaytool.ab_images.",
+                      filename_prefix="KayTool.ab_images.",
                       prompt=None,
                       extra_pnginfo=None):
         result = {"ui": {"a": [], "b": []}}  

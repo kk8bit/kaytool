@@ -43,4 +43,4 @@ async def clean_vram(request):
     except Exception as e:
         return web.Response(text=f"Error cleaning VRAM: {str(e)}", status=500)
 
-PromptServer.instance.routes.post("/kaytool/clean_vram")(clean_vram)
+PromptServer.instance.routes.post("/KayTool/clean_vram")(clean_vram)
