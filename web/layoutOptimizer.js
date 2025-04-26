@@ -227,17 +227,17 @@
 //             const showWorkflowPNG = app.ui.settings.getSettingValue("KayTool.ShowWorkflowPNG");
 //             if (showWorkflowPNG) {
 //                 const newOptions = [...options];
-//                 let KayToolMenu = newOptions.find(opt => opt && opt.content === "KayTool");
-//                 if (!KayToolMenu) {
-//                     KayToolMenu = {
+//                 let kaytoolMenu = newOptions.find(opt => opt && opt.content === "KayTool");
+//                 if (!kaytoolMenu) {
+//                     kaytoolMenu = {
 //                         content: "KayTool",
 //                         submenu: { options: [] }
 //                     };
-//                     newOptions.push(null, KayToolMenu);
+//                     newOptions.push(null, kaytoolMenu);
 //                 }
-//                 KayToolMenu.submenu.options = KayToolMenu.submenu.options || [];
+//                 kaytoolMenu.submenu.options = kaytoolMenu.submenu.options || [];
 
-//                 KayToolMenu.submenu.options.push({
+//                 kaytoolMenu.submenu.options.push({
 //                     content: "Layout Tools",
 //                     submenu: {
 //                         options: [

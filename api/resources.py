@@ -104,7 +104,7 @@ class KayResourceMonitor:
 
     async def send_message(self, data):
         try:
-            await PromptServer.instance.send("KayTool.resources", data)
+            await PromptServer.instance.send("kaytool.resources", data)
         except Exception:
             pass
 
@@ -135,12 +135,12 @@ class KayResourceMonitor:
 monitor = KayResourceMonitor(initial_rate=1.0)
 routes = PromptServer.instance.routes
 
-@routes.post("/KayTool/start_monitor")
+@routes.post("/kaytool/start_monitor")
 async def start_monitor_endpoint(request):
     monitor.start()
     return web.Response(text="Monitor started")
 
-@routes.post("/KayTool/stop_monitor")
+@routes.post("/kaytool/stop_monitor")
 async def stop_monitor_endpoint(request):
     monitor.stop()
     return web.Response(text="Monitor stopped")

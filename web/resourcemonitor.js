@@ -219,7 +219,7 @@ const KayResourceMonitor = {
         }
     },
     setupWebSocketListener() {
-        api.addEventListener("KayTool.resources", (event) => {
+        api.addEventListener("kaytool.resources", (event) => {
             const data = event.detail;
             this.updateTarget(data);
             this.updateDisplay();
@@ -856,7 +856,7 @@ app.registerExtension({
     name: "KayTool.ResourceMonitor",
     async setup() {
         await KayResourceMonitor.init();
-        api.fetchApi("/KayTool/start_monitor", { method: "POST" });
+        api.fetchApi("/kaytool/start_monitor", { method: "POST" });
         const showMenuButton = new (await import("/scripts/ui/components/button.js")).ComfyButton({
             content: "𝙆 Monitor",
             action: () => {
