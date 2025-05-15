@@ -6,7 +6,7 @@
     "name": "Afficher les options '🛜 Set/Get' dans le menu contextuel du nœud"
   },
   "KayTool_ShiftR": {
-    "name": "Utiliser le raccourci 'Shift+R' pour exécuter rapidement '▶️ Run' sur les nœuds sélectionnés"
+    "name": "Utiliser le raccourci 'Alt+R' pour exécuter rapidement '▶️ Run' sur les nœuds sélectionnés"
   },
   "KayTool_ShowWorkflowPNG": {
     "name": "Afficher l'option 'Workflow PNG' dans le menu contextuel"

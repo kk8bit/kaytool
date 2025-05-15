@@ -6,7 +6,7 @@
       "name": "在'节点右键菜单'中显示 '🛜 Set/Get' 选项"
     },
     "KayTool_ShiftR": {
-      "name": "使用 'Shift+R' 快捷键在选中的节点上快速执行 '▶️ Run'"
+      "name": "使用 'Alt+R' 快捷键在选中的节点上快速执行 '▶️ Run'"
     },
     "KayTool_ShowWorkflowPNG": {
       "name": "在KayTool菜单中显示 'Workflow PNG' 选项"

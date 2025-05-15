@@ -125,8 +125,9 @@ app.registerExtension({
         document.addEventListener('keydown', async (e) => {
             const shiftR = app.ui.settings.getSettingValue("KayTool.ShiftR");
             if (!shiftR) return;
-            if (e.shiftKey && e.key === 'R') {
+            if (e.altKey && (e.key === 'r' || e.key === '®')) {
                 e.preventDefault();
+                e.stopPropagation();
                 const selectedNodes = app.canvas.selected_nodes ? Object.values(app.canvas.selected_nodes) : [];
                 if (selectedNodes.length === 0) return;
                 const selectedNode = selectedNodes[0];

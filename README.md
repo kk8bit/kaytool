@@ -6,6 +6,39 @@
 
 This is a custom node utility package developed for ComfyUI. Initially created for personal convenience, I will continue adding features in the future.
 
+### 最新更新 / Last Update
+#### [0.70.12] - 2025-05-15
+- 将Shift+R快捷键功能改为Alt+R，解决了输入大写的“R”冲突  
+- Changed shortcut from Shift+R to Alt+R to resolve conflict with typing uppercase "R"
+
+#### [0.70.0] - 2025-04-14
+- 设置菜单对UI完全自定义  
+- Fully customizable UI through settings menu  
+- 整合notification到gululu统一控制  
+- Integrated notifications into Gululu for unified control  
+- 新增GuLuLu  
+- Added GuLuLu  
+- 新增GuLuLu右键菜单  
+- Added right-click menu for GuLuLu  
+- 新增GuLuLu设置项  
+- Added settings options for GuLuLu  
+- 新增GuLuLu继承KayTool通知为流式输出  
+- Added stream output feature for KayTool notifications in GuLuLu  
+- 修复Settings中设置项的bug  
+- Fixed bugs in settings items within Settings  
+- 修复Monitor的初始位置问题  
+- Fixed initial position issue of Monitor  
+- 增强Clean VRAM兼容性  
+- Enhanced compatibility for Clean VRAM  
+- 修复setget颜色设置问题  
+- Fixed setget color configuration issues  
+- 新增KayToolActions适配GuLuLu右键菜单  
+- Added KayToolActions support for GuLuLu right-click menu  
+- UI初始配色调整  
+- Adjusted default color scheme for UI
+
+
+
 # 节点预览 Nodes Preview (不全 Not All):
 
 ![preview_custom_save_image_node](https://github.com/user-attachments/assets/92ef9b39-97f2-4076-903e-79ce7a7375ea)
@@ -72,8 +105,8 @@ https://github.com/user-attachments/assets/b8d1d3f0-04d1-46c5-968a-e433778b73e6
 
 - 右键点击节点组或节点，选择“Run Group/Node”，即可快速运行节点组或节点进行调试。  
 - Right-click on a node group or node, select "Run Group/Node," and quickly run the node group or node for debugging.
-- 使用快捷键`Shift+R`快速运行选中节点。
-- Use the shortcut key `Shift+R` to quickly run the selected node.
+- 使用快捷键`Alt+R`快速运行选中节点。
+- Use the shortcut key `Alt+R` to quickly run the selected node.
 
 
 

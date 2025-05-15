@@ -33,10 +33,10 @@ app.registerExtension({
             },
             {
                 id: "KayTool.ShiftR",
-                name: "Use 'Shift+R' to quickly run selected node",
+                name: "Use 'Alt+R' to quickly run selected node",
                 type: "boolean",
                 defaultValue: true,
-                category: ["KayTool", "▶️ Run", "ShiftR"],
+                category: ["KayTool", "▶️ Run", "R"],
             },
             {
                 id: "KayTool.ShowWorkflowPNG",

@@ -6,7 +6,7 @@
     "name": "노드 우클릭 메뉴에 '🛜 Set/Get' 옵션 표시"
   },
   "KayTool_ShiftR": {
-    "name": "'Shift+R' 단축키로 선택한 노드에서 '▶️ Run'을 빠르게 실행"
+    "name": "'Alt+R' 단축키로 선택한 노드에서 '▶️ Run'을 빠르게 실행"
   },
   "KayTool_ShowWorkflowPNG": {
     "name": "우클릭 메뉴에 'Workflow PNG' 옵션 표시"

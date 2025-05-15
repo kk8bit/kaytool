@@ -6,7 +6,7 @@
     "name": "Show '🛜 Set/Get' options in node right-click menu"
   },
   "KayTool_ShiftR": {
-    "name": "Use 'Shift+R' shortcut to quickly execute '▶️ Run' on selected nodes"
+    "name": "Use 'Alt+R' shortcut to quickly execute '▶️ Run' on selected nodes"
   },
   "KayTool_ShowWorkflowPNG": {
     "name": "Show 'Workflow PNG' option in right-click menu"

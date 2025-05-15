@@ -6,7 +6,7 @@
     "name": "ノード右クリックメニューに「🛜 Set/Get」オプションを表示"
   },
   "KayTool_ShiftR": {
-    "name": "Shift+Rで選択ノードの「▶️ Run」を高速実行"
+    "name": "Alt+Rで選択ノードの「▶️ Run」を高速実行"
   },
   "KayTool_ShowWorkflowPNG": {
     "name": "右クリックメニューに「Workflow PNG」オプションを表示"
