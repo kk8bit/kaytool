@@ -6,12 +6,13 @@
 
 This is a custom node utility package developed for ComfyUI. Initially created for personal convenience, I will continue adding features in the future.
 
-### 最新更新 / Last Update
-#### [0.70.12] - 2025-05-15
+## 最新更新 / Last Update
+
+### [0.70.12] - 2025-05-15
 - 将Shift+R快捷键功能改为Alt+R，解决了输入大写的“R”冲突  
 - Changed shortcut from Shift+R to Alt+R to resolve conflict with typing uppercase "R"
 
-#### [0.70.0] - 2025-04-14
+### [0.70.0] - 2025-04-14
 - 设置菜单对UI完全自定义  
 - Fully customizable UI through settings menu  
 - 整合notification到gululu统一控制  
