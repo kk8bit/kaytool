@@ -13,7 +13,7 @@ const KayGuLuLuManager = {
     pixelCanvas: null,
     pixelCtx: null,
     pixelDataCache: null,
-    imgSrc: "/extensions/kaytool/resources/GuLuLu.gif",
+    imgSrc: "/extensions/KayTool/resources/GuLuLu.gif",
     effectiveBounds: null,
     isAnimating: false,
     animationTimer: null,
@@ -113,6 +113,10 @@ const KayGuLuLuManager = {
             img.onload = () => {
                 this.updatePixelDataCache();
                 this.updatePosition();
+            };
+            img.onerror = () => {
+                console.warn("KayTool: GuLuLu image failed to load", img.src);
+                this.pixelDataCache = null;
             };
             this.container.appendChild(img);
             document.body.appendChild(this.container);
@@ -251,13 +255,25 @@ const KayGuLuLuManager = {
         if (containerRect.width === 0 || containerRect.height === 0) {
             return;
         }
+
+        const img = this.container?.querySelector("img");
+        if (!img || !img.complete || img.naturalWidth === 0) {
+            // Image not ready or failed to load; clear cache and skip
+            this.pixelDataCache = null;
+            return;
+        }
+
         this.pixelCanvas.width = containerRect.width;
         this.pixelCanvas.height = containerRect.height;
         this.pixelCtx.clearRect(0, 0, this.pixelCanvas.width, this.pixelCanvas.height);
-        this.pixelCtx.drawImage(this.container.querySelector("img"), 0, 0, containerRect.width, containerRect.height);
-        this.pixelDataCache = this.pixelCtx.getImageData(0, 0, this.pixelCanvas.width, this.pixelCanvas.height);
-
-        this.calculateEffectiveBounds();
+        try {
+            this.pixelCtx.drawImage(img, 0, 0, containerRect.width, containerRect.height);
+            this.pixelDataCache = this.pixelCtx.getImageData(0, 0, this.pixelCanvas.width, this.pixelCanvas.height);
+            this.calculateEffectiveBounds();
+        } catch (e) {
+            console.warn("KayTool: failed to update pixel data cache", e);
+            this.pixelDataCache = null;
+        }
     },
 
     calculateEffectiveBounds() {
