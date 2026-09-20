@@ -16,45 +16,88 @@ const kayVerticalDistributionSvg = `<svg t="1725534350231" class="icon" viewBox=
 
 let stylesInjected = false;
 
+// 工具栏永远是 document.body 上的 fixed 元素，不插进 ComfyUI 的 DOM。
+// 前端的顶栏由 Vue 托管，往里塞节点会在重渲染时被清掉；而挂到官方遗留插槽
+// (app.menu.element) 又会被关进「运行」按钮所在的卡片里，跟着它一起浮动。
+// 所以「吸附」只做位置吸附：读一下顶栏的几何位置对齐过去，DOM 上互不相干。
 const KayNodeAlignmentManager = {
     isInitialized: false,
     toolbarContainer: null,
     dragState: { isDragging: false, offsetX: 0, offsetY: 0 },
     hasShownTooltip: false,
     isVisible: true,
-    position: { leftPercentage: 50, topPercentage: 5, isAttached: false, insertIndex: 0 },
-    menuElement: null,
-    insertionIndicator: null,
+    position: { leftPercentage: 50, topPercentage: 5, docked: false },
+    dockGuide: null,
+    bandObserver: null,
 
     async init() {
         if (this.isInitialized) return;
-        this.isInitialized = true;
 
-        await this.waitForElements();
+        this.canvas = await this.waitForCanvas();
         this.injectStyles();
         this.loadPosition();
         this.setupToolbar();
         this.restorePosition();
         this.bindCanvasEvents();
         this.bindKeyboardShortcuts();
+        this.bindBandTracking();
 
         const displayMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode");
         this.updateDisplayMode(displayMode);
+
+        // 放在最后：初始化中途失败时不要留下「已初始化」的假象，挡住下次重试。
+        this.isInitialized = true;
     },
 
-    waitForElements() {
+    // 只等画布，并且带超时。等不到也照常初始化，最多是快捷键的点击刷新失效，
+    // 绝不像以前那样卡在 requestAnimationFrame 里空转到天荒地老。
+    waitForCanvas(timeout = 10000) {
         return new Promise(resolve => {
-            const checkElements = () => {
-                this.canvas = document.querySelector('#graph-canvas');
-                this.menuElement = document.querySelector('.comfyui-menu');
-                if (this.canvas && this.menuElement) {
-                    resolve();
-                } else {
-                    requestAnimationFrame(checkElements);
-                }
+            const deadline = performance.now() + timeout;
+            const check = () => {
+                const canvas = app.canvasEl || document.querySelector('#graph-canvas') || app.canvas?.canvas || null;
+                if (canvas || performance.now() > deadline) resolve(canvas);
+                else requestAnimationFrame(check);
             };
-            requestAnimationFrame(checkElements);
+            check();
         });
+    },
+
+    // 顶栏所在的那条横带，只用来算几何，取不到就退回一个合理的默认值。
+    getDockBand() {
+        const probe = document.querySelector('[data-testid="action-bar-card"]')
+            || document.querySelector('[data-testid="top-menu-actionbars"]')
+            || app.menu?.element
+            || null;
+        const rect = probe?.getBoundingClientRect();
+        if (rect && rect.height > 0) {
+            return { top: rect.top, bottom: rect.bottom, height: rect.height, probe };
+        }
+        const tabs = document.querySelector('[data-testid="topbar-workflow-tabs"]');
+        const top = tabs ? tabs.getBoundingClientRect().bottom + 4 : 40;
+        return { top, bottom: top + 48, height: 48, probe: null };
+    },
+
+    // 吸附时横向避让「运行」那张卡片，免得盖住官方按钮。
+    // 让位的结果必须还在视口里，否则就换另一边；两边都塞不下才作罢。
+    avoidActionBar(left, width, viewportWidth) {
+        const card = document.querySelector('[data-testid="action-bar-card"]');
+        const rect = card?.getBoundingClientRect();
+        if (!rect || rect.width === 0) return left;
+        if (left >= rect.right || left + width <= rect.left) return left;
+
+        const gap = 8;
+        const leftSlot = rect.left - width - gap;
+        const rightSlot = rect.right + gap;
+        const leftFits = leftSlot >= 0;
+        const rightFits = rightSlot + width <= viewportWidth;
+        const preferLeft = (left + width / 2) < (rect.left + rect.width / 2);
+
+        if (preferLeft && leftFits) return leftSlot;
+        if (!preferLeft && rightFits) return rightSlot;
+        if (leftFits) return leftSlot;
+        if (rightFits) return rightSlot;
+        return left;
     },
 
     injectStyles() {
@@ -76,7 +119,7 @@ const KayNodeAlignmentManager = {
                 pointer-events: auto;
             }
             #kay-node-alignment-toolbar.floating { position: fixed; }
-            #kay-node-alignment-toolbar.attached { position: relative; margin-left: 10px; }
+            #kay-node-alignment-toolbar.docked { position: fixed; }
             .kay-align-button {
                 width: 25px;
                 height: 25px;
@@ -124,34 +167,40 @@ const KayNodeAlignmentManager = {
                 white-space: nowrap;
                 font-size: 12px;
             }
-            #kay-insertion-indicator {
-                position: absolute;
-                width: 5px;
-                height: 100%;
-                background-color: #d0ff00;
-                z-index: 10001;
+            #kay-dock-guide {
+                position: fixed;
+                left: 0;
+                width: 100%;
+                border-top: 2px dashed #d0ff00;
+                border-bottom: 2px dashed #d0ff00;
+                background: rgba(208, 255, 0, 0.06);
+                z-index: 9999;
                 pointer-events: none;
-                transition: left 0.1s ease;
-                top: 0;
-            }
-            .comfyui-menu {
-                position: relative;
-                display: flex;
-                align-items: center;
-                transition: background-color 0.5s ease;
+                display: none;
             }
         </style>`);
         stylesInjected = true;
     },
 
     loadPosition() {
-        const savedPosition = JSON.parse(localStorage.getItem('KayNodeAlignToolbarPosition')) || {};
+        let saved = {};
+        try {
+            saved = JSON.parse(localStorage.getItem('KayNodeAlignToolbarPosition')) || {};
+        } catch (e) {
+            saved = {};
+        }
         this.position = {
-            leftPercentage: savedPosition.leftPercentage || 50,
-            topPercentage: savedPosition.topPercentage || 5,
-            isAttached: savedPosition.isAttached || false,
-            insertIndex: savedPosition.insertIndex || 0
+            leftPercentage: saved.leftPercentage ?? 50,
+            topPercentage: saved.topPercentage ?? 5,
+            // isAttached 是旧版插进顶栏 DOM 的标记，沿用为位置吸附。
+            docked: saved.docked ?? saved.isAttached ?? false
         };
+    },
+
+    savePosition() {
+        try {
+            localStorage.setItem('KayNodeAlignToolbarPosition', JSON.stringify(this.position));
+        } catch (e) { /* 隐私模式下 localStorage 可能不可写，忽略即可 */ }
     },
 
     setupToolbar() {
@@ -161,24 +210,16 @@ const KayNodeAlignmentManager = {
 
         this.toolbarContainer = document.createElement('div');
         this.toolbarContainer.id = 'kay-node-alignment-toolbar';
-        this.toolbarContainer.classList.add(this.position.isAttached ? 'attached' : 'floating');
+        this.toolbarContainer.classList.add(this.position.docked ? 'docked' : 'floating');
         if (opacity > 0 && /^[0-9A-Fa-f]{6}$/.test(bgColor)) {
             this.toolbarContainer.style.background = `rgba(${parseInt(bgColor.substr(0, 2), 16)}, ${parseInt(bgColor.substr(2, 2), 16)}, ${parseInt(bgColor.substr(4, 2), 16)}, ${opacity})`;
         }
+        document.body.appendChild(this.toolbarContainer);
 
-        if (this.position.isAttached) {
-            const menuChildren = Array.from(this.menuElement.children).filter(child => child !== this.insertionIndicator);
-            const insertIndex = Math.min(this.position.insertIndex, menuChildren.length);
-            const insertBeforeElement = menuChildren[insertIndex] || null;
-            this.menuElement.insertBefore(this.toolbarContainer, insertBeforeElement);
-        } else {
-            document.body.appendChild(this.toolbarContainer);
-        }
-
-        this.insertionIndicator = document.createElement('div');
-        this.insertionIndicator.id = 'kay-insertion-indicator';
-        this.insertionIndicator.style.display = 'none';
-        this.menuElement.appendChild(this.insertionIndicator);
+        // 吸附提示条：拖到顶栏那一行时亮起，全程只动我们自己的元素。
+        this.dockGuide = document.createElement('div');
+        this.dockGuide.id = 'kay-dock-guide';
+        document.body.appendChild(this.dockGuide);
 
         this.getAlignmentButtons().forEach(btn => {
             const el = document.createElement(btn.type === 'divider' ? 'div' : 'button');
@@ -223,6 +264,8 @@ const KayNodeAlignmentManager = {
 
     getAlignmentButtons() {
         return [
+            // 开头这根就是工具栏自己的拖拽手柄，和「运行」按钮那张卡片互不相干。
+            { type: 'divider' },
             { id: 'kay-align-left', svg: kayAlignLeftSvg, action: this.alignLeft },
             { id: 'kay-align-center-vertically', svg: kayAlignCenterVerticallySvg, action: this.alignCenterVertically },
             { id: 'kay-align-right', svg: kayAlignRightSvg, action: this.alignRight },
@@ -261,7 +304,7 @@ const KayNodeAlignmentManager = {
         this.isVisible = true;
         if (this.toolbarContainer) {
             this.toolbarContainer.style.display = 'flex';
-            if (!this.position.isAttached) this.updatePosition();
+            this.updatePosition();
         }
     },
 
@@ -273,7 +316,11 @@ const KayNodeAlignmentManager = {
     },
 
     updatePosition() {
-        if (!this.toolbarContainer || !this.isVisible || this.position.isAttached) return;
+        if (!this.toolbarContainer || !this.isVisible) return;
+        if (this.position.docked) {
+            this.applyDockedPosition();
+            return;
+        }
         const { windowRect, toolbarRect } = this.getRect();
         let left = (this.position.leftPercentage / 100) * windowRect.width - toolbarRect.width / 2;
         let top = (this.position.topPercentage / 100) * windowRect.height;
@@ -283,12 +330,41 @@ const KayNodeAlignmentManager = {
         this.toolbarContainer.style.top = `${top}px`;
     },
 
+    // 吸附态：纵向对齐到顶栏中线，横向保留用户拖到的位置（避让运行卡片）。
+    applyDockedPosition() {
+        if (!this.toolbarContainer) return;
+        const { windowRect, toolbarRect } = this.getRect();
+        const band = this.getDockBand();
+        let left = (this.position.leftPercentage / 100) * windowRect.width - toolbarRect.width / 2;
+        left = Math.max(0, Math.min(left, windowRect.width - toolbarRect.width));
+        // 避让本身已经考虑了视口边界，这里不能再夹一次，否则会把它推回重叠区。
+        left = this.avoidActionBar(left, toolbarRect.width, windowRect.width);
+        const top = band.top + (band.height - toolbarRect.height) / 2;
+        this.toolbarContainer.style.left = `${left}px`;
+        this.toolbarContainer.style.top = `${Math.max(0, top)}px`;
+    },
+
     getRect() {
         return {
             windowRect: { width: window.innerWidth, height: window.innerHeight },
-            toolbarRect: this.toolbarContainer.getBoundingClientRect(),
-            menuRect: this.menuElement.getBoundingClientRect()
+            toolbarRect: this.toolbarContainer.getBoundingClientRect()
         };
+    },
+
+    // 工具栏竖直方向是否压在顶栏那条横带上
+    isOverBand(toolbarRect, band) {
+        return toolbarRect.top < band.bottom && toolbarRect.top + toolbarRect.height > band.top;
+    },
+
+    showDockGuide(band) {
+        if (!this.dockGuide) return;
+        this.dockGuide.style.top = `${band.top}px`;
+        this.dockGuide.style.height = `${band.height}px`;
+        this.dockGuide.style.display = 'block';
+    },
+
+    hideDockGuide() {
+        if (this.dockGuide) this.dockGuide.style.display = 'none';
     },
 
     onDragStart(e) {
@@ -299,18 +375,13 @@ const KayNodeAlignmentManager = {
             offsetX: e.clientX - toolbarRect.left,
             offsetY: e.clientY - toolbarRect.top
         };
+        this.setDocked(false);
     },
 
     onDragging(e) {
         if (!this.dragState.isDragging) return;
 
-        const { windowRect, toolbarRect, menuRect } = this.getRect();
-
-        if (this.position.isAttached) {
-            this.detachFromMenu(true);
-            this.menuElement.style.backgroundColor = '#d0ff00';
-        }
-
+        const { windowRect, toolbarRect } = this.getRect();
         let left = e.clientX - this.dragState.offsetX;
         let top = e.clientY - this.dragState.offsetY;
         left = Math.max(0, Math.min(left, windowRect.width - toolbarRect.width));
@@ -318,90 +389,56 @@ const KayNodeAlignmentManager = {
         this.toolbarContainer.style.left = `${left}px`;
         this.toolbarContainer.style.top = `${top}px`;
 
-        const toolbarBottom = toolbarRect.top + toolbarRect.height;
-        if (toolbarBottom > menuRect.top && toolbarRect.top < menuRect.bottom) {
-            this.menuElement.style.backgroundColor = '#000000';
-            this.insertionIndicator.style.display = 'block';
-            const menuChildren = Array.from(this.menuElement.children).filter(child => child !== this.insertionIndicator && child !== this.toolbarContainer);
-            const toolbarCenterX = toolbarRect.left + toolbarRect.width / 2;
-            let indicatorLeft = 0;
-            for (let i = 0; i < menuChildren.length; i++) {
-                const childRect = menuChildren[i].getBoundingClientRect();
-                if (toolbarCenterX < childRect.left + childRect.width / 2) {
-                    indicatorLeft = childRect.left - menuRect.left;
-                    break;
-                }
-                indicatorLeft = menuChildren[menuChildren.length - 1]?.getBoundingClientRect().right - menuRect.left || 0;
-            }
-            this.insertionIndicator.style.left = `${Math.max(0, Math.min(indicatorLeft, menuRect.width - this.insertionIndicator.offsetWidth))}px`;
-        } else {
-            this.menuElement.style.backgroundColor = '#d0ff00';
-            this.insertionIndicator.style.display = 'none';
-        }
+        const band = this.getDockBand();
+        if (this.isOverBand({ ...toolbarRect.toJSON(), top }, band)) this.showDockGuide(band);
+        else this.hideDockGuide();
     },
 
     onDragEnd() {
         if (!this.dragState.isDragging) return;
+        this.dragState = { isDragging: false, offsetX: 0, offsetY: 0 };
+        this.hideDockGuide();
 
-        this.dragState.isDragging = false;
-        this.dragState.offsetX = 0;
-        this.dragState.offsetY = 0;
+        const { windowRect, toolbarRect } = this.getRect();
+        this.position.leftPercentage = ((toolbarRect.left + toolbarRect.width / 2) / windowRect.width) * 100;
+        this.position.topPercentage = (toolbarRect.top / windowRect.height) * 100;
 
-        const { windowRect, toolbarRect, menuRect } = this.getRect();
-        if (toolbarRect.top + toolbarRect.height > menuRect.top && toolbarRect.top < menuRect.bottom) {
-            const menuChildren = Array.from(this.menuElement.children).filter(child => child !== this.insertionIndicator && child !== this.toolbarContainer);
-            const toolbarCenterX = toolbarRect.left + toolbarRect.width / 2;
-            let insertIndex = 0;
-            for (let i = 0; i < menuChildren.length; i++) {
-                const childRect = menuChildren[i].getBoundingClientRect();
-                if (toolbarCenterX < childRect.left + childRect.width / 2) {
-                    insertIndex = i;
-                    break;
-                }
-                insertIndex = i + 1;
-            }
-            this.attachToMenu(menuChildren[insertIndex]);
-            this.position.isAttached = true;
-            this.position.insertIndex = insertIndex;
+        const band = this.getDockBand();
+        if (this.isOverBand(toolbarRect, band)) {
+            this.setDocked(true);
+            this.applyDockedPosition();
         } else {
-            this.position.leftPercentage = ((toolbarRect.left + toolbarRect.width / 2) / windowRect.width) * 100;
-            this.position.topPercentage = (toolbarRect.top / windowRect.height) * 100;
-            this.position.isAttached = false;
-            this.position.insertIndex = 0;
+            this.setDocked(false);
         }
-
-        localStorage.setItem('KayNodeAlignToolbarPosition', JSON.stringify(this.position));
-        this.menuElement.style.backgroundColor = '';
-        this.insertionIndicator.style.display = 'none';
+        this.savePosition();
     },
 
-    attachToMenu(insertBeforeElement) {
-        this.position.isAttached = true;
-        this.toolbarContainer.classList.remove('floating');
-        this.toolbarContainer.classList.add('attached');
-        this.toolbarContainer.style.left = '';
-        this.toolbarContainer.style.top = '';
-        this.menuElement.insertBefore(this.toolbarContainer, insertBeforeElement || null);
-    },
-
-    detachFromMenu(isDragging) {
-        if (!isDragging) return;
-        this.position.isAttached = false;
-        this.toolbarContainer.classList.remove('attached');
-        this.toolbarContainer.classList.add('floating');
-        document.body.appendChild(this.toolbarContainer);
-        this.updatePosition();
+    setDocked(docked) {
+        this.position.docked = docked;
+        if (!this.toolbarContainer) return;
+        this.toolbarContainer.classList.toggle('docked', docked);
+        this.toolbarContainer.classList.toggle('floating', !docked);
     },
 
     restorePosition() {
-        if (!this.position.isAttached || !this.menuElement || !this.toolbarContainer) {
-            this.position.isAttached = false;
-            this.updatePosition();
-            return;
+        this.setDocked(this.position.docked);
+        this.updatePosition();
+    },
+
+    // 顶栏高度会随工作流标签栏出现/消失而变，吸附时跟着重新对齐。
+    // 用事件驱动，不做轮询。
+    bindBandTracking() {
+        const realign = () => {
+            if (this.position.docked && this.isVisible && !this.dragState.isDragging) {
+                this.applyDockedPosition();
+            }
+        };
+        window.addEventListener('resize', realign);
+        if (typeof ResizeObserver !== 'undefined') {
+            this.bandObserver = new ResizeObserver(realign);
+            const probe = this.getDockBand().probe;
+            if (probe) this.bandObserver.observe(probe);
         }
-        const menuChildren = Array.from(this.menuElement.children).filter(child => child !== this.insertionIndicator && child !== this.toolbarContainer);
-        const insertIndex = Math.min(this.position.insertIndex, menuChildren.length);
-        this.attachToMenu(menuChildren[insertIndex]);
     },
 
     getSelectedNodes() {

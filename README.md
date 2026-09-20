@@ -12,7 +12,11 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - 修复 ab Images 节点在新版前端下交互功能全部失效的问题（显示图像、A/B 切换、右键菜单、最小尺寸限制）  
 - Fixed ab Images losing all of its interactions on the current frontend (image display, A/B switching, context menu, minimum size)  
 - 修复通过 ComfyUI Manager 安装时 GuLuLu 图片加载不出来的问题  
-- Fixed the GuLuLu image failing to load when installed via ComfyUI Manager
+- Fixed the GuLuLu image failing to load when installed via ComfyUI Manager  
+- 修复节点排版工具栏在新版前端下完全消失、快捷键同时失效的问题  
+- Fixed the node align toolbar disappearing entirely on the current frontend, which also disabled its shortcuts  
+- 工具栏改为独立浮窗，自带拖拽手柄，可拖到顶栏任意位置吸附，不再依附于官方「运行」按钮  
+- The toolbar is now an independent panel with its own drag handle; drop it anywhere along the top bar to dock, no longer tied to the official Run button
 
 ### [0.70.12] - 2025-05-15
 - 将Shift+R快捷键功能改为Alt+R，解决了输入大写的“R”冲突  
