@@ -1,12 +1,6 @@
 {
-  "KayTool_ShowRunOption": {
-    "name": "ノード右クリックメニューに「▶️ Run」オプションを表示"
-  },
   "KayTool_ShowSetGetOptions": {
     "name": "ノード右クリックメニューに「🛜 Set/Get」オプションを表示"
-  },
-  "KayTool_ShiftR": {
-    "name": "Alt+Rで選択ノードの「▶️ Run」を高速実行"
   },
   "KayTool_ShowWorkflowPNG": {
     "name": "右クリックメニューに「Workflow PNG」オプションを表示"

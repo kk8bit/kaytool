@@ -1,12 +1,6 @@
 {
-  "KayTool_ShowRunOption": {
-    "name": "Показать опцию '▶️ Run' в контекстном меню узла"
-  },
   "KayTool_ShowSetGetOptions": {
     "name": "Показать опции '🛜 Set/Get' в контекстном меню узла"
-  },
-  "KayTool_ShiftR": {
-    "name": "Использовать сочетание клавиш 'Alt+R' для быстрого выполнения '▶️ Run' на выбранных узлах"
   },
   "KayTool_ShowWorkflowPNG": {
     "name": "Показать опцию 'Workflow PNG' в контекстном меню"

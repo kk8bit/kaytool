@@ -13,8 +13,8 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 - Fixed ab Images losing all of its interactions on the current frontend (image display, A/B switching, context menu, minimum size)  
 - 修复通过 ComfyUI Manager 安装时 GuLuLu 图片加载不出来的问题  
 - Fixed the GuLuLu image failing to load when installed via ComfyUI Manager  
-- 修复 𝙆 Run 劫持队列接口时吞掉参数，导致 ComfyUI 原生的局部执行退化为运行整个工作流、UI 里设置的预览方式失效  
-- Fixed the Run override swallowing queue parameters, which turned ComfyUI's own partial execution into a full-workflow run and disabled the preview method set in the UI  
+- 移除 𝙆 Run（含右键菜单的 Run / Run Group 和 Alt+R 快捷键）。ComfyUI 已内置局部执行，该功能不再需要；它劫持队列接口还会导致官方的局部执行退化为运行整个工作流、UI 里设置的预览方式失效  
+- Removed the Run feature (the Run / Run Group context menu items and the Alt+R shortcut). ComfyUI now has partial execution built in, and our override was breaking it into a full-workflow run and disabling the preview method set in the UI  
 - 修复在设置中关闭 Monitor 按钮后，刷新页面按钮又会出现的问题  
 - Fixed the Monitor button reappearing after a refresh once it had been turned off in settings  
 - 修复缺少 pilgram 时会尝试调用 pip 安装、在没有 pip 的虚拟环境中导致整个插件加载失败的问题  
@@ -117,15 +117,6 @@ https://github.com/user-attachments/assets/b8d1d3f0-04d1-46c5-968a-e433778b73e6
 
 - 在设置菜单中（KayTool）自定义 ComfyUI 的 Logo，支持 PNG、JPG、JPEG 格式。
   Customize the ComfyUI Logo in the settings menu (KayTool), supporting PNG, JPG, and JPEG formats.
-
-
-
-## 快速 Run 功能 Quick Run Options (Run Group/Node)
-
-- 右键点击节点组或节点，选择“Run Group/Node”，即可快速运行节点组或节点进行调试。  
-- Right-click on a node group or node, select "Run Group/Node," and quickly run the node group or node for debugging.
-- 使用快捷键`Alt+R`快速运行选中节点。
-- Use the shortcut key `Alt+R` to quickly run the selected node.
 
 
 

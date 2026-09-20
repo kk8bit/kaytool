@@ -1,12 +1,6 @@
 {
-  "KayTool_ShowRunOption": {
-    "name": "Afficher l'option '▶️ Run' dans le menu contextuel du nœud"
-  },
   "KayTool_ShowSetGetOptions": {
     "name": "Afficher les options '🛜 Set/Get' dans le menu contextuel du nœud"
-  },
-  "KayTool_ShiftR": {
-    "name": "Utiliser le raccourci 'Alt+R' pour exécuter rapidement '▶️ Run' sur les nœuds sélectionnés"
   },
   "KayTool_ShowWorkflowPNG": {
     "name": "Afficher l'option 'Workflow PNG' dans le menu contextuel"

@@ -18,25 +18,11 @@ app.registerExtension({
 
         const settings = [
             {
-                id: "KayTool.ShowRunOption",
-                name: "Show '▶️ Run' option in node context menu",
-                type: "boolean",
-                defaultValue: true,
-                category: ["KayTool", "▶️ Run", "ShowRunOption"],
-            },
-            {
                 id: "KayTool.ShowSetGetOptions",
                 name: "Show 'Set/Get' options in node context menu",
                 type: "boolean",
                 defaultValue: true,
                 category: ["KayTool", "🛜 Set/Get", "ShowSetGetOptions"],
-            },
-            {
-                id: "KayTool.ShiftR",
-                name: "Use 'Alt+R' to quickly run selected node",
-                type: "boolean",
-                defaultValue: true,
-                category: ["KayTool", "▶️ Run", "R"],
             },
             {
                 id: "KayTool.ShowWorkflowPNG",
