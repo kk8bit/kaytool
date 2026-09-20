@@ -7,8 +7,8 @@
 - Fixed the GuLuLu image failing to load when installed via ComfyUI Manager
 - 修复节点排版工具栏在新版前端下完全消失、快捷键同时失效的问题
 - Fixed the node align toolbar disappearing entirely on the current frontend, which also disabled its shortcuts
-- 工具栏改为独立浮窗，自带拖拽手柄，可拖到顶栏任意位置吸附，不再依附于官方「运行」按钮
-- The toolbar is now an independent panel with its own drag handle; drop it anywhere along the top bar to dock, no longer tied to the official Run button
+- 工具栏改为完全自由的浮窗，自带拖拽手柄，拖到哪就停在哪，不再依附于官方「运行」按钮
+- The toolbar is now a freely floating panel with its own drag handle; it stays wherever you drop it, no longer tied to the official Run button
 
 ## [0.70.12] - 2025-05-15
 - 将Shift+R快捷键功能改为Alt+R，解决了输入大写的“R”冲突

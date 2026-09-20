@@ -16,19 +16,17 @@ const kayVerticalDistributionSvg = `<svg t="1725534350231" class="icon" viewBox=
 
 let stylesInjected = false;
 
-// 工具栏永远是 document.body 上的 fixed 元素，不插进 ComfyUI 的 DOM。
-// 前端的顶栏由 Vue 托管，往里塞节点会在重渲染时被清掉；而挂到官方遗留插槽
-// (app.menu.element) 又会被关进「运行」按钮所在的卡片里，跟着它一起浮动。
-// 所以「吸附」只做位置吸附：读一下顶栏的几何位置对齐过去，DOM 上互不相干。
+// 工具栏是 document.body 上的 fixed 浮窗，不插进 ComfyUI 的 DOM。
+// 前端的顶栏由 Vue 托管，往里塞节点会在重渲染时被清掉；挂到官方遗留插槽
+// (app.menu.element) 又会被关进「运行」按钮那张卡片里跟着它一起动。
+// 所以干脆完全浮动：拖到哪就待在哪，不跟 ComfyUI 的布局有任何牵扯。
 const KayNodeAlignmentManager = {
     isInitialized: false,
     toolbarContainer: null,
     dragState: { isDragging: false, offsetX: 0, offsetY: 0 },
     hasShownTooltip: false,
     isVisible: true,
-    position: { leftPercentage: 50, topPercentage: 5, docked: false },
-    dockGuide: null,
-    bandObserver: null,
+    position: { leftPercentage: 50, topPercentage: 5 },
 
     async init() {
         if (this.isInitialized) return;
@@ -40,7 +38,7 @@ const KayNodeAlignmentManager = {
         this.restorePosition();
         this.bindCanvasEvents();
         this.bindKeyboardShortcuts();
-        this.bindBandTracking();
+        window.addEventListener('resize', () => this.updatePosition());
 
         const displayMode = app.ui.settings.getSettingValue("KayTool.NodeAlignDisplayMode");
         this.updateDisplayMode(displayMode);
@@ -63,43 +61,6 @@ const KayNodeAlignmentManager = {
         });
     },
 
-    // 顶栏所在的那条横带，只用来算几何，取不到就退回一个合理的默认值。
-    getDockBand() {
-        const probe = document.querySelector('[data-testid="action-bar-card"]')
-            || document.querySelector('[data-testid="top-menu-actionbars"]')
-            || app.menu?.element
-            || null;
-        const rect = probe?.getBoundingClientRect();
-        if (rect && rect.height > 0) {
-            return { top: rect.top, bottom: rect.bottom, height: rect.height, probe };
-        }
-        const tabs = document.querySelector('[data-testid="topbar-workflow-tabs"]');
-        const top = tabs ? tabs.getBoundingClientRect().bottom + 4 : 40;
-        return { top, bottom: top + 48, height: 48, probe: null };
-    },
-
-    // 吸附时横向避让「运行」那张卡片，免得盖住官方按钮。
-    // 让位的结果必须还在视口里，否则就换另一边；两边都塞不下才作罢。
-    avoidActionBar(left, width, viewportWidth) {
-        const card = document.querySelector('[data-testid="action-bar-card"]');
-        const rect = card?.getBoundingClientRect();
-        if (!rect || rect.width === 0) return left;
-        if (left >= rect.right || left + width <= rect.left) return left;
-
-        const gap = 8;
-        const leftSlot = rect.left - width - gap;
-        const rightSlot = rect.right + gap;
-        const leftFits = leftSlot >= 0;
-        const rightFits = rightSlot + width <= viewportWidth;
-        const preferLeft = (left + width / 2) < (rect.left + rect.width / 2);
-
-        if (preferLeft && leftFits) return leftSlot;
-        if (!preferLeft && rightFits) return rightSlot;
-        if (leftFits) return leftSlot;
-        if (rightFits) return rightSlot;
-        return left;
-    },
-
     injectStyles() {
         if (stylesInjected) return;
         const bgColor = app.ui.settings.getSettingValue("KayTool.NodeAlignBackgroundColor");
@@ -119,7 +80,6 @@ const KayNodeAlignmentManager = {
                 pointer-events: auto;
             }
             #kay-node-alignment-toolbar.floating { position: fixed; }
-            #kay-node-alignment-toolbar.docked { position: fixed; }
             .kay-align-button {
                 width: 25px;
                 height: 25px;
@@ -167,17 +127,6 @@ const KayNodeAlignmentManager = {
                 white-space: nowrap;
                 font-size: 12px;
             }
-            #kay-dock-guide {
-                position: fixed;
-                left: 0;
-                width: 100%;
-                border-top: 2px dashed #d0ff00;
-                border-bottom: 2px dashed #d0ff00;
-                background: rgba(208, 255, 0, 0.06);
-                z-index: 9999;
-                pointer-events: none;
-                display: none;
-            }
         </style>`);
         stylesInjected = true;
     },
@@ -191,9 +140,7 @@ const KayNodeAlignmentManager = {
         }
         this.position = {
             leftPercentage: saved.leftPercentage ?? 50,
-            topPercentage: saved.topPercentage ?? 5,
-            // isAttached 是旧版插进顶栏 DOM 的标记，沿用为位置吸附。
-            docked: saved.docked ?? saved.isAttached ?? false
+            topPercentage: saved.topPercentage ?? 5
         };
     },
 
@@ -210,16 +157,11 @@ const KayNodeAlignmentManager = {
 
         this.toolbarContainer = document.createElement('div');
         this.toolbarContainer.id = 'kay-node-alignment-toolbar';
-        this.toolbarContainer.classList.add(this.position.docked ? 'docked' : 'floating');
+        this.toolbarContainer.classList.add('floating');
         if (opacity > 0 && /^[0-9A-Fa-f]{6}$/.test(bgColor)) {
             this.toolbarContainer.style.background = `rgba(${parseInt(bgColor.substr(0, 2), 16)}, ${parseInt(bgColor.substr(2, 2), 16)}, ${parseInt(bgColor.substr(4, 2), 16)}, ${opacity})`;
         }
         document.body.appendChild(this.toolbarContainer);
-
-        // 吸附提示条：拖到顶栏那一行时亮起，全程只动我们自己的元素。
-        this.dockGuide = document.createElement('div');
-        this.dockGuide.id = 'kay-dock-guide';
-        document.body.appendChild(this.dockGuide);
 
         this.getAlignmentButtons().forEach(btn => {
             const el = document.createElement(btn.type === 'divider' ? 'div' : 'button');
@@ -317,10 +259,6 @@ const KayNodeAlignmentManager = {
 
     updatePosition() {
         if (!this.toolbarContainer || !this.isVisible) return;
-        if (this.position.docked) {
-            this.applyDockedPosition();
-            return;
-        }
         const { windowRect, toolbarRect } = this.getRect();
         let left = (this.position.leftPercentage / 100) * windowRect.width - toolbarRect.width / 2;
         let top = (this.position.topPercentage / 100) * windowRect.height;
@@ -330,41 +268,11 @@ const KayNodeAlignmentManager = {
         this.toolbarContainer.style.top = `${top}px`;
     },
 
-    // 吸附态：纵向对齐到顶栏中线，横向保留用户拖到的位置（避让运行卡片）。
-    applyDockedPosition() {
-        if (!this.toolbarContainer) return;
-        const { windowRect, toolbarRect } = this.getRect();
-        const band = this.getDockBand();
-        let left = (this.position.leftPercentage / 100) * windowRect.width - toolbarRect.width / 2;
-        left = Math.max(0, Math.min(left, windowRect.width - toolbarRect.width));
-        // 避让本身已经考虑了视口边界，这里不能再夹一次，否则会把它推回重叠区。
-        left = this.avoidActionBar(left, toolbarRect.width, windowRect.width);
-        const top = band.top + (band.height - toolbarRect.height) / 2;
-        this.toolbarContainer.style.left = `${left}px`;
-        this.toolbarContainer.style.top = `${Math.max(0, top)}px`;
-    },
-
     getRect() {
         return {
             windowRect: { width: window.innerWidth, height: window.innerHeight },
             toolbarRect: this.toolbarContainer.getBoundingClientRect()
         };
-    },
-
-    // 工具栏竖直方向是否压在顶栏那条横带上
-    isOverBand(toolbarRect, band) {
-        return toolbarRect.top < band.bottom && toolbarRect.top + toolbarRect.height > band.top;
-    },
-
-    showDockGuide(band) {
-        if (!this.dockGuide) return;
-        this.dockGuide.style.top = `${band.top}px`;
-        this.dockGuide.style.height = `${band.height}px`;
-        this.dockGuide.style.display = 'block';
-    },
-
-    hideDockGuide() {
-        if (this.dockGuide) this.dockGuide.style.display = 'none';
     },
 
     onDragStart(e) {
@@ -375,12 +283,10 @@ const KayNodeAlignmentManager = {
             offsetX: e.clientX - toolbarRect.left,
             offsetY: e.clientY - toolbarRect.top
         };
-        this.setDocked(false);
     },
 
     onDragging(e) {
         if (!this.dragState.isDragging) return;
-
         const { windowRect, toolbarRect } = this.getRect();
         let left = e.clientX - this.dragState.offsetX;
         let top = e.clientY - this.dragState.offsetY;
@@ -388,57 +294,20 @@ const KayNodeAlignmentManager = {
         top = Math.max(0, Math.min(top, windowRect.height - toolbarRect.height));
         this.toolbarContainer.style.left = `${left}px`;
         this.toolbarContainer.style.top = `${top}px`;
-
-        const band = this.getDockBand();
-        if (this.isOverBand({ ...toolbarRect.toJSON(), top }, band)) this.showDockGuide(band);
-        else this.hideDockGuide();
     },
 
     onDragEnd() {
         if (!this.dragState.isDragging) return;
         this.dragState = { isDragging: false, offsetX: 0, offsetY: 0 };
-        this.hideDockGuide();
 
         const { windowRect, toolbarRect } = this.getRect();
         this.position.leftPercentage = ((toolbarRect.left + toolbarRect.width / 2) / windowRect.width) * 100;
         this.position.topPercentage = (toolbarRect.top / windowRect.height) * 100;
-
-        const band = this.getDockBand();
-        if (this.isOverBand(toolbarRect, band)) {
-            this.setDocked(true);
-            this.applyDockedPosition();
-        } else {
-            this.setDocked(false);
-        }
         this.savePosition();
     },
 
-    setDocked(docked) {
-        this.position.docked = docked;
-        if (!this.toolbarContainer) return;
-        this.toolbarContainer.classList.toggle('docked', docked);
-        this.toolbarContainer.classList.toggle('floating', !docked);
-    },
-
     restorePosition() {
-        this.setDocked(this.position.docked);
         this.updatePosition();
-    },
-
-    // 顶栏高度会随工作流标签栏出现/消失而变，吸附时跟着重新对齐。
-    // 用事件驱动，不做轮询。
-    bindBandTracking() {
-        const realign = () => {
-            if (this.position.docked && this.isVisible && !this.dragState.isDragging) {
-                this.applyDockedPosition();
-            }
-        };
-        window.addEventListener('resize', realign);
-        if (typeof ResizeObserver !== 'undefined') {
-            this.bandObserver = new ResizeObserver(realign);
-            const probe = this.getDockBand().probe;
-            if (probe) this.bandObserver.observe(probe);
-        }
     },
 
     getSelectedNodes() {
