@@ -1,5 +1,9 @@
 # Changelog
 
+## [未发布 Unreleased]
+- 修复资源监视器的内存已用量与百分比口径不一致的问题（macOS 上会显示成「10.1/24GB (68%)」这种自相矛盾的数值）；现在两者都按「总量 − 可用」计算，与活动监视器一致
+- Fixed the resource monitor's RAM figure disagreeing with its own percentage (on macOS it could read "10.1/24GB (68%)"); both now derive from total − available, matching Activity Monitor
+
 ## [0.71.1] - 2026-09-20
 - 移除 AIO / Tencent / Baidu 三个翻译节点，改为独立仓库 [ComfyUI-kaytool-translate](https://github.com/kk8bit/ComfyUI-kaytool-translate)（Git 安装，节点标识不变，旧工作流装上即恢复）。原因：Registry 安全扫描会把任何网络请求标记为需人工审核，翻译节点无法避免；拆出后核心包不再被卡。核心包同时不再依赖 `requests`
 - Removed the AIO / Tencent / Baidu translation nodes into a separate repository, [ComfyUI-kaytool-translate](https://github.com/kk8bit/ComfyUI-kaytool-translate) (installed from Git; node identifiers unchanged, so existing workflows recover once it is installed). The Registry's security scan flags any network request for manual review, which translation cannot avoid; splitting them out keeps the core package from being held up. The core package no longer depends on `requests`

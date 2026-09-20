@@ -46,7 +46,10 @@ class KayResourceCollector:
             cpu_percent = psutil.cpu_percent(interval=None)
             ram = psutil.virtual_memory()
             ram_total = round(ram.total / (1024 ** 3), 1)
-            ram_used = round(ram.used / (1024 ** 3), 1)
+            # 不能用 ram.used：在 macOS 上它只算 active+wired，而 ram.percent 的定义是
+            # (total - available) / total，两者口径不同，显示出来就是「10.1/24GB (68%)」这种自相矛盾。
+            # 用 total - available 才和百分比自洽，也接近活动监视器的「已使用内存」。
+            ram_used = round((ram.total - ram.available) / (1024 ** 3), 1)
             ram_percent = ram.percent
             gpu_info = self.get_gpu_info() if not IS_MACOS and pynvml_available else []
             return {
