@@ -12,9 +12,11 @@ app.registerExtension({
     async beforeRegisterNodeDef(nodeType, nodeData) {
         if (nodeData.name !== "AB_Images") return;
 
+        // 不要把 title/type 放进这个对象：它会被 Object.assign 到 nodeType.prototype，
+        // 而 LGraphNode.prototype 上的 title/type 是 accessor，Object.assign 会触发继承的
+        // setter（此时 this 是 prototype，没有 _state），直接抛 TypeError。
+        // 两者本来也由 ComfyUI 的节点注册负责，这里设置无效。
         const ABImagesNode = {
-            title: "AB Images",
-            type: "AB_Images",
             imgs: [],
             isPointerOver: false,
             pointerPos: [0, 0],
