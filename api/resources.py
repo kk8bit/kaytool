@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import platform
 import psutil
 from server import PromptServer
@@ -30,10 +31,14 @@ class KayResourceCollector:
         if pynvml_instance is None and (IS_LINUX or IS_WINDOWS):
             try:
                 import pynvml
+                pynvml.nvmlInit()
                 pynvml_instance = pynvml
-                pynvml_instance.nvmlInit()
                 pynvml_available = True
-            except (ImportError, pynvml.NVMLError):
+            except Exception:
+                # 不能写成 except (ImportError, pynvml.NVMLError)：import 失败时 pynvml
+                # 这个名字根本没绑定，求值 except 子句本身就会抛 NameError，而它不在
+                # 捕获范围内 —— 于是「没装 pynvml」这个本该被兜住的场景反而把监控打死。
+                pynvml_instance = None
                 pynvml_available = False
 
     def get_status(self):
@@ -109,14 +114,24 @@ class KayResourceMonitor:
             pass
 
     async def monitor_loop(self):
-        if self.collector is None:
-            self.collector = KayResourceCollector()
-        self.running = True
-        while self.running:
-            data = self.collector.get_status()
-            self.rate = self.adjust_rate(data["cpu_percent"])
-            await self.send_message(data)
-            await asyncio.sleep(self.rate)
+        # 整个循环兜住：这是 create_task 起的任务，没人 await 它的结果，
+        # 抛出去只会在 GC 时留下一句 "Task exception was never retrieved"，
+        # 用户看到的就是监视器静默不工作，且 running 还卡在 True。
+        try:
+            if self.collector is None:
+                self.collector = KayResourceCollector()
+            self.running = True
+            while self.running:
+                data = self.collector.get_status()
+                self.rate = self.adjust_rate(data["cpu_percent"])
+                await self.send_message(data)
+                await asyncio.sleep(self.rate)
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            logging.exception("[KayTool] Resource monitor stopped unexpectedly")
+        finally:
+            self.running = False
 
     def start(self):
         if self.running:

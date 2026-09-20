@@ -1,6 +1,8 @@
 # Changelog
 
 ## [未发布 Unreleased]
+- 修复资源监视器在 Linux/Windows 上未安装 pynvml 时会静默失效的问题（异常处理自身写错，反而在该兜底的场景抛出 NameError）；监控循环也加上了整体保护，任何意外都不会再让监视器无声停摆
+- Fixed the resource monitor silently dying on Linux/Windows when pynvml isn't installed (its own error handling raised a NameError in exactly the case it was meant to cover); the monitor loop is now guarded so an unexpected failure can no longer stop it without a trace
 - 修复 Workflow PNG 导出失败时画布视图被留在导出状态、只能刷新页面才能恢复的问题；导出失败现在也会明确提示（大工作流可能超出浏览器画布上限），不再静默无反应
 - Fixed a failed Workflow PNG export leaving the canvas stuck in its export state until the page was reloaded; failures are now reported instead of silently doing nothing (a very large workflow can exceed the browser's canvas limit)
 - 给三个翻译节点的网络请求加上超时（连接 10 秒、读取 30 秒）。此前 requests 默认永不超时，对端连上却不回包会把整个工作流队列无限期堵死且无任何提示；百度翻译节点的网络异常也统一转成可读报错
