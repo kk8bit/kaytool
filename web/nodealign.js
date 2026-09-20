@@ -361,16 +361,28 @@ const KayNodeAlignmentManager = {
         this.redraw();
     },
 
-    equalWidth() {
+    // 统一尺寸时取选中节点里的最大值。以前取的是「第一个被选中的节点」，
+    // 谁先被点到就以谁为准，看起来像是随机缩水；取最大值也不会把节点压到
+    // 它自己的最小尺寸以下。
+    resizeSelected(axis) {
         const nodes = this.getSelectedNodes();
-        if (nodes.length) nodes.forEach(n => n.size[0] = nodes[0].size[0]);
+        if (!nodes.length) return;
+        const target = Math.max(...nodes.map(n => n.size[axis]));
+        nodes.forEach(n => {
+            const size = [n.size[0], n.size[1]];
+            size[axis] = target;
+            if (typeof n.setSize === 'function') n.setSize(size);
+            else n.size = size;
+        });
         this.redraw();
     },
 
+    equalWidth() {
+        this.resizeSelected(0);
+    },
+
     equalHeight() {
-        const nodes = this.getSelectedNodes();
-        if (nodes.length) nodes.forEach(n => n.size[1] = nodes[0].size[1]);
-        this.redraw();
+        this.resizeSelected(1);
     },
 
     horizontalDistribution() {
