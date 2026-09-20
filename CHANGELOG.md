@@ -1,6 +1,8 @@
 # Changelog
 
 ## [未发布 Unreleased]
+- 给三个翻译节点的网络请求加上超时（连接 10 秒、读取 30 秒）。此前 requests 默认永不超时，对端连上却不回包会把整个工作流队列无限期堵死且无任何提示；百度翻译节点的网络异常也统一转成可读报错
+- Added timeouts to the three translator nodes (10s connect, 30s read). requests never times out by default, so a server that accepted the connection but never replied would block the whole workflow queue indefinitely with nothing reported; network failures in the Baidu node are now reported as readable errors too
 - 修复自定义图像保存节点把图片写到进程工作目录、并且无视 ComfyUI `--output-directory` 设置的问题；现在始终保存到 ComfyUI 的输出目录下的 `Custom_Save_Image` 子目录
 - Fixed Custom Save Image writing to the process working directory and ignoring ComfyUI's `--output-directory`; it now always saves under ComfyUI's own output directory, in the `Custom_Save_Image` subfolder
 - 数学表达式计算节点支持三角函数、对数指数和常量（`sin`/`cos`/`tan`/`atan2`/`sqrt`/`log`/`exp`/`pi`/`e` 等），三角函数以弧度为单位，可用 `radians()` 转换

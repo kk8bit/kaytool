@@ -1,6 +1,10 @@
 import os
 import json
 import requests
+
+# (连接超时, 读取超时)。requests 默认永不超时，而节点是在工作流线程里同步执行的，
+# 对端连上却不回包就会把整个队列永久堵死，且没有任何报错可循。
+TRANSLATE_TIMEOUT = (10, 30)
 import random
 from hashlib import md5
 
@@ -129,8 +133,15 @@ class BaiduTranslater:
             headers = {'Content-Type': 'application/x-www-form-urlencoded'}
             payload = {'appid': self.appid, 'q': query, 'from': from_lang, 'to': to_lang, 'salt': salt, 'sign': sign}
 
-            r = requests.post(url, data=payload, headers=headers)
-            result = r.json()
+            try:
+                r = requests.post(url, data=payload, headers=headers, timeout=TRANSLATE_TIMEOUT)
+                result = r.json()
+            except requests.exceptions.RequestException as e:
+                # 与另外两个翻译节点保持一致：网络层的失败也转成可读的 RuntimeError，
+                # 而不是把 requests 的异常原样抛给 ComfyUI。
+                error_msg = f"Error during translation: {e}"
+                print(error_msg)
+                raise RuntimeError(error_msg)
             if r.status_code != 200 or 'error_code' in result:
                 error_msg = f"Translation failed with status code {r.status_code}: {result.get('error_msg', 'Unknown error')}"
                 print(error_msg)

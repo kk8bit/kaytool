@@ -1,6 +1,10 @@
 import json
 import requests
 
+# (连接超时, 读取超时)。requests 默认永不超时，而节点是在工作流线程里同步执行的，
+# 对端连上却不回包就会把整个队列永久堵死，且没有任何报错可循。
+TRANSLATE_TIMEOUT = (10, 30)
+
 class TencentTranslater:
     def __init__(self):
         pass
@@ -112,7 +116,8 @@ class TencentTranslater:
                 'referer': 'https://transmart.qq.com/zh-CN/index'
             }
             try:
-                response = requests.post(url, headers=headers, data=json.dumps(post_data))
+                response = requests.post(url, headers=headers, data=json.dumps(post_data),
+                                         timeout=TRANSLATE_TIMEOUT)
                 result = response.json()
                 if response.status_code != 200 or 'auto_translation' not in result or not result['auto_translation']:
                     error_msg = f"Translation failed with status code {response.status_code}: {result.get('error_msg', 'Unknown error')}"
