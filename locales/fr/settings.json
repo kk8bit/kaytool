@@ -17,6 +17,10 @@
   "KayTool_SetGetBackgroundColor": {
     "name": "Ajuster la couleur du titre '🛜 Set/Get'"
   },
+  "KayTool_EnableCustomWebLogo": {
+    "name": "Activer le logo web personnalisé",
+    "tooltip": "Désactivez pour conserver le favicon d'origine de ComfyUI"
+  },
   "KayTool_CustomWebLogo": {
     "name": "Le fichier doit être < 1 Mo",
     "tooltip": "Ceci est une fonctionnalité test, le fichier doit être < 1 Mo, sinon il pourrait ne pas s'afficher"

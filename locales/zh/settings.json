@@ -30,6 +30,10 @@
     "KayTool_SetGetBackgroundColor": {
       "name": "标题颜色"
     },
+    "KayTool_EnableCustomWebLogo": {
+      "name": "启用自定义网页徽标",
+      "tooltip": "关闭后恢复 ComfyUI 默认图标"
+    },
     "KayTool_CustomWebLogo": {
       "name": "文件必须 < 1MB",
       "tooltip": "这是一个测试功能，文件最好 <1MB ，否则可能无法显示"

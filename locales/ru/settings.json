@@ -17,6 +17,10 @@
   "KayTool_SetGetBackgroundColor": {
     "name": "Установить цвет заголовка '🛜 Set/Get'"
   },
+  "KayTool_EnableCustomWebLogo": {
+    "name": "Включить пользовательский логотип",
+    "tooltip": "Выключите, чтобы вернуть стандартный значок ComfyUI"
+  },
   "KayTool_CustomWebLogo": {
     "name": "Файл должен быть < 1МБ",
     "tooltip": "Это тестовая функция, файл должен быть < 1МБ, иначе он может не отобразиться"

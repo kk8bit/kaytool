@@ -9,6 +9,8 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 ## 最新更新 / Last Update
 
 ### [未发布 Unreleased]
+- 自定义网页徽标新增开关，关闭后恢复 ComfyUI 默认图标  
+- Added a toggle for the custom web logo; turning it off restores ComfyUI's own favicon  
 - 修复 ab Images 节点在新版前端下交互功能全部失效的问题（显示图像、A/B 切换、右键菜单、最小尺寸限制）  
 - Fixed ab Images losing all of its interactions on the current frontend (image display, A/B switching, context menu, minimum size)  
 - 修复通过 ComfyUI Manager 安装时 GuLuLu 图片加载不出来的问题  

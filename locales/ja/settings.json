@@ -17,6 +17,10 @@
   "KayTool_SetGetBackgroundColor": {
     "name": "「🛜 Set/Get」タイトル色を調整"
   },
+  "KayTool_EnableCustomWebLogo": {
+    "name": "カスタムウェブロゴを有効にする",
+    "tooltip": "オフにすると ComfyUI 標準のアイコンに戻ります"
+  },
   "KayTool_CustomWebLogo": {
     "name": "ファイルは1MB未満である必要があります",
     "tooltip": "これはテスト機能です。ファイルは1MB未満である必要があります。そうでない場合、表示されない可能性があります。"

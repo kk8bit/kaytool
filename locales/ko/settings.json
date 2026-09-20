@@ -17,6 +17,10 @@
   "KayTool_SetGetBackgroundColor": {
     "name": "'🛜 Set/Get' 제목 색상 설정"
   },
+  "KayTool_EnableCustomWebLogo": {
+    "name": "사용자 지정 웹 로고 활성화",
+    "tooltip": "끄면 ComfyUI 기본 아이콘으로 돌아갑니다"
+  },
   "KayTool_CustomWebLogo": {
     "name": "파일 크기는 1MB 미만이어야 합니다.",
     "tooltip": "이 기능은 테스트 기능이며, 파일 크기가 1MB 미만이어야 표시될 수 있습니다."

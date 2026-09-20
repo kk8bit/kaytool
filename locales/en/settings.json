@@ -17,6 +17,10 @@
   "KayTool_SetGetBackgroundColor": {
     "name": "Set '🛜 Set/Get' Title color"
   },
+  "KayTool_EnableCustomWebLogo": {
+    "name": "Enable Custom Web Logo",
+    "tooltip": "Turn this off to keep ComfyUI's own favicon"
+  },
   "KayTool_CustomWebLogo": {
     "name": "File must be < 1MB",
     "tooltip": "This is a test feature, the file must be < 1MB, otherwise it may not be displayed"
