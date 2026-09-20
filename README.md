@@ -9,8 +9,8 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 ## 最新更新 / Last Update
 
 ### [未发布 Unreleased]
-- 自定义网页徽标新增开关，关闭后恢复 ComfyUI 默认图标  
-- Added a toggle for the custom web logo; turning it off restores ComfyUI's own favicon  
+- 自定义图标新增开关，关闭后恢复 ComfyUI 默认图标；并把该功能的措辞统一为「浏览器标签页图标」——它一直只改标签页图标，不会替换界面左上角的 ComfyUI 标志  
+- Added a toggle for the custom icon, which restores ComfyUI's own icon when off, and renamed the feature to "browser tab icon": it only ever changed the tab icon, never the ComfyUI logo in the interface  
 - 修复 ab Images 节点在新版前端下交互功能全部失效的问题（显示图像、A/B 切换、右键菜单、最小尺寸限制）  
 - Fixed ab Images losing all of its interactions on the current frontend (image display, A/B switching, context menu, minimum size)  
 - 修复通过 ComfyUI Manager 安装时 GuLuLu 图片加载不出来的问题  
@@ -115,10 +115,12 @@ https://github.com/user-attachments/assets/b8d1d3f0-04d1-46c5-968a-e433778b73e6
 
 
 
-## 自定义ComfyUI Logo功能 Custom ComfyUI Logo
+## 自定义浏览器标签页图标 Custom Browser Tab Icon
 
-- 在设置菜单中（KayTool）自定义 ComfyUI 的 Logo，支持 PNG、JPG、JPEG 格式。
-  Customize the ComfyUI Logo in the settings menu (KayTool), supporting PNG, JPG, and JPEG formats.
+- 在设置菜单中（KayTool）自定义浏览器标签页的图标（favicon），支持 PNG、JPG、JPEG 格式。
+  Customize the browser tab icon (favicon) in the settings menu (KayTool), supporting PNG, JPG, and JPEG formats.
+- 注意：只影响浏览器标签页的图标，不会改变界面左上角的 ComfyUI 标志。
+  Note: this only affects the browser tab icon. It does not change the ComfyUI logo shown in the interface.
 
 
 

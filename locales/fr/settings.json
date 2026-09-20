@@ -18,11 +18,11 @@
     "name": "Ajuster la couleur du titre '🛜 Set/Get'"
   },
   "KayTool_EnableCustomWebLogo": {
-    "name": "Activer le logo web personnalisé",
-    "tooltip": "Désactivez pour conserver le favicon d'origine de ComfyUI"
+    "name": "Utiliser une icône d'onglet personnalisée",
+    "tooltip": "N'affecte que l'icône de l'onglet du navigateur, pas le logo ComfyUI dans l'interface."
   },
   "KayTool_CustomWebLogo": {
-    "name": "Le fichier doit être < 1 Mo",
-    "tooltip": "Ceci est une fonctionnalité test, le fichier doit être < 1 Mo, sinon il pourrait ne pas s'afficher"
+    "name": "Image de l'icône (moins de 1 Mo)",
+    "tooltip": "Remplace uniquement l'icône de l'onglet, pas le logo ComfyUI de l'interface. Moins de 1 Mo."
   }
 }

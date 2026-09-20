@@ -18,11 +18,11 @@
     "name": "Set '🛜 Set/Get' Title color"
   },
   "KayTool_EnableCustomWebLogo": {
-    "name": "Enable Custom Web Logo",
-    "tooltip": "Turn this off to keep ComfyUI's own favicon"
+    "name": "Use a custom browser tab icon",
+    "tooltip": "Only affects the browser tab icon (favicon). Turn this off to keep ComfyUI's own icon."
   },
   "KayTool_CustomWebLogo": {
-    "name": "File must be < 1MB",
-    "tooltip": "This is a test feature, the file must be < 1MB, otherwise it may not be displayed"
+    "name": "Icon image (must be < 1MB)",
+    "tooltip": "Replaces the browser tab icon only, not the ComfyUI logo in the interface. File must be < 1MB."
   }
 }

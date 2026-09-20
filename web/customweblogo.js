@@ -28,21 +28,21 @@ app.registerExtension({
 
         app.ui.settings.addSetting({
             id: "KayTool.EnableCustomWebLogo",
-            name: "Enable Custom Web Logo",
+            name: "Use a custom browser tab icon",
             type: "boolean",
             defaultValue: true,
-            tooltip: "Turn this off to keep ComfyUI's own favicon",
-            category: ["KayTool", "Custom Web Logo (BETA)", "EnableCustomWebLogo"],
+            tooltip: "Only affects the browser tab icon (favicon). Turn this off to keep ComfyUI's own icon.",
+            category: ["KayTool", "Browser Tab Icon", "EnableCustomWebLogo"],
             onChange: () => applyLogo(),
         });
 
         app.ui.settings.addSetting({
             id: "KayTool.CustomWebLogo",
-            name: "File must be < 1MB",
+            name: "Icon image (must be < 1MB)",
             type: "image",
-            tooltip: "This is a test feature. File must be < 1MB to avoid potential errors",
+            tooltip: "Replaces the browser tab icon only, not the ComfyUI logo in the interface. File must be < 1MB.",
             defaultValue: null,
-            category: ["KayTool", "Custom Web Logo (BETA)", "CustomWebLogo"],
+            category: ["KayTool", "Browser Tab Icon", "CustomWebLogo"],
             onChange: () => applyLogo(),
         });
 

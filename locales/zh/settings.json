@@ -31,12 +31,12 @@
       "name": "标题颜色"
     },
     "KayTool_EnableCustomWebLogo": {
-      "name": "启用自定义网页徽标",
-      "tooltip": "关闭后恢复 ComfyUI 默认图标"
+      "name": "使用自定义标签页图标",
+      "tooltip": "只影响浏览器标签页的图标，不会改变界面左上角的 ComfyUI 标志。关闭后恢复 ComfyUI 默认图标。"
     },
     "KayTool_CustomWebLogo": {
-      "name": "文件必须 < 1MB",
-      "tooltip": "这是一个测试功能，文件最好 <1MB ，否则可能无法显示"
+      "name": "图标图片（须小于 1MB）",
+      "tooltip": "只替换浏览器标签页图标，不会替换界面里的 ComfyUI 标志。文件须小于 1MB。"
     },
     "KayTool_GuLuLuSize": {
       "name": "你要一个多大的咕噜噜~啊？"
