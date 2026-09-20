@@ -13,7 +13,7 @@ const KayGuLuLuManager = {
     pixelCanvas: null,
     pixelCtx: null,
     pixelDataCache: null,
-    imgSrc: "/extensions/kaytool/resources/GuLuLu.gif",
+    imgSrc: new URL("./resources/GuLuLu.gif", import.meta.url).pathname,
     effectiveBounds: null,
     isAnimating: false,
     animationTimer: null,
