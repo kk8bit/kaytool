@@ -1,6 +1,8 @@
 # Changelog
 
 ## [未发布 Unreleased]
+- 修复 Workflow PNG 导出失败时画布视图被留在导出状态、只能刷新页面才能恢复的问题；导出失败现在也会明确提示（大工作流可能超出浏览器画布上限），不再静默无反应
+- Fixed a failed Workflow PNG export leaving the canvas stuck in its export state until the page was reloaded; failures are now reported instead of silently doing nothing (a very large workflow can exceed the browser's canvas limit)
 - 给三个翻译节点的网络请求加上超时（连接 10 秒、读取 30 秒）。此前 requests 默认永不超时，对端连上却不回包会把整个工作流队列无限期堵死且无任何提示；百度翻译节点的网络异常也统一转成可读报错
 - Added timeouts to the three translator nodes (10s connect, 30s read). requests never times out by default, so a server that accepted the connection but never replied would block the whole workflow queue indefinitely with nothing reported; network failures in the Baidu node are now reported as readable errors too
 - 修复自定义图像保存节点把图片写到进程工作目录、并且无视 ComfyUI `--output-directory` 设置的问题；现在始终保存到 ComfyUI 的输出目录下的 `Custom_Save_Image` 子目录

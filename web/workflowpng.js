@@ -69,11 +69,17 @@ class KayWorkflowImage {
 
     async export(includeWorkflow) {
         this.saveState();
-        this.updateView(this.getBounds());
-        const getDrawTextConfig = this.getDrawTextConfig;
-        app.canvas.draw(true, true);
-        const blob = await this.getBlob(includeWorkflow ? JSON.stringify(app.graph.serialize()) : undefined);
-        this.restoreState();
+        let blob;
+        try {
+            this.updateView(this.getBounds());
+            app.canvas.draw(true, true);
+            blob = await this.getBlob(includeWorkflow ? JSON.stringify(app.graph.serialize()) : undefined);
+        } finally {
+            // 必须无条件还原：updateView 会改掉画布的尺寸、缩放和偏移，
+            // 中途失败而不还原的话，用户的视图就一直停在导出用的状态，只能刷新页面。
+            this.restoreState();
+            app.canvas.draw(true, true);
+        }
         if (blob) this.download(blob);
     }
 
@@ -161,13 +167,29 @@ class KayWorkflowImage {
     }
 }
 
+async function runExport(includeWorkflow) {
+    try {
+        await new KayWorkflowImage().export(includeWorkflow);
+    } catch (e) {
+        console.error("[KayTool] Workflow PNG export failed:", e);
+        // 画布太大时 toBlob 会失败，这是最常见的原因，直接说清楚
+        app.extensionManager?.toast?.add?.({
+            severity: "error",
+            summary: "Workflow PNG",
+            detail: `Export failed: ${e?.message || e}. A very large workflow can exceed the browser's canvas limit.`,
+            life: 8000,
+        });
+    }
+}
+
 function exportWorkflowPNG() {
     showNotification({
         message: `GuLuLu: 你需要把工作流信息嵌入到PNG中吗？啊？Do you need to embed Workflow information into PNG? *GuLuLu~Gulu*`,
         bgColor: "#fff3cd",
         size: "medium",
-        onYes: () => new KayWorkflowImage().export(true),
-        onNo: () => new KayWorkflowImage().export(false)
+        // 回调里的异常没人接，会被静默吞掉，用户只看到「没反应」。
+        onYes: () => runExport(true),
+        onNo: () => runExport(false)
     });
 }
 
