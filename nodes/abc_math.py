@@ -67,6 +67,34 @@ class AbcMath:
                 'round': round,
                 'sum': sum,
                 'len': len,
+                'abs': abs,
+                # 三角函数，参数与返回值均为弧度；要用角度先套 radians()/degrees()
+                'sin': math.sin,
+                'cos': math.cos,
+                'tan': math.tan,
+                'asin': math.asin,
+                'acos': math.acos,
+                'atan': math.atan,
+                'atan2': math.atan2,
+                'sinh': math.sinh,
+                'cosh': math.cosh,
+                'tanh': math.tanh,
+                'degrees': math.degrees,
+                'radians': math.radians,
+                'sqrt': math.sqrt,
+                'exp': math.exp,
+                'log': math.log,
+                'log10': math.log10,
+                'log2': math.log2,
+                'floor': math.floor,
+                'ceil': math.ceil,
+                'hypot': math.hypot,
+            }
+            # 常量，和 a/b/c 一样按名字取值
+            constants = {
+                'pi': math.pi,
+                'e': math.e,
+                'tau': math.tau,
             }
 
 
@@ -82,6 +110,8 @@ class AbcMath:
                         return b
                     if node.id == "c":
                         return c
+                    if node.id in constants:
+                        return constants[node.id]
                 elif isinstance(node, ast.BinOp):  
                     return operators[type(node.op)](eval_(node.left), eval_(node.right))
                 elif isinstance(node, ast.UnaryOp):  
@@ -113,7 +143,9 @@ class AbcMath:
             result = eval_(parsed_expression.body)
 
  
-            if math.isnan(result):
+            # sqrt(-1) 之类会抛异常走到 except；log(0) 会得到 -inf，
+            # 这里一并挡掉，避免 int() 直接崩掉。
+            if not isinstance(result, (int, float)) or math.isnan(result) or math.isinf(result):
                 result = 0.0
 
 

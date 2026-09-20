@@ -9,6 +9,8 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 ## 最新更新 / Last Update
 
 ### [未发布 Unreleased]
+- 数学表达式计算节点支持三角函数、对数指数和常量（`sin`/`cos`/`tan`/`atan2`/`sqrt`/`log`/`exp`/`pi`/`e` 等），三角函数以弧度为单位，可用 `radians()` 转换  
+- AbcMath now supports trigonometric, logarithmic and exponential functions plus constants (`sin`, `cos`, `tan`, `atan2`, `sqrt`, `log`, `exp`, `pi`, `e`, …); trigonometry works in radians, convert with `radians()`  
 - 批量图片载入节点新增 `filenames` 输出（原文件名），配合自定义图像保存节点新增的 `exact_filename` 开关，即可按原文件名保存批处理结果  
 - Load Image Folder gained a `filenames` output, and Custom Save Image an `exact_filename` toggle, so batch results can be saved under their original names  
 
@@ -187,15 +189,19 @@ https://github.com/user-attachments/assets/b8d1d3f0-04d1-46c5-968a-e433778b73e6
 - 支持动态解析数学表达式。  
 - 提供多种运算符和函数支持（加、减、乘、除、幂、取模等）。  
 - 支持变量 `a`、`b`、`c` 的灵活输入（数字或数组形状）。  
-- 内置常用数学函数（`min`、`max`、`round`、`sum`、`len` 等）。  
-- 自动处理 NaN 值，确保结果稳定性。  
+- 内置常用数学函数（`min`、`max`、`round`、`sum`、`len`、`abs`、`sqrt`、`floor`、`ceil`、`hypot` 等）。  
+- 支持三角函数与对数指数（`sin`、`cos`、`tan`、`asin`、`acos`、`atan`、`atan2`、`sinh`、`cosh`、`tanh`、`exp`、`log`、`log10`、`log2`），以及常量 `pi`、`e`、`tau`。  
+- 三角函数以弧度为单位，可用 `radians()` / `degrees()` 转换，例如 `sin(radians(a))`。  
+- 自动处理 NaN 和无穷值，确保结果稳定性。  
 - 输出整数和浮点数两种格式。  
 - 适用于复杂计算场景。  
 - Supports dynamic parsing of mathematical expressions.  
 - Provides a wide range of operators and functions (addition, subtraction, multiplication, division, power, modulo, etc.).  
 - Flexible input for variables `a`, `b`, and `c` (numbers or array shapes).  
-- Built-in common math functions (`min`, `max`, `round`, `sum`, `len`, etc.).  
-- Automatically handles NaN values to ensure result stability.  
+- Built-in common math functions (`min`, `max`, `round`, `sum`, `len`, `abs`, `sqrt`, `floor`, `ceil`, `hypot`, etc.).  
+- Trigonometric, exponential and logarithmic functions (`sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `atan2`, `sinh`, `cosh`, `tanh`, `exp`, `log`, `log10`, `log2`), plus the constants `pi`, `e` and `tau`.  
+- Trigonometric functions work in radians; use `radians()` / `degrees()` to convert, e.g. `sin(radians(a))`.  
+- Automatically handles NaN and infinite values to ensure result stability.  
 - Outputs results in both integer and float formats.  
 - Suitable for complex calculation scenarios.
 
