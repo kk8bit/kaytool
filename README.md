@@ -8,6 +8,12 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 ## 最新更新 / Last Update
 
+### [未发布 Unreleased]
+- 修复 ab Images 节点在新版前端下交互功能全部失效的问题（显示图像、A/B 切换、右键菜单、最小尺寸限制）  
+- Fixed ab Images losing all of its interactions on the current frontend (image display, A/B switching, context menu, minimum size)  
+- 修复通过 ComfyUI Manager 安装时 GuLuLu 图片加载不出来的问题  
+- Fixed the GuLuLu image failing to load when installed via ComfyUI Manager
+
 ### [0.70.12] - 2025-05-15
 - 将Shift+R快捷键功能改为Alt+R，解决了输入大写的“R”冲突  
 - Changed shortcut from Shift+R to Alt+R to resolve conflict with typing uppercase "R"
