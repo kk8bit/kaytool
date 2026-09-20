@@ -5,7 +5,7 @@ from PIL import Image, ImageEnhance
 import torch
 
 # 缺了 pilgram 就只是没有滤镜可选，不该把整个包的导入拖垮。
-# 原来这里会 subprocess 调 `pip install`，但 uv 建的虚拟环境里根本没有 pip 模块，
+# 原来这里会在导入时自动安装依赖，但 uv 建的虚拟环境里根本没有 pip 模块，
 # 直接抛异常 —— 整个 KayTool 都会加载失败，节点全部消失。
 try:
     import pilgram
