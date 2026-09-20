@@ -5,6 +5,14 @@
 - Fixed ab Images losing all of its interactions on the current frontend (image display, A/B switching, context menu, minimum size)
 - 修复通过 ComfyUI Manager 安装时 GuLuLu 图片加载不出来的问题
 - Fixed the GuLuLu image failing to load when installed via ComfyUI Manager
+- 修复 𝙆 Run 劫持队列接口时吞掉参数，导致 ComfyUI 原生的局部执行退化为运行整个工作流、UI 里设置的预览方式失效
+- Fixed the Run override swallowing queue parameters, which turned ComfyUI's own partial execution into a full-workflow run and disabled the preview method set in the UI
+- 修复在设置中关闭 Monitor 按钮后，刷新页面按钮又会出现的问题
+- Fixed the Monitor button reappearing after a refresh once it had been turned off in settings
+- 修复缺少 pilgram 时会尝试调用 pip 安装、在没有 pip 的虚拟环境中导致整个插件加载失败的问题
+- Fixed a missing pilgram triggering a pip install that breaks loading the whole plugin in environments without pip
+- 补齐 pyproject.toml 中缺失的依赖声明（pilgram、requests）
+- Declared the dependencies missing from pyproject.toml (pilgram, requests)
 - 修复节点排版工具栏在新版前端下完全消失、快捷键同时失效的问题
 - Fixed the node align toolbar disappearing entirely on the current frontend, which also disabled its shortcuts
 - 工具栏改为完全自由的浮窗，自带拖拽手柄，拖到哪就停在哪，不再依附于官方「运行」按钮

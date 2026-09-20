@@ -75,7 +75,7 @@ app.registerExtension({
     setup() {
         const originalApiQueuePrompt = api.queuePrompt;
         api.queuePrompt = async function (index, prompt) {
-            if (KayToolState.queueNodeIds?.length && prompt.output) {
+            if (KayToolState.queueNodeIds?.length && prompt?.output) {
                 const oldOutput = prompt.output;
                 let newOutput = {};
                 for (const queueNodeId of KayToolState.queueNodeIds) {
@@ -83,7 +83,10 @@ app.registerExtension({
                 }
                 prompt.output = newOutput;
             }
-            return originalApiQueuePrompt.apply(this, [index, prompt]);
+            // 必须原样透传所有参数。queuePrompt 的第三个参数带着 ComfyUI 的
+            // partialExecutionTargets（局部执行）和 previewMethod（预览方式），
+            // 只转发前两个会把它们丢掉，局部执行会变成跑全图、UI 里设的预览也会失效。
+            return originalApiQueuePrompt.apply(this, arguments);
         };
 
         const originalDraw = LGraphCanvas.prototype.draw;

@@ -871,6 +871,9 @@ app.registerExtension({
             tooltip: KayResourceMonitor.isVisible ? "Hide Monitor" : "Show Monitor"
         });
         KayResourceMonitor.menuButton = showMenuButton.element;
+        // 设置项的 onChange 只在开关被拨动时触发，页面刷新走的是这里，
+        // 所以初始显隐必须自己按设置来一次，否则关掉的按钮一刷新就又冒出来。
+        showMenuButton.element.style.display = KayResourceMonitor.isEnabled ? '' : 'none';
         if (app.menu?.settingsGroup) {
             app.menu.settingsGroup.append(showMenuButton);
         }

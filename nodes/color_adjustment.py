@@ -1,13 +1,20 @@
 import os
+import logging
 import numpy as np
 from PIL import Image, ImageEnhance
 import torch
-import subprocess
 
+# 缺了 pilgram 就只是没有滤镜可选，不该把整个包的导入拖垮。
+# 原来这里会 subprocess 调 `pip install`，但 uv 建的虚拟环境里根本没有 pip 模块，
+# 直接抛异常 —— 整个 KayTool 都会加载失败，节点全部消失。
 try:
     import pilgram
 except ImportError:
-    subprocess.check_call(['pip', 'install', 'pilgram'])
+    pilgram = None
+    logging.warning(
+        "[KayTool] pilgram not installed, Color Adjustment filters are unavailable. "
+        "Install it with: pip install pilgram"
+    )
 
 
 def tensor2pil(image):
@@ -19,6 +26,8 @@ def pil2tensor(image):
 
 
 def get_pilgram_filters():
+    if pilgram is None:
+        return ["None"]
     filters = [f for f in dir(pilgram) if not f.startswith('_') and callable(getattr(pilgram, f))]
     numbered_filters = [f"{i+1}_{filters[i]}" for i in range(len(filters))]
     numbered_filters.insert(0, "None")
@@ -109,7 +118,7 @@ class ColorAdjustment:
                 pil_img = tensor2pil(img)
                 pil_img = self.adjust_exposure_contrast_color(pil_img, exposure, contrast, temperature, tint, saturation)
 
-                if style != "None":
+                if style != "None" and pilgram is not None:
                     filter_name_clean = style.split('_', 1)[1]
                     filter_func = getattr(pilgram, filter_name_clean)
                     filtered_img = filter_func(pil_img)
