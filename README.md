@@ -9,6 +9,8 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 ## 最新更新 / Last Update
 
 ### [未发布 Unreleased]
+- 修复自定义图像保存节点把图片写到进程工作目录、并且无视 ComfyUI `--output-directory` 设置的问题；现在始终保存到 ComfyUI 的输出目录下的 `Custom_Save_Image` 子目录  
+- Fixed Custom Save Image writing to the process working directory and ignoring ComfyUI's `--output-directory`; it now always saves under ComfyUI's own output directory, in the `Custom_Save_Image` subfolder  
 - 数学表达式计算节点支持三角函数、对数指数和常量（`sin`/`cos`/`tan`/`atan2`/`sqrt`/`log`/`exp`/`pi`/`e` 等），三角函数以弧度为单位，可用 `radians()` 转换  
 - AbcMath now supports trigonometric, logarithmic and exponential functions plus constants (`sin`, `cos`, `tan`, `atan2`, `sqrt`, `log`, `exp`, `pi`, `e`, …); trigonometry works in radians, convert with `radians()`  
 - 批量图片载入节点新增 `filenames` 输出（原文件名），配合自定义图像保存节点新增的 `exact_filename` 开关，即可按原文件名保存批处理结果  

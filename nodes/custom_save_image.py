@@ -166,7 +166,9 @@ class CustomSaveImage:
         return f"{int(time.time() * 1000)}_{idx:03d}" 
 
     def get_output_directory(self):
-        return os.path.join(os.getcwd(), "output", "Custom_Save_Image")
+        # 必须问 folder_paths，不能用 os.getcwd()：工作目录取决于 ComfyUI 是从哪里启动的，
+        # 而且写死 getcwd 会完全绕开 --output-directory。
+        return os.path.join(folder_paths.get_output_directory(), "Custom_Save_Image")
 
     def parse_filename_prefix(self, prefix, prompt, image):
         if not prefix or not isinstance(prefix, str):
