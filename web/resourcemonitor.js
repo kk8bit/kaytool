@@ -159,7 +159,9 @@ const KayResourceMonitor = {
         this.bindEvents();
         this.setupUI();
         this.setupWorkflowListener();
-        this.setupWebSocketListener();
+        // 页面切到后台就停，回来再拉：后台标签页没必要每秒打一次接口
+        document.addEventListener('visibilitychange', () => this.syncPolling());
+        this.syncPolling();
         if (this.isEnabled && this.isVisible) {
             this.startAnimation();
         }
@@ -225,13 +227,51 @@ const KayResourceMonitor = {
             this.startAnimation();
         }
     },
-    setupWebSocketListener() {
-        api.addEventListener("kaytool.resources", (event) => {
-            const data = event.detail;
-            this.updateTarget(data);
-            this.updateDisplay();
-            this.drawCurves();
-        });
+    // 资源数据改为前端按需轮询，而不是后端常驻任务往 WebSocket 里推：
+    // 面板关着、标签页在后台时后端就完全不用采集；也不再有一个会悄悄死掉的 asyncio 任务。
+    // 频率沿用原来的自适应逻辑（CPU 越忙拉得越慢），0.5–2 秒一次，和 ComfyUI 自己轮询队列同一量级。
+    polling: false,
+    pollTimer: null,
+    pollInterval: 1000,
+
+    shouldPoll() {
+        return this.isEnabled && this.isVisible && !document.hidden;
+    },
+
+    syncPolling() {
+        if (this.shouldPoll()) this.startPolling();
+        else this.stopPolling();
+    },
+
+    startPolling() {
+        if (this.polling) return;
+        this.polling = true;
+        const tick = async () => {
+            if (!this.polling) return;
+            try {
+                const res = await api.fetchApi("/kaytool/resources");
+                if (res.ok) {
+                    const data = await res.json();
+                    this.updateTarget(data);
+                    this.updateDisplay();
+                    this.drawCurves();
+                    const cpu = data.cpu_percent || 0;
+                    this.pollInterval = cpu > 80 ? 2000 : cpu > 50 ? 1000 : 500;
+                }
+            } catch (e) {
+                // 服务重启、断网：安静地下次再试，别刷屏
+            }
+            if (this.polling) this.pollTimer = setTimeout(tick, this.pollInterval);
+        };
+        tick();
+    },
+
+    stopPolling() {
+        this.polling = false;
+        if (this.pollTimer !== null) {
+            clearTimeout(this.pollTimer);
+            this.pollTimer = null;
+        }
     },
     setupWorkflowListener() {
         const that = this;
@@ -425,6 +465,7 @@ const KayResourceMonitor = {
             this.refreshCanvas();
             this.startAnimation();
         }
+        this.syncPolling();
         this.saveVisibility();
     },
     hide() {
@@ -433,6 +474,7 @@ const KayResourceMonitor = {
             this.toolbar.style.display = 'none';
             this.stopAnimation();
         }
+        this.syncPolling();
         this.saveVisibility();
     },
     updateEnabledState(enabled) {
@@ -447,6 +489,7 @@ const KayResourceMonitor = {
                 this.stopAnimation();
             }
         }
+        this.syncPolling();
     },
     // 画布要同时伺候两套尺寸：显示用的 CSS 像素，和后备缓冲的物理像素。
     // 只设 width/height 属性的话，在 2 倍屏上等于把一张半分辨率的图拉大显示 —— 线条就糊了。
@@ -877,7 +920,6 @@ app.registerExtension({
     name: "KayTool.ResourceMonitor",
     async setup() {
         await KayResourceMonitor.init();
-        api.fetchApi("/kaytool/start_monitor", { method: "POST" });
         const showMenuButton = new (await import("/scripts/ui/components/button.js")).ComfyButton({
             content: "𝙆 Monitor",
             action: () => {

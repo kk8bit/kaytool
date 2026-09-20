@@ -340,7 +340,6 @@
 //     }
 
 //     // Override hideNotification to include cleanup
-//     const originalHide = hideNotification.bind(null, div);
 //     div.hide = () => {
 //         cleanup();
 //         originalHide();

@@ -187,8 +187,8 @@ const KayNodeAlignmentManager = {
             this.toolbarContainer.appendChild(el);
         });
 
-        document.addEventListener('mousemove', this.onDragging.bind(this));
-        document.addEventListener('mouseup', this.onDragEnd.bind(this));
+        document.addEventListener('mousemove', (e) => this.onDragging(e));
+        document.addEventListener('mouseup', (e) => this.onDragEnd(e));
         document.addEventListener('selectstart', e => this.dragState.isDragging && e.preventDefault());
         this.addTooltip();
     },

@@ -1,6 +1,6 @@
-import asyncio
 import logging
 import platform
+import time
 import psutil
 from server import PromptServer
 from aiohttp import web
@@ -93,69 +93,31 @@ class KayResourceCollector:
         except Exception:
             return "GPU information unavailable"
 
-class KayResourceMonitor:
-    def __init__(self, initial_rate=1.0):
-        self.rate = initial_rate
-        self.collector = None
-        self.running = False
-        self.task = None
+# 前端按需轮询，这里只负责按需采集。多个标签页同时拉时靠一个很短的缓存去重，
+# 也避免 psutil.cpu_percent(interval=None) 的「距上次调用」基准被多个客户端互相打乱。
+_collector = None
+_cache = {"at": 0.0, "data": None}
+CACHE_TTL_SECONDS = 0.2
 
-    def adjust_rate(self, cpu_percent):
-        if cpu_percent > 80:
-            return 2
-        elif cpu_percent > 50:
-            return 1
-        return 0.5
 
-    async def send_message(self, data):
-        try:
-            await PromptServer.instance.send("kaytool.resources", data)
-        except Exception:
-            pass
+def _get_status_cached():
+    global _collector
+    now = time.monotonic()
+    if _cache["data"] is None or now - _cache["at"] > CACHE_TTL_SECONDS:
+        if _collector is None:
+            _collector = KayResourceCollector()
+        _cache["data"] = _collector.get_status()
+        _cache["at"] = now
+    return _cache["data"]
 
-    async def monitor_loop(self):
-        # 整个循环兜住：这是 create_task 起的任务，没人 await 它的结果，
-        # 抛出去只会在 GC 时留下一句 "Task exception was never retrieved"，
-        # 用户看到的就是监视器静默不工作，且 running 还卡在 True。
-        try:
-            if self.collector is None:
-                self.collector = KayResourceCollector()
-            self.running = True
-            while self.running:
-                data = self.collector.get_status()
-                self.rate = self.adjust_rate(data["cpu_percent"])
-                await self.send_message(data)
-                await asyncio.sleep(self.rate)
-        except asyncio.CancelledError:
-            raise
-        except Exception:
-            logging.exception("[KayTool] Resource monitor stopped unexpectedly")
-        finally:
-            self.running = False
 
-    def start(self):
-        if self.running:
-            self.stop()
-        if self.rate <= 0:
-            return
-        # 在主事件循环中创建任务
-        self.task = asyncio.create_task(self.monitor_loop())
-
-    def stop(self):
-        self.running = False
-        if self.task is not None:
-            self.task.cancel()
-            self.task = None
-
-monitor = KayResourceMonitor(initial_rate=1.0)
 routes = PromptServer.instance.routes
 
-@routes.post("/kaytool/start_monitor")
-async def start_monitor_endpoint(request):
-    monitor.start()
-    return web.Response(text="Monitor started")
 
-@routes.post("/kaytool/stop_monitor")
-async def stop_monitor_endpoint(request):
-    monitor.stop()
-    return web.Response(text="Monitor stopped")
+@routes.get("/kaytool/resources")
+async def resources_endpoint(request):
+    try:
+        return web.json_response(_get_status_cached())
+    except Exception:
+        logging.exception("[KayTool] Failed to collect resource status")
+        return web.json_response({"error": "unavailable"}, status=500)

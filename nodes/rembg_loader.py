@@ -28,13 +28,9 @@ class RemBGLoader:
 
     def execute(self, model, providers):
         
-        base_path = Path(__file__).parent.parent 
-
-        model_dir = base_path / "models" / "RemBG" / model
-        model_dir.mkdir(parents=True, exist_ok=True)  
-
-   
-        os.environ["U2NET_HOME"] = str(model_dir)
+        # 模型交给 rembg 自己管理（默认 ~/.rembg/models/，可用 REMBG_HOME 或 U2NET_HOME 环境变量改）。
+        # 以前这里把 U2NET_HOME 指到插件目录：修改的是整个进程的环境变量，会影响同一个
+        # ComfyUI 里其他用 rembg 的插件，而且 rembg 本来就没有别的方式指定目录。
 
         if providers == "auto":
             providers = self.get_default_provider()

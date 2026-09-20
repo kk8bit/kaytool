@@ -1,6 +1,10 @@
 # Changelog
 
 ## [未发布 Unreleased]
+- 资源监视器改为前端按需轮询（0.5–2 秒自适应），不再由后端常驻任务推送：面板关闭或标签页在后台时后端完全不采集；多标签页共享 200ms 缓存
+- The resource monitor now polls on demand from the frontend (adaptive 0.5–2s) instead of a resident backend task pushing over WebSocket: nothing is collected while the panel is closed or the tab is in the background; multiple tabs share a 200ms cache
+- RemBG 模型不再强制下载到插件目录，改由 rembg 自行管理（默认 `~/.rembg/models/`，可用 `REMBG_HOME` 环境变量更改）。此前的做法会修改整个进程的环境变量，影响同一 ComfyUI 内其他使用 rembg 的插件。**升级后首次使用会重新下载模型**，原插件目录下 `models/RemBG/` 里的文件可删除或移动过去
+- RemBG models are no longer forced into the plugin folder; rembg manages them itself (default `~/.rembg/models/`, configurable via `REMBG_HOME`). The old approach modified the process-wide environment and affected other rembg-based plugins in the same ComfyUI. **Models will be re-downloaded once after upgrading**; files under the plugin's `models/RemBG/` can be deleted or moved over
 - 资源监视器的曲线在高分屏上不再模糊：画布按 devicePixelRatio 配置后备缓冲，去掉了导致纵向压扁的写死高度；面板最小高度提高到 150，缩到最小也能完整显示底部数据行
 - The resource monitor chart is no longer blurry on HiDPI displays: the canvas backing store now follows devicePixelRatio and the hardcoded height that squashed it vertically is gone; the panel's minimum height is now 150 so the data rows always fit
 - 修复资源监视器在 Linux/Windows 上未安装 pynvml 时会静默失效的问题（异常处理自身写错，反而在该兜底的场景抛出 NameError）；监控循环也加上了整体保护，任何意外都不会再让监视器无声停摆

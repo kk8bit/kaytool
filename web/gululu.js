@@ -138,13 +138,13 @@ const KayGuLuLuManager = {
         document.removeEventListener("click", this.hideContextMenu);
 
         if (this.container && this.isEnabled) {
-            this.container.addEventListener("mousemove", this.handleMouseMove.bind(this));
-            this.container.addEventListener("mousedown", this.onDragStart.bind(this));
-            this.container.addEventListener("contextmenu", this.onContextMenu.bind(this));
+            this.container.addEventListener("mousemove", (e) => this.handleMouseMove(e));
+            this.container.addEventListener("mousedown", (e) => this.onDragStart(e));
+            this.container.addEventListener("contextmenu", (e) => this.onContextMenu(e));
         }
-        document.addEventListener("mousemove", this.onDragging.bind(this));
-        document.addEventListener("mouseup", this.onDragEnd.bind(this));
-        document.addEventListener("click", this.hideContextMenu.bind(this));
+        document.addEventListener("mousemove", (e) => this.onDragging(e));
+        document.addEventListener("mouseup", (e) => this.onDragEnd(e));
+        document.addEventListener("click", (e) => this.hideContextMenu(e));
     },
 
     updateSize(newSize) {
@@ -833,10 +833,9 @@ export function showNotification({
         }, timeout);
     }
 
-    const originalHide = hideNotification.bind(null, div);
     div.hide = () => {
         cleanup();
-        originalHide();
+        hideNotification(div);
     };
 
     return div;
