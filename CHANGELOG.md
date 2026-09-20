@@ -1,6 +1,6 @@
 # Changelog
 
-## [未发布 Unreleased]
+## [0.71.0] - 2026-09-20
 - 自定义图标新增开关，关闭后恢复 ComfyUI 默认图标；并把该功能的措辞统一为「浏览器标签页图标」——它一直只改标签页图标，不会替换界面左上角的 ComfyUI 标志
 - Added a toggle for the custom icon, which restores ComfyUI's own icon when off, and renamed the feature to "browser tab icon": it only ever changed the tab icon, never the ComfyUI logo in the interface
 - 等宽/等高改为取选中节点中的最大值，不再取「第一个被选中的节点」（以前谁先被点到就以谁为准，看起来像随机缩水）
