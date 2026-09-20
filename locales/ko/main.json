@@ -6,7 +6,6 @@
   },
   "nodeCategories": {
     "Image": "이미지",
-    "Translate": "번역",
     "Slider": "슬라이더",
     "Remove BG": "배경 제거",
     "Mask": "마스크"

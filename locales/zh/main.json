@@ -10,7 +10,6 @@
     },
     "nodeCategories": {
       "Image": "图像",
-      "Translate": "翻译器",
       "Slider": "滑块控制器",
       "Remove BG": "背景移除",
       "Mask": "遮罩"

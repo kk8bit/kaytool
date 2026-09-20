@@ -4,4 +4,3 @@ opencv-python
 py-cpuinfo
 pynvml
 pilgram
-requests

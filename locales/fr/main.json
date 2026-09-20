@@ -6,7 +6,6 @@
   },
   "nodeCategories": {
     "Image": "Image",
-    "Translate": "Traducteur",
     "Slider": "Contrôleur de curseur",
     "Remove BG": "Supprimer l'arrière-plan",
     "Mask": "Masque"

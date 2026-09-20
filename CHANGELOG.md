@@ -1,6 +1,8 @@
 # Changelog
 
 ## [未发布 Unreleased]
+- 移除 AIO / Tencent / Baidu 三个翻译节点，改为独立仓库 [ComfyUI-kaytool-translate](https://github.com/kk8bit/ComfyUI-kaytool-translate)（Git 安装，节点标识不变，旧工作流装上即恢复）。原因：Registry 安全扫描会把任何网络请求标记为需人工审核，翻译节点无法避免；拆出后核心包不再被卡。核心包同时不再依赖 `requests`
+- Removed the AIO / Tencent / Baidu translation nodes into a separate repository, [ComfyUI-kaytool-translate](https://github.com/kk8bit/ComfyUI-kaytool-translate) (installed from Git; node identifiers unchanged, so existing workflows recover once it is installed). The Registry's security scan flags any network request for manual review, which translation cannot avoid; splitting them out keeps the core package from being held up. The core package no longer depends on `requests`
 - 资源监视器改为前端按需轮询（0.5–2 秒自适应），不再由后端常驻任务推送：面板关闭或标签页在后台时后端完全不采集；多标签页共享 200ms 缓存
 - The resource monitor now polls on demand from the frontend (adaptive 0.5–2s) instead of a resident backend task pushing over WebSocket: nothing is collected while the panel is closed or the tab is in the background; multiple tabs share a 200ms cache
 - RemBG 模型不再强制下载到插件目录，改由 rembg 自行管理（默认 `~/.rembg/models/`，可用 `REMBG_HOME` 环境变量更改）。此前的做法会修改整个进程的环境变量，影响同一 ComfyUI 内其他使用 rembg 的插件。**升级后首次使用会重新下载模型**，原插件目录下 `models/RemBG/` 里的文件可删除或移动过去

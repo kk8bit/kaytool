@@ -9,6 +9,8 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 ## 最新更新 / Last Update
 
 ### [未发布 Unreleased]
+- 移除 AIO / Tencent / Baidu 三个翻译节点，改为独立仓库 [ComfyUI-kaytool-translate](https://github.com/kk8bit/ComfyUI-kaytool-translate)（Git 安装，节点标识不变，旧工作流装上即恢复）。原因：Registry 安全扫描会把任何网络请求标记为需人工审核，翻译节点无法避免；拆出后核心包不再被卡。核心包同时不再依赖 `requests`  
+- Removed the AIO / Tencent / Baidu translation nodes into a separate repository, [ComfyUI-kaytool-translate](https://github.com/kk8bit/ComfyUI-kaytool-translate) (installed from Git; node identifiers unchanged, so existing workflows recover once it is installed). The Registry's security scan flags any network request for manual review, which translation cannot avoid; splitting them out keeps the core package from being held up. The core package no longer depends on `requests`  
 - 资源监视器改为前端按需轮询（0.5–2 秒自适应），不再由后端常驻任务推送：面板关闭或标签页在后台时后端完全不采集；多标签页共享 200ms 缓存  
 - The resource monitor now polls on demand from the frontend (adaptive 0.5–2s) instead of a resident backend task pushing over WebSocket: nothing is collected while the panel is closed or the tab is in the background; multiple tabs share a 200ms cache  
 - RemBG 模型不再强制下载到插件目录，改由 rembg 自行管理（默认 `~/.rembg/models/`，可用 `REMBG_HOME` 环境变量更改）。此前的做法会修改整个进程的环境变量，影响同一 ComfyUI 内其他使用 rembg 的插件。**升级后首次使用会重新下载模型**，原插件目录下 `models/RemBG/` 里的文件可删除或移动过去  
@@ -221,23 +223,6 @@ https://github.com/user-attachments/assets/b8d1d3f0-04d1-46c5-968a-e433778b73e6
 
 
 
-## 自动翻译节点 AIOTranslater
-
-- 支持单文本输入的自动翻译。  
-- 内置高效 AI 翻译引擎，无需手动获取 API 密钥。  
-- 提供高质量翻译结果，适用于多种语言场景。  
-- 支持多种目标语言选择（英语、中文、德语、西班牙语等）。  
-- 自动检测源语言，简化用户操作。  
-- 高效稳定，适合快速集成到工作流中。  
-- Supports automatic translation of single text input.  
-- Built-in high-efficiency AI translation engine, no need to manually obtain API keys.  
-- Provides high-quality translations for various language scenarios.  
-- Offers multiple target language options (English, Chinese, German, Spanish, etc.).  
-- Automatically detects source language for simplified user experience.  
-- Efficient and stable, ideal for quick integration into workflows.
-
-
-
 ## 大壮提示词生成节点 StrongPrompt
 
 - 基于 CLIP 模型生成高质量的正向和负向提示词嵌入。  
@@ -320,23 +305,6 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 
 - `%width%`：图像宽度（像素）  
 - `%height%`：图像高度（像素）
-
-
-
-## 百度翻译节点 BaiduTranslater
-
-- 使用百度翻译 API 提供高质量的多语言翻译服务。  
-- 支持自动检测源语言及多种目标语言选择（中文简体、中文繁体、英语等）。  
-- 需要用户提供百度 API 的 App ID 和 App Key（可在 [百度翻译开放平台](https://fanyi-api.baidu.com/) 注册获取）。  
-- 自动保存用户输入的 API 配置，简化后续使用。  
-- 提供灵活的启用/禁用翻译功能开关。  
-- 适用于需要精准翻译的多语言工作流。  
-- Utilizes Baidu Translate API to provide high-quality multi-language translation services.  
-- Supports automatic detection of source language and multiple target language options (Simplified Chinese, Traditional Chinese, English, etc.).  
-- Requires users to provide Baidu API App ID and App Key (can be obtained by registering at [Baidu Translate Open Platform](https://fanyi-api.baidu.com/)).  
-- Automatically saves user-entered API configurations for simplified subsequent use.  
-- Provides a flexible switch to enable or disable the translation function.  
-- Suitable for multi-language workflows requiring precise translations.
 
 
 
@@ -503,6 +471,11 @@ In `filename_prefix`, you can use the following dynamic variables to customize t
 - Suitable for workflows involving mask drawing and image segmentation that require refined masks.
 
 
+
+# 翻译节点 Translation Nodes
+
+自 0.71.1 起，`𝙆 AIO Translater`、`𝙆 Tencent Translater`、`𝙆 Baidu Translater` 三个翻译节点已移出本包，改为独立仓库 [ComfyUI-kaytool-translate](https://github.com/kk8bit/ComfyUI-kaytool-translate)，以 Git 方式安装。节点标识不变，旧工作流装上即可继续使用。原因：Comfy Registry 的安全扫描会将任何发起网络请求的节点标记为需人工审核，而翻译节点无法不发请求。
+As of 0.71.1 the three translation nodes live in a separate repository, [ComfyUI-kaytool-translate](https://github.com/kk8bit/ComfyUI-kaytool-translate), installed from Git. Node identifiers are unchanged, so existing workflows work again once it is installed. The Comfy Registry's security scan flags any node that makes network requests for manual review, and translation cannot avoid that.
 
 # 安装 Installation
 
