@@ -8,6 +8,10 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 ## 最新更新 / Last Update
 
+### [未发布 Unreleased]
+- 批量图片载入节点新增 `filenames` 输出（原文件名），配合自定义图像保存节点新增的 `exact_filename` 开关，即可按原文件名保存批处理结果  
+- Load Image Folder gained a `filenames` output, and Custom Save Image an `exact_filename` toggle, so batch results can be saved under their original names  
+
 ### [0.71.0] - 2026-09-20
 - 自定义图标新增开关，关闭后恢复 ComfyUI 默认图标；并把该功能的措辞统一为「浏览器标签页图标」——它一直只改标签页图标，不会替换界面左上角的 ComfyUI 标志  
 - Added a toggle for the custom icon, which restores ComfyUI's own icon when off, and renamed the feature to "browser tab icon": it only ever changed the tab icon, never the ComfyUI logo in the interface  
@@ -158,6 +162,8 @@ https://github.com/user-attachments/assets/b8d1d3f0-04d1-46c5-968a-e433778b73e6
   Provide batch loading and batch processing of images.  
 - 支持 image 和 mask 的批量输出。  
   Support batch output of images and masks.
+- 新增 `filenames` 输出，逐张给出图片的原文件名（不含扩展名）。配合 𝙆 Custom Save Image 的 `exact_filename` 开关，即可按原文件名保存处理结果。  
+  Adds a `filenames` output with each image's original name (without extension). Pair it with the `exact_filename` toggle on 𝙆 Custom Save Image to save results under their original names.
 
 ## 无线数据传输节点 Set & Get
 
@@ -264,6 +270,8 @@ https://github.com/user-attachments/assets/b8d1d3f0-04d1-46c5-968a-e433778b73e6
 - Provides high-quality JPG saving options with customizable compression quality.  
 - Automatically generates unique filenames to prevent overwriting existing files.  
 - Suitable for workflows requiring precise control over output images.
+- `exact_filename` 开关：开启后 `filename_prefix` 就是最终文件名，不再追加时间戳。重名会自动加 `_1`、`_2` 后缀，不会覆盖已有文件。  
+  `exact_filename`: when on, `filename_prefix` is used as the final filename with no timestamp appended. Existing files are never overwritten — a `_1`, `_2` suffix is added instead.
 
 ### 变量使用说明 Variable Usage Notes
 

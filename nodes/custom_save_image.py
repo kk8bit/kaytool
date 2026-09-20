@@ -28,6 +28,11 @@ class CustomSaveImage:
                 "author": ("STRING", {"default": ""}),
                 "copyright_info": ("STRING", {"default": ""}),
                 "save_metadata": ("BOOLEAN", {"default": False}),
+                "exact_filename": ("BOOLEAN", {
+                    "default": False,
+                    "tooltip": "Use filename_prefix as the exact filename instead of appending a timestamp. "
+                               "Connect the 'filenames' output of Load Image Folder to save with the original names."
+                }),
             },
             "hidden": {"prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"},
         }
@@ -38,7 +43,8 @@ class CustomSaveImage:
     CATEGORY = "KayTool"
 
     def save_images(self, images, preview_only=False, filename_prefix="Custom_Save_Image", save_metadata=True, format="PNG", 
-                    jpg_quality=95, author="", copyright_info="", color_profile="sRGB IEC61966-2.1", prompt=None, extra_pnginfo=None):
+                    jpg_quality=95, author="", copyright_info="", color_profile="sRGB IEC61966-2.1", exact_filename=False,
+                    prompt=None, extra_pnginfo=None):
         temp_dir = folder_paths.get_temp_directory()
         os.makedirs(temp_dir, exist_ok=True)
 
@@ -123,8 +129,11 @@ class CustomSaveImage:
             })
 
             if not preview_only:
-                final_filename = f"{base_prefix}_{self.get_unique_filename(idx)}.{format.lower()}"
-                final_full_path = os.path.join(output_dir, final_filename)
+                if exact_filename:
+                    final_full_path = self.resolve_exact_path(output_dir, base_prefix, format.lower())
+                else:
+                    final_filename = f"{base_prefix}_{self.get_unique_filename(idx)}.{format.lower()}"
+                    final_full_path = os.path.join(output_dir, final_filename)
                 shutil.copy2(temp_full_path, final_full_path)
 
         return {"ui": {"images": results}, "status": "Images saved successfully"}
@@ -138,6 +147,19 @@ class CustomSaveImage:
     def load_icc_profile(self, path):
         with open(path, "rb") as f:
             return f.read()
+
+    def resolve_exact_path(self, output_dir, name, ext):
+        """把 base_prefix 当成完整文件名用，但不允许它逃出 output_dir，也不覆盖已有文件。"""
+        # 文件名可能来自上游输入，必须剥掉路径成分，挡住 ../ 之类的写法
+        name = os.path.basename(name.replace("\\", "/").rstrip("/")).strip()
+        name = name.lstrip(".") or "Custom_Save_Image"
+
+        candidate = os.path.join(output_dir, f"{name}.{ext}")
+        counter = 1
+        while os.path.exists(candidate):
+            candidate = os.path.join(output_dir, f"{name}_{counter}.{ext}")
+            counter += 1
+        return candidate
 
     def get_unique_filename(self, idx):
         import time

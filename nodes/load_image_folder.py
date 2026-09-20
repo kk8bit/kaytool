@@ -21,9 +21,9 @@ class LoadImageFolder:
         }
 
     CATEGORY = "KayTool"
-    RETURN_TYPES = ("IMAGE", "MASK")
-    RETURN_NAMES = ("images", "masks")
-    OUTPUT_IS_LIST = (True, True)
+    RETURN_TYPES = ("IMAGE", "MASK", "STRING")
+    RETURN_NAMES = ("images", "masks", "filenames")
+    OUTPUT_IS_LIST = (True, True, True)
     FUNCTION = "load_images"
     OUTPUT_NODE = True
 
@@ -57,6 +57,9 @@ class LoadImageFolder:
       
         images = []
         masks = []
+        # 与 images 严格同序同长：某张图读失败时三者一起跳过，
+        # 否则下游按索引配对就会张冠李戴。
+        filenames = []
 
        
         for image_path in image_files:
@@ -78,6 +81,8 @@ class LoadImageFolder:
 
                 images.append(image_tensor)
                 masks.append(mask.unsqueeze(0))
+                # 不带扩展名：下游保存节点自己决定存成 PNG 还是 JPG
+                filenames.append(os.path.splitext(os.path.basename(image_path))[0])
 
             except Exception as e:
                 print(f"Error loading {image_path}: {str(e)}")
@@ -87,9 +92,9 @@ class LoadImageFolder:
         if not images:
             placeholder_image = torch.zeros((1, 64, 64, 3), dtype=torch.float32)
             placeholder_mask = torch.zeros((1, 64, 64), dtype=torch.float32)
-            return ([placeholder_image], [placeholder_mask])
+            return ([placeholder_image], [placeholder_mask], ["placeholder"])
 
-        return (images, masks)
+        return (images, masks, filenames)
 
     @classmethod
     def IS_CHANGED(s, path, subfolders):
