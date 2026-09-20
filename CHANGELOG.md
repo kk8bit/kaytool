@@ -1,6 +1,8 @@
 # Changelog
 
 ## [未发布 Unreleased]
+- 资源监视器的曲线在高分屏上不再模糊：画布按 devicePixelRatio 配置后备缓冲，去掉了导致纵向压扁的写死高度；面板最小高度提高到 150，缩到最小也能完整显示底部数据行
+- The resource monitor chart is no longer blurry on HiDPI displays: the canvas backing store now follows devicePixelRatio and the hardcoded height that squashed it vertically is gone; the panel's minimum height is now 150 so the data rows always fit
 - 修复资源监视器在 Linux/Windows 上未安装 pynvml 时会静默失效的问题（异常处理自身写错，反而在该兜底的场景抛出 NameError）；监控循环也加上了整体保护，任何意外都不会再让监视器无声停摆
 - Fixed the resource monitor silently dying on Linux/Windows when pynvml isn't installed (its own error handling raised a NameError in exactly the case it was meant to cover); the monitor loop is now guarded so an unexpected failure can no longer stop it without a trace
 - 修复 Workflow PNG 导出失败时画布视图被留在导出状态、只能刷新页面才能恢复的问题；导出失败现在也会明确提示（大工作流可能超出浏览器画布上限），不再静默无反应

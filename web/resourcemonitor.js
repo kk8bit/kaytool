@@ -106,7 +106,9 @@ const KayResourceMonitor = {
     smoothFactor: 0.1,
     easeOutDuration: 500,
     minWidth: 150,
-    minHeight: 90,
+    // 标题 19 + 工作流行 11 + 画布外边距 15 + 五行数据 55 + 内边距 20 = 120，
+    // 再给曲线留 30px。原来的 90 连数据行都装不下，缩到底时靠 overflow 把它们藏掉。
+    minHeight: 150,
     maxHeight: 219,
     edgeThreshold: 10,
     resizeHandleSize: 10,
@@ -123,8 +125,8 @@ const KayResourceMonitor = {
         toolbar: `position: fixed; display: flex; flex-direction: column; color: rgba(186, 186, 186, 0.8); padding: 10px; border-radius: 5px; z-index: 10000; user-select: none; pointer-events: none; max-height: 219px;`,
         header: `margin-bottom: 5px; font-weight: bold; font-size: 10px;`,
         headerText: `cursor: grab; pointer-events: auto; display: inline-block;`,
-        canvas: `margin-top: 5px; margin-bottom: 10px; width: 100%; height: 100px; pointer-events: none;`,
-        display: `display: flex; flex-direction: column; font-size: 10px; flex-grow: 1; overflow: hidden; pointer-events: none;`,
+        canvas: `flex: 1 1 0; min-height: 0; width: 100%; margin-top: 5px; margin-bottom: 10px; pointer-events: none; display: block;`,
+        display: `display: flex; flex-direction: column; font-size: 10px; flex: 0 0 auto; overflow: hidden; pointer-events: none;`,
         resizeHandle: `position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; border-bottom: 1px solid; border-right: 1px solid; cursor: se-resize; pointer-events: auto;`,
         dot: (color) => `display: inline-block; width: 3px; height: 3px; border-radius: 50%; background: ${color}; margin-right: 5px; flex-shrink: 0; transition: background 0.5s ease;`,
         bar: (width) => `display: inline-block; width: ${width}px; height: 3px; background: rgba(200, 200, 200, 0.3); margin-right: 5px; position: relative; flex-shrink: 0;`,
@@ -196,9 +198,14 @@ const KayResourceMonitor = {
 
         this.chartCanvas = document.createElement('canvas');
         Object.assign(this.chartCanvas.style, { cssText: this.styles.canvas });
-        this.chartCanvas.width = this.size.width - 20;
-        this.chartCanvas.height = 100;
         this.toolbar.appendChild(this.chartCanvas);
+        // 画布的 CSS 尺寸由 flex 决定，会在数据行首次生成、面板拖拽缩放时变化；
+        // 后备缓冲必须跟着重配，否则又回到「拉伸显示」的糊法。用 ResizeObserver
+        // 而不是在每帧里量尺寸，布局稳定时它不会触发。
+        if (typeof ResizeObserver !== 'undefined') {
+            this.canvasObserver = new ResizeObserver(() => this.sizeCanvas());
+            this.canvasObserver.observe(this.chartCanvas);
+        }
 
         this.dataDisplay = document.createElement('div');
         Object.assign(this.dataDisplay.style, { cssText: this.styles.display });
@@ -441,14 +448,30 @@ const KayResourceMonitor = {
             }
         }
     },
-    refreshCanvas() {
-        if (this.chartCanvas) {
-            const headerHeight = this.toolbar.firstChild.getBoundingClientRect().height + 10;
-            const workflowHeight = this.workflowProgressEl.clientHeight;
-            const dataHeight = this.dataDisplay.clientHeight;
-            this.chartCanvas.width = this.toolbar.clientWidth - 20;
-            this.chartCanvas.height = this.toolbar.clientHeight - headerHeight - workflowHeight - dataHeight - 10;
+    // 画布要同时伺候两套尺寸：显示用的 CSS 像素，和后备缓冲的物理像素。
+    // 只设 width/height 属性的话，在 2 倍屏上等于把一张半分辨率的图拉大显示 —— 线条就糊了。
+    // 画布的 CSS 尺寸由 flex 布局决定（吃掉数据行之外的剩余高度），这里只负责
+    // 按 devicePixelRatio 配好后备缓冲。不能反过来用 JS 算高度：之前那种
+    // 「面板高 − 数据行高」的算法在数据行被挤成 0 时会把画布撑满整个面板，
+    // 数据行就再也回不来了。
+    sizeCanvas() {
+        const canvas = this.chartCanvas;
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return; // 隐藏时无尺寸，等 show 时再来
+        const dpr = window.devicePixelRatio || 1;
+        const w = Math.round(rect.width * dpr);
+        const h = Math.round(rect.height * dpr);
+        if (canvas.width !== w || canvas.height !== h) {
+            canvas.width = w;
+            canvas.height = h;
         }
+        // 绘图代码继续用 CSS 像素坐标，不必关心 dpr
+        canvas.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+    },
+
+    refreshCanvas() {
+        this.sizeCanvas();
     },
     updateTarget(data) {
         this.target.cpu = data.cpu_percent || 0;
@@ -640,11 +663,13 @@ const KayResourceMonitor = {
     },
     drawCurves() {
         const ctx = this.chartCanvas.getContext('2d');
-        const w = this.chartCanvas.width;
-        const h = this.chartCanvas.height;
+        // setTransform 之后坐标系是 CSS 像素，所以这里不能再读后备缓冲的尺寸
+        const dpr = window.devicePixelRatio || 1;
+        const w = this.chartCanvas.width / dpr;
+        const h = this.chartCanvas.height / dpr;
         ctx.clearRect(0, 0, w, h);
         ctx.strokeStyle = 'rgba(166, 166, 166, 0.5)';
-        ctx.lineWidth = 0.3;
+        ctx.lineWidth = 0.5;
         ctx.beginPath();
         for (let i = 0; i < 4; i++) {
             const y = h - (i * h / 4);
@@ -795,11 +820,7 @@ const KayResourceMonitor = {
         this.position.top = Math.max(this.menuOffsets.top, Math.min(this.position.top, winH - this.size.height));
         this.toolbar.style.left = `${this.position.left}px`;
         this.toolbar.style.top = `${this.position.top}px`;
-        this.chartCanvas.width = this.toolbar.clientWidth - 20;
-        const headerHeight = this.toolbar.firstChild.getBoundingClientRect().height + 10;
-        const workflowHeight = this.workflowProgressEl.clientHeight;
-        const dataHeight = this.dataDisplay.clientHeight;
-        this.chartCanvas.height = this.toolbar.clientHeight - headerHeight - workflowHeight - dataHeight - 10;
+        this.refreshCanvas();
         this.updateDisplay();
     },
     startDrag(e) {
