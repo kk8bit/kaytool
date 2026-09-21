@@ -1,12 +1,14 @@
 [project]
 name = "kaytool"
 description ="KayTool boosts ComfyUI workflow efficiency with powerful tools like: image processing (resize, color, blur, expand, merge, crop), background/mask tasks via BiRefNet/RemBG, wireless data transfer (Set&Get), Professional high-precision resource monitoring, dynamic math operations, flexible text handling, precision sliders, metadata/color profile-supported image saving, batch processing via folder loading, canvas node map export as PNG with metadata, node alignment toolbar with custom styles, and a custom browser tab icon."
-version = "0.71.1"
+version = "0.71.2"
 license = {file = "LICENSE"}
 dependencies = ["rembg", "timm", "opencv-python", "py-cpuinfo", "pynvml", "pilgram"]
 
 [project.urls]
-Repository = "https://github.com/kk8bit/kaytool"
+Repository = "https://github.com/kk8bit/KayTool"
+# 大小写故意与 ComfyUI-Manager 列表里的条目保持一致：Manager 按这个 URL 把 Registry 条目和列表条目合并，
+# 大小写不同就会显示成两个包、丢掉星数和版本号。GitHub 仓库名本身不区分大小写。
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]

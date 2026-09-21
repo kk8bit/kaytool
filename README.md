@@ -8,7 +8,9 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 ## 最新更新 / Last Update
 
-### [未发布 Unreleased]
+### [0.71.2] - 2026-09-21
+- 修正 Registry 元数据里的仓库地址大小写，使 ComfyUI-Manager 能把 Registry 条目与列表条目合并显示（此前会显示为两个包，其中一个无版本号、无星数、排序垫底）  
+- Aligned the repository URL in the registry metadata with ComfyUI-Manager's list entry so Manager merges them into one (they showed as two packs, one without a version or stars, sorted to the bottom)  
 - 修复资源监视器的内存已用量与百分比口径不一致的问题（macOS 上会显示成「10.1/24GB (68%)」这种自相矛盾的数值）；现在两者都按「总量 − 可用」计算，与活动监视器一致  
 - Fixed the resource monitor's RAM figure disagreeing with its own percentage (on macOS it could read "10.1/24GB (68%)"); both now derive from total − available, matching Activity Monitor
 
