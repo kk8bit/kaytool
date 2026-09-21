@@ -127,7 +127,8 @@ const KayResourceMonitor = {
         workflow: 'rgba(208, 255, 0, 0.86)',
     },
     styles: {
-        toolbar: `position: fixed; display: flex; flex-direction: column; color: rgba(186, 186, 186, 0.8); padding: 10px; border-radius: 5px; z-index: 10000; user-select: none; pointer-events: none; max-height: 219px;`,
+        // will-change: transform 让面板拥有自己的合成层：它每帧重绘时不再连带重绘被它盖住的那块主画布。
+        toolbar: `position: fixed; display: flex; flex-direction: column; color: rgba(186, 186, 186, 0.8); padding: 10px; border-radius: 5px; z-index: 10000; user-select: none; pointer-events: none; max-height: 219px; will-change: transform;`,
         header: `margin-bottom: 5px; font-weight: bold; font-size: 10px;`,
         headerText: `cursor: grab; pointer-events: auto; display: inline-block;`,
         canvas: `flex: 1 1 0; min-height: 0; width: 100%; margin-top: 5px; margin-bottom: 10px; pointer-events: none; display: block;`,
