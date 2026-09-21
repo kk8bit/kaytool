@@ -8,6 +8,10 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 
 ## 最新更新 / Last Update
 
+### [未发布 Unreleased]
+- 资源监视器不再每帧重建文字行（改为每 500ms 一次，与数据刷新节奏一致）并复用一个测量上下文，去掉了每秒上百次的 DOM 重建和临时 canvas 创建，减轻画布拖动时的掉帧  
+- The resource monitor no longer rebuilds its text rows every frame (now every 500ms, matching the data rate) and reuses one measuring context, removing hundreds of DOM rebuilds and throwaway canvases per second that cost frames while panning  
+
 ### [0.71.2] - 2026-09-21
 - 修正 Registry 元数据里的仓库地址大小写，使 ComfyUI-Manager 能把 Registry 条目与列表条目合并显示（此前会显示为两个包，其中一个无版本号、无星数、排序垫底）  
 - Aligned the repository URL in the registry metadata with ComfyUI-Manager's list entry so Manager merges them into one (they showed as two packs, one without a version or stars, sorted to the bottom)  

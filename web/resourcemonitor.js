@@ -102,7 +102,10 @@ const KayResourceMonitor = {
     lastUpdate: 0, lastCurveUpdate: 0, lastDisplayUpdate: 0,
     maxPoints: 120,
     curveInterval: 0,
-    displayInterval: 0,
+    // 数据本身每 0.5–2 秒才变一次，文字行没必要每帧重建（之前是 0 = 每帧，
+    // 60 次/秒重写 innerHTML 并各自新建 canvas 量字宽，白白触发布局）。
+    displayInterval: 500,
+    measureCtx: null,
     smoothFactor: 0.1,
     easeOutDuration: 500,
     minWidth: 150,
@@ -582,8 +585,11 @@ const KayResourceMonitor = {
         const availableWidth = containerWidth - fixedSpacing;
         const barWidth = Math.min(maxBarWidth, Math.max(minBarWidth, availableWidth * 0.18));
         const textAvailableWidth = containerWidth - fixedSpacing - barWidth;
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        // 量字宽只需要一个常驻的 2D 上下文，不必每行新建 canvas
+        if (!this.measureCtx) {
+            this.measureCtx = document.createElement('canvas').getContext('2d');
+        }
+        const ctx = this.measureCtx;
         ctx.font = '10px sans-serif';
         const textWidth = ctx.measureText(`${label}: ${text}`).width;
         let displayText = `${label}: ${text}`;
