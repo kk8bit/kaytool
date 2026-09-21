@@ -419,6 +419,16 @@ const KayResourceMonitor = {
             this.workflowProgress.completionTime = null; // 新增：闲置时清空完成时间
         }
     },
+    // 每帧：只动工作流进度条（和资源条形同一套做法）
+    updateWorkflowBar() {
+        const fill = this.workflowProgressEl?.querySelector('.workflow-fill');
+        if (!fill) return;
+        const wp = this.workflowProgress;
+        const pct = (wp.currentNode === "Idle" || (wp.isProgressUnknown && wp.resetAnimationStartTime === null))
+            ? 0 : Math.min(Math.max(this.currentWorkflow.percentage, 0), 100);
+        fill.style.transform = `scaleX(${pct / 100})`;
+    },
+
     updateWorkflowProgress() {
         if (!this.workflowProgressEl) return;
         const { percentage, currentNode, isProgressUnknown, queueCount } = this.workflowProgress;
@@ -447,7 +457,7 @@ const KayResourceMonitor = {
             this.workflowProgressEl.innerHTML = `
                 <span class="workflow-dot" style="${styles.dot(dotColor)}"></span>
                 <span class="workflow-bar" style="${styles.bar(barWidth)}">
-                    <span style="${styles.fill(colors.workflow, barPercentage)}"></span>
+                    <span class="workflow-fill" style="${styles.fill(colors.workflow, 100)} transform-origin: left center; transform: scaleX(${barPercentage / 100}); will-change: transform;"></span>
                 </span>
                 <span style="${styles.text}">${displayText}</span>
             `;
@@ -455,11 +465,8 @@ const KayResourceMonitor = {
             const dotElement = this.workflowProgressEl.querySelector('.workflow-dot');
             if (dotElement) dotElement.style.background = dotColor;
             const barElement = this.workflowProgressEl.querySelector('.workflow-bar');
-            if (barElement) {
-                barElement.style.width = `${barWidth}px`;
-                const barFill = barElement.querySelector('span');
-                if (barFill) barFill.style.width = `${barPercentage}%`;
-            }
+            if (barElement) barElement.style.width = `${barWidth}px`;
+            // 条形本身由 updateWorkflowBar() 每帧用 transform 驱动
             const textElement = this.workflowProgressEl.querySelector('span:nth-child(3)');
             if (textElement) textElement.textContent = displayText;
         }
@@ -723,6 +730,7 @@ const KayResourceMonitor = {
             this.lastCurveUpdate = now;
         }
         this.updateBars();
+        this.updateWorkflowBar();
         if (now - this.lastDisplayUpdate >= this.displayInterval) {
             this.updateTexts();
             this.updateWorkflowProgress();
