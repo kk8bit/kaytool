@@ -102,10 +102,12 @@ const KayResourceMonitor = {
     lastUpdate: 0, lastCurveUpdate: 0, lastDisplayUpdate: 0,
     maxPoints: 120,
     curveInterval: 0,
-    // 数据本身每 0.5–2 秒才变一次，文字行没必要每帧重建（之前是 0 = 每帧，
-    // 60 次/秒重写 innerHTML 并各自新建 canvas 量字宽，白白触发布局）。
-    displayInterval: 500,
+    // 文字每 100ms 更新一次（再快也读不清）；条形则每帧用 transform 平滑跟随，
+    // 不触发布局。以前是每帧重写整块 innerHTML 并各自新建 canvas 量字宽。
+    displayInterval: 100,
     measureCtx: null,
+    rowEls: null,
+    textAvailableWidth: 0,
     smoothFactor: 0.1,
     easeOutDuration: 500,
     minWidth: 150,
@@ -557,62 +559,93 @@ const KayResourceMonitor = {
             this.dataHistory.gpuTemp.shift();
         }
     },
-    updateDisplay() {
-        const { cpu, ram, gpu, gpuMem, gpuTemp, ramUsed, ramTotal, gpuMemUsed, gpuMemTotal } = this.current;
+    // 数据行的 DOM 只建一次，之后每帧只改条形的 transform（合成器动画，不触发布局），
+    // 文字每 100ms 更新一次（再快也读不清，且每次都要重排那一行）。
+    ensureRows() {
+        if (this.rowEls) return;
         const { styles, colors } = this;
-        this.dataDisplay.innerHTML = [
-            this.renderRow('CPU', colors.cpu, cpu, `${cpu.toFixed(1)}% (${this.cpuCores} cores) - ${this.target.cpuName}`),
-            this.renderRow('RAM', colors.ram, ram, `${ramUsed.toFixed(1)}/${ramTotal.toFixed(1)}GB (${ram.toFixed(1)}%)`),
-            this.target.gpu || this.target.gpuMem
-                ? [
-                    this.renderRow('GPU', colors.gpu, gpu, `${gpu.toFixed(1)}% - ${this.target.gpuName}`),
-                    this.renderRow('VRAM', colors.gpuMem, gpuMem, `${gpuMemUsed.toFixed(1)}/${gpuMemTotal.toFixed(1)}GB (${gpuMem.toFixed(1)}%)`),
-                    this.renderRow('TEMP', colors.gpuTemp, gpuTemp, `${gpuTemp.toFixed(1)}°C (GPU)`)
-                ].join('')
-                : [
-                    this.renderRow('GPU', colors.gpu, 0, 'N/A'),
-                    this.renderRow('VRAM', colors.gpuMem, 0, 'N/A'),
-                    this.renderRow('TEMP', colors.gpuTemp, 0, 'N/A (GPU)')
-                ].join('')
-        ].join('');
+        const defs = [['CPU', colors.cpu], ['RAM', colors.ram], ['GPU', colors.gpu], ['VRAM', colors.gpuMem], ['TEMP', colors.gpuTemp]];
+        this.dataDisplay.innerHTML = '';
+        this.rowEls = {};
+        for (const [label, color] of defs) {
+            const row = document.createElement('div'); row.style.cssText = styles.row;
+            const dot = document.createElement('span'); dot.style.cssText = styles.dot(color);
+            const bar = document.createElement('span'); bar.style.cssText = styles.bar(50);
+            const fill = document.createElement('span');
+            fill.style.cssText = styles.fill(color, 100) + ' transform-origin: left center; transform: scaleX(0); will-change: transform;';
+            bar.appendChild(fill);
+            const text = document.createElement('span'); text.style.cssText = styles.text;
+            row.append(dot, bar, text);
+            this.dataDisplay.appendChild(row);
+            this.rowEls[label] = { bar, fill, text, lastText: '' };
+        }
+        this.layoutRows();
     },
-    renderRow(label, color, value, text) {
-        const { styles } = this;
+
+    // 面板宽度变化时才需要重算条宽和文字可用宽度
+    layoutRows() {
+        if (!this.rowEls) return;
         const containerWidth = this.toolbar.clientWidth - 20;
-        const minBarWidth = 50;
-        const maxBarWidth = 200;
         const fixedSpacing = 13;
-        const availableWidth = containerWidth - fixedSpacing;
-        const barWidth = Math.min(maxBarWidth, Math.max(minBarWidth, availableWidth * 0.18));
-        const textAvailableWidth = containerWidth - fixedSpacing - barWidth;
-        // 量字宽只需要一个常驻的 2D 上下文，不必每行新建 canvas
+        const barWidth = Math.min(200, Math.max(50, (containerWidth - fixedSpacing) * 0.18));
+        this.textAvailableWidth = containerWidth - fixedSpacing - barWidth;
+        for (const r of Object.values(this.rowEls)) r.bar.style.width = `${barWidth}px`;
+    },
+
+    // 每帧：只动条形
+    updateBars() {
+        this.ensureRows();
+        const c = this.current, hasGpu = !!(this.target.gpu || this.target.gpuMem);
+        const vals = { CPU: c.cpu, RAM: c.ram, GPU: hasGpu ? c.gpu : 0, VRAM: hasGpu ? c.gpuMem : 0, TEMP: hasGpu ? c.gpuTemp : 0 };
+        for (const [label, v] of Object.entries(vals)) {
+            this.rowEls[label].fill.style.transform = `scaleX(${Math.min(Math.max(v, 0), 100) / 100})`;
+        }
+    },
+
+    // 每 displayInterval：更新文字
+    updateTexts() {
+        this.ensureRows();
+        const { cpu, ram, gpu, gpuMem, gpuTemp, ramUsed, ramTotal, gpuMemUsed, gpuMemTotal } = this.current;
+        const hasGpu = !!(this.target.gpu || this.target.gpuMem);
+        const texts = {
+            CPU: `${cpu.toFixed(1)}% (${this.cpuCores} cores) - ${this.target.cpuName}`,
+            RAM: `${ramUsed.toFixed(1)}/${ramTotal.toFixed(1)}GB (${ram.toFixed(1)}%)`,
+            GPU: hasGpu ? `${gpu.toFixed(1)}% - ${this.target.gpuName}` : 'N/A',
+            VRAM: hasGpu ? `${gpuMemUsed.toFixed(1)}/${gpuMemTotal.toFixed(1)}GB (${gpuMem.toFixed(1)}%)` : 'N/A',
+            TEMP: hasGpu ? `${gpuTemp.toFixed(1)}°C (GPU)` : 'N/A (GPU)',
+        };
+        for (const [label, text] of Object.entries(texts)) {
+            const r = this.rowEls[label];
+            const shown = this.fitText(label, text);
+            if (shown !== r.lastText) { r.text.textContent = shown; r.lastText = shown; }
+        }
+    },
+
+    updateDisplay() {
+        this.ensureRows();
+        this.layoutRows();
+        this.updateBars();
+        this.updateTexts();
+    },
+
+    fitText(label, text) {
         if (!this.measureCtx) {
             this.measureCtx = document.createElement('canvas').getContext('2d');
         }
         const ctx = this.measureCtx;
         ctx.font = '10px sans-serif';
-        const textWidth = ctx.measureText(`${label}: ${text}`).width;
-        let displayText = `${label}: ${text}`;
-        if (textWidth > textAvailableWidth) {
-            const ellipsisWidth = ctx.measureText('...').width;
-            let truncatedText = `${label}: `;
-            let remainingWidth = textAvailableWidth - ctx.measureText(truncatedText).width - ellipsisWidth;
-            for (let i = 0; i < text.length; i++) {
-                const charWidth = ctx.measureText(text[i]).width;
-                if (remainingWidth < charWidth) {
-                    truncatedText += '...';
-                    break;
-                }
-                truncatedText += text[i];
-                remainingWidth -= charWidth;
-            }
-            displayText = truncatedText;
+        const full = `${label}: ${text}`;
+        const avail = this.textAvailableWidth || 0;
+        if (!avail || ctx.measureText(full).width <= avail) return full;
+        const ellipsisWidth = ctx.measureText('...').width;
+        let out = `${label}: `;
+        let remaining = avail - ctx.measureText(out).width - ellipsisWidth;
+        for (const ch of text) {
+            const w = ctx.measureText(ch).width;
+            if (remaining < w) { out += '...'; break; }
+            out += ch; remaining -= w;
         }
-        return `<div style="${styles.row}">
-            <span style="${styles.dot(color)}"></span>
-            <span style="${styles.bar(barWidth)}"><span style="${styles.fill(color, value)}"></span></span>
-            <span style="${styles.text}">${displayText}</span>
-        </div>`;
+        return out;
     },
     animate() {
         if (!this.isVisible || !this.isEnabled || !this.toolbar) return;
@@ -688,8 +721,9 @@ const KayResourceMonitor = {
             }
             this.lastCurveUpdate = now;
         }
+        this.updateBars();
         if (now - this.lastDisplayUpdate >= this.displayInterval) {
-            this.updateDisplay();
+            this.updateTexts();
             this.updateWorkflowProgress();
             this.lastDisplayUpdate = now;
         }

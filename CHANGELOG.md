@@ -1,8 +1,8 @@
 # Changelog
 
 ## [未发布 Unreleased]
-- 资源监视器不再每帧重建文字行（改为每 500ms 一次，与数据刷新节奏一致）并复用一个测量上下文，去掉了每秒上百次的 DOM 重建和临时 canvas 创建，减轻画布拖动时的掉帧
-- The resource monitor no longer rebuilds its text rows every frame (now every 500ms, matching the data rate) and reuses one measuring context, removing hundreds of DOM rebuilds and throwaway canvases per second that cost frames while panning
+- 资源监视器的数据行改为只创建一次：条形每帧用 transform 平滑跟随曲线（不触发布局），文字每 100ms 更新。此前每帧重写整块 innerHTML 并新建 canvas 量字宽，每秒数百次 DOM 重建，是拖动画布时掉帧的来源之一；现在单次开销降到 0.01ms 以下
+- The resource monitor's data rows are now built once: bars follow the curves every frame via transform (no layout), text updates every 100ms. Previously every frame rewrote the whole innerHTML and created a canvas per row to measure text — hundreds of DOM rebuilds a second and one cause of dropped frames while panning; each update now costs under 0.01ms
 
 ## [0.71.2] - 2026-09-21
 - 修正 Registry 元数据里的仓库地址大小写，使 ComfyUI-Manager 能把 Registry 条目与列表条目合并显示（此前会显示为两个包，其中一个无版本号、无星数、排序垫底）
