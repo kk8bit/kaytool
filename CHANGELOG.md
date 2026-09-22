@@ -1,6 +1,6 @@
 # Changelog
 
-## [未发布 Unreleased]
+## [0.71.3] - 2026-09-22
 - GuLuLu 的像素点击判定增加图片加载保护：图片未就绪、加载失败或被替换成无法加载的文件时不再抛错，也不会把小人误判为「整只透明、点不到」（思路来自 EndoTheDev 的 PR #22）
 - GuLuLu's pixel hit-testing now guards against the image not being ready, failing to load or being replaced with an unloadable file: no more exceptions, and the sprite no longer becomes unclickable (approach from EndoTheDev's PR #22)
 - 资源监视器面板改为独立合成层（`will-change: transform`），它每帧重绘时不再连带重绘被它盖住的那块主画布
