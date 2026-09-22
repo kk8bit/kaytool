@@ -9,6 +9,8 @@ This is a custom node utility package developed for ComfyUI. Initially created f
 ## 最新更新 / Last Update
 
 ### [未发布 Unreleased]
+- GuLuLu 的像素点击判定增加图片加载保护：图片未就绪、加载失败或被替换成无法加载的文件时不再抛错，也不会把小人误判为「整只透明、点不到」（思路来自 EndoTheDev 的 PR #22）  
+- GuLuLu's pixel hit-testing now guards against the image not being ready, failing to load or being replaced with an unloadable file: no more exceptions, and the sprite no longer becomes unclickable (approach from EndoTheDev's PR #22)  
 - 资源监视器面板改为独立合成层（`will-change: transform`），它每帧重绘时不再连带重绘被它盖住的那块主画布  
 - The resource monitor panel now gets its own compositor layer (`will-change: transform`), so its per-frame redraw no longer forces the main canvas region beneath it to repaint  
 - 资源监视器的数据行和顶部的工作流进度条改为只创建一次：条形每帧用 transform 平滑跟随曲线（不触发布局），文字每 100ms 更新。此前每帧重写整块 innerHTML 并新建 canvas 量字宽，每秒数百次 DOM 重建，是拖动画布时掉帧的来源之一；现在单次开销降到 0.01ms 以下  

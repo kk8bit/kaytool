@@ -109,6 +109,11 @@ const KayGuLuLuManager = {
             this.container.id = "kay-gululu-container";
             const img = document.createElement("img");
             img.src = this.imgSrc;
+            // 图片缺失或被用户换成加载不了的文件时，不要让后面的像素判定抛错
+            img.onerror = () => {
+                console.warn("[KayTool] GuLuLu image failed to load:", img.src);
+                this.pixelDataCache = null;
+            };
             img.alt = "GuLuLu";
             img.onload = () => {
                 this.updatePixelDataCache();
@@ -251,13 +256,24 @@ const KayGuLuLuManager = {
         if (containerRect.width === 0 || containerRect.height === 0) {
             return;
         }
+        // 像素判定依赖图片已经解码好；没就绪时读到的是整张透明，会让小人「点不到」，
+        // 坏图则会让 drawImage 直接抛 InvalidStateError。没就绪就跳过，等下次再算。
+        const img = this.container?.querySelector("img");
+        if (!img || !img.complete || img.naturalWidth === 0) {
+            this.pixelDataCache = null;
+            return;
+        }
         this.pixelCanvas.width = containerRect.width;
         this.pixelCanvas.height = containerRect.height;
         this.pixelCtx.clearRect(0, 0, this.pixelCanvas.width, this.pixelCanvas.height);
-        this.pixelCtx.drawImage(this.container.querySelector("img"), 0, 0, containerRect.width, containerRect.height);
-        this.pixelDataCache = this.pixelCtx.getImageData(0, 0, this.pixelCanvas.width, this.pixelCanvas.height);
-
-        this.calculateEffectiveBounds();
+        try {
+            this.pixelCtx.drawImage(img, 0, 0, containerRect.width, containerRect.height);
+            this.pixelDataCache = this.pixelCtx.getImageData(0, 0, this.pixelCanvas.width, this.pixelCanvas.height);
+            this.calculateEffectiveBounds();
+        } catch (e) {
+            console.warn("[KayTool] GuLuLu pixel cache update failed:", e);
+            this.pixelDataCache = null;
+        }
     },
 
     calculateEffectiveBounds() {
